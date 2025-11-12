@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cybersens Academy – Sensibilisation Cyber</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-left">
+      <div class="brand"><span class="logo-shield" aria-hidden="true">🛡️</span> CyberSense</div>
+    </div>
+    <nav class="main-nav" aria-label="Navigation principale">
+      <ul class="nav-center">
+        <li><a href="#">Accueil</a></li>
+        <li><a href="#cours">Cours</a></li>
+        <li><a href="#ressources">Ressources</a></li>
+        <li><a href="#apropos">À propos</a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+      <a href="#" class="link-muted">Connexion</a>
+      <button class="btn-primary btn-small">S'inscrire</button>
+      <button id="openTips" class="btn-link" aria-haspopup="dialog" aria-controls="goodPractices">Bonnes pratiques</button>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner hero-grid">
+      <div class="hero-col hero-text">
+        <div class="badge">Plateforme d'apprentissage n°1</div>
+        <h1 id="hero-title" class="hero-title">
+          Maîtrisez la <span class="accent">Cybersécurité</span>
+        </h1>
+        <p class="hero-sub">Apprenez à protéger les systèmes, réseaux et données contre les cyberattaques. Des cours pratiques pour tous les niveaux, de débutant à expert.</p>
+        <div class="hero-cta">
+          <a href="#cours" class="btn-primary">Commencer gratuitement</a>
+          <a href="#cours" class="btn-outline">Explorer les cours</a>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-value">50K+</div><div class="metric-label">Étudiants</div></div>
+          <div class="metric"><div class="metric-value">200+</div><div class="metric-label">Cours</div></div>
+          <div class="metric"><div class="metric-value">98%</div><div class="metric-label">Satisfaction</div></div>
+        </div>
+      </div>
+      <aside class="hero-col hero-panel" aria-label="Aperçu des parcours">
+        <div class="panel-item">
+          <span class="icon">🔒</span>
+          <div>
+            <div class="item-title">Sécurité réseau</div>
+            <div class="item-sub">12 modules</div>
+          </div>
+        </div>
+        <div class="panel-item">
+          <span class="icon">🛡️</span>
+          <div>
+            <div class="item-title">Tests de pénétration</div>
+            <div class="item-sub">18 modules</div>
+          </div>
+        </div>
+        <div class="panel-item">
+          <span class="icon">⟲</span>
+          <div>
+            <div class="item-title">Cryptographie</div>
+            <div class="item-sub">10 modules</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <main>
+    <section id="cours" class="cours-section" aria-labelledby="cours-heading">
+      <h2 id="cours-heading">Catalogue des cours</h2>
+      <div class="cours-grid">
+        <article class="cours-card" data-course-id="phishing">
+          <h3>Reconnaître le phishing</h3>
+          <p>Identifier les emails et sites frauduleux avant de cliquer.</p>
+          <button class="btn-secondary" data-start-course>Voir le cours</button>
+        </article>
+        <article class="cours-card" data-course-id="mdp">
+          <h3>Gestion des mots de passe</h3>
+          <p>Créer et stocker des mots de passe robustes.</p>
+          <button class="btn-secondary" data-start-course>Voir le cours</button>
+        </article>
+        <article class="cours-card" data-course-id="reseau">
+          <h3>Réseaux publics</h3>
+          <p>Risques des Wi‑Fi ouverts et protections essentielles.</p>
+          <button class="btn-secondary" data-start-course>Voir le cours</button>
+        </article>
+        <article class="cours-card" data-course-id="rgpd">
+          <h3>Protection des données</h3>
+          <p>Sensibilisation à la confidentialité et au RGPD.</p>
+          <button class="btn-secondary" data-start-course>Voir le cours</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="courseDetail" class="course-detail" hidden aria-labelledby="detail-heading">
+      <div class="course-detail-inner">
+        <button class="close-detail" id="closeDetail" aria-label="Fermer le cours">×</button>
+        <h2 id="detail-heading">Détail du cours</h2>
+        <div id="courseContent" class="course-content">
+          <!-- Contenu injecté via JS -->
+        </div>
+        <div class="detail-actions">
+          <button id="startQuizFromCourse" class="btn-primary">Passer le quiz</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" class="quiz-section" aria-labelledby="quiz-heading">
+      <h2 id="quiz-heading">Quiz de sensibilisation</h2>
+      <form id="quizForm" novalidate>
+        <div class="quiz-items" id="quizItems"><!-- Questions générées par JS --></div>
+        <div class="quiz-actions">
+          <button type="submit" class="btn-primary">Valider mes réponses</button>
+          <button type="button" id="resetQuiz" class="btn-secondary">Réinitialiser</button>
+        </div>
+      </form>
+      <div id="quizResult" class="quiz-result" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2025 Cybersens – Formation et prévention cyber.</p>
+  </footer>
+
+  <!-- Popup bonnes pratiques -->
+  <dialog id="goodPractices" class="modal" aria-labelledby="gp-title">
+    <form method="dialog" class="modal-inner">
+      <header class="modal-header">
+        <h2 id="gp-title">Bonnes pratiques essentielles</h2>
+        <button value="close" aria-label="Fermer" class="modal-close">×</button>
+      </header>
+      <div class="modal-content">
+        <ul class="tips-list">
+          <li>Utiliser un gestionnaire de mots de passe fiable.</li>
+          <li>Activer l'authentification multi-facteur (MFA) partout.</li>
+          <li>Ne jamais cliquer sur un lien douteux sans vérifier l'expéditeur.</li>
+          <li>Mettre à jour systèmes et logiciels rapidement.</li>
+          <li>Chiffrer les données sensibles stockées ou transmises.</li>
+          <li>Sauvegarder régulièrement vos données critiques.</li>
+        </ul>
+        <div class="tips-actions">
+          <button value="close" class="btn-secondary" id="closeTips">Fermer</button>
+        </div>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" id="rememberTips" class="btn-link">Ne plus afficher au chargement</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="index.js" type="module"></script>
+</body>
+</html>

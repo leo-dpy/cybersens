@@ -4,13 +4,21 @@ Cette version du site "Cybersens" est maintenant **100% HTML / CSS / JavaScript*
 
 ## Structure
 ```
-index.html    # Page principale complète
-styles.css    # Feuille de styles (utilitaires Tailwind déjà générés)
-main.js       # Interactions (menu mobile + modal bonnes pratiques)
+index.html          # Redirection vers pages/index.html
+pages/              # Toutes les pages HTML du site
+	├─ index.html     # Accueil
+	├─ cours.html     # Cours
+	├─ quiz.html      # Quiz
+	├─ aide.html      # Aide
+	├─ leaderboard.html # Classement
+	├─ login.html     # Connexion
+	└─ signup.html    # Inscription
+styles.css          # Styles globaux
+main.js             # Interactions (menu mobile + modal bonnes pratiques)
 ```
 
 ## Ouvrir le site
-Il suffit d'ouvrir `index.html` dans votre navigateur :
+Ouvrez `index.html` à la racine (vous serez redirigé vers `pages/index.html`) :
 - Double‑cliquez sur le fichier
 - Ou via PowerShell :
 ```powershell
@@ -18,6 +26,7 @@ Start-Process $PWD\index.html
 ```
 
 Aucun serveur n'est nécessaire.
+Astuce: vous pouvez aussi ouvrir directement `pages/index.html`.
 
 ## Fonctionnalités conservées
 - Design identique (mêmes classes utilitaires)

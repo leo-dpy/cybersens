@@ -7,7 +7,7 @@
   <title>CyberSens — Maîtrisez la Cybersécurité</title>
   <meta name="description"
     content="Apprenez la Cybersécurité avec CybersSens : cours, labs, certifications. Plateforme d'apprentissage pour tous les niveaux." />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="../styles.css" />
 </head>
 
 <body class="min-h-screen bg-slate-950">
@@ -16,20 +16,22 @@
     <div class="container mx-auto px-4 py-4 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <i data-lucide="shield" class="w-8 h-8 text-cyan-400"></i>
-        <span class="text-white text-xl">Cybersens</span>
+        <span class="text-white text-xl">CyberSens</span>
       </div>
 
       <nav class="hidden md:flex items-center gap-6">
-        <a href="#accueil" class="text-slate-300 hover:text-cyan-400 transition-colors">Accueil</a>
-        <a href="#cours" class="text-slate-300 hover:text-cyan-400 transition-colors">Cours</a>
-        <a href="#ressources" class="text-slate-300 hover:text-cyan-400 transition-colors">Ressources</a>
+        <a href="index.html#accueil" class="text-slate-300 hover:text-cyan-400 transition-colors">Accueil</a>
+        <a href="cours.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Cours</a>
+        <a href="quiz.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Quiz</a>
+        <a href="leaderboard.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Leaderboard</a>
+        <a href="aide.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Aide</a>
         <a href="#apropos" class="text-slate-300 hover:text-cyan-400 transition-colors">À propos</a>
       </nav>
 
       <div class="flex items-center gap-4">
-        <button
-          class="hidden md:inline-flex text-slate-300 hover:text-cyan-400 transition-colors px-3 py-2 rounded-md">Connexion</button>
-        <button class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md">S'inscrire</button>
+        <a href="login.html"
+          class="hidden md:inline-flex text-slate-300 hover:text-cyan-400 transition-colors px-3 py-2 rounded-md">Connexion</a>
+        <a href="signup.html" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md">S'inscrire</a>
         <button id="open-mobile" aria-label="Ouvrir le menu" class="md:hidden text-slate-300 px-2 py-2 rounded-md">
           <i data-lucide="menu" class="w-6 h-6"></i>
         </button>
@@ -38,13 +40,15 @@
     <!-- Mobile menu -->
     <div id="mobile-menu" class="md:hidden hidden border-t border-slate-800 bg-slate-950">
       <div class="container mx-auto px-4 py-4 flex flex-col gap-3">
-        <a href="#accueil" class="text-slate-300 hover:text-cyan-400 transition-colors">Accueil</a>
-        <a href="#cours" class="text-slate-300 hover:text-cyan-400 transition-colors">Cours</a>
-        <a href="#ressources" class="text-slate-300 hover:text-cyan-400 transition-colors">Ressources</a>
+        <a href="index.html#accueil" class="text-slate-300 hover:text-cyan-400 transition-colors">Accueil</a>
+        <a href="cours.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Cours</a>
+        <a href="quiz.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Quiz</a>
+        <a href="leaderboard.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Leaderboard</a>
+        <a href="aide.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Aide</a>
         <a href="#apropos" class="text-slate-300 hover:text-cyan-400 transition-colors">À propos</a>
         <div class="flex gap-3 pt-2">
-          <button class="flex-1 bg-slate-800 text-slate-300 hover:bg-slate-800 px-4 py-2 rounded-md">Connexion</button>
-          <button class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md">S'inscrire</button>
+          <a href="login.html" class="flex-1 bg-slate-800 text-slate-300 hover:bg-slate-800 px-4 py-2 rounded-md text-center">Connexion</a>
+          <a href="signup.html" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md text-center">S'inscrire</a>
         </div>
       </div>
     </div>
@@ -71,10 +75,10 @@
             </p>
 
             <div class="flex flex-wrap gap-4">
-              <a href="#cours"
+              <a href="cours.html"
                 class="bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-3 rounded-md inline-flex items-center justify-center hero-cta">Commencer
                 gratuitement</a>
-              <a href="#cours"
+              <a href="cours.html"
                 class="border border-slate-700 text-slate-300 hover:bg-slate-800 px-8 py-3 rounded-md inline-flex items-center justify-center hero-cta">Explorer
                 les cours</a>
             </div>
@@ -461,7 +465,7 @@
 
   <!-- Lucide icons and main script -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="./main.js"></script>
+  <script src="../main.js"></script>
 </body>
 
 </html>

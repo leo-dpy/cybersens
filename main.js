@@ -27,8 +27,21 @@
     if (bpOpen) bpOpen.classList.remove('hidden');
   }
 
+  // Auto-open only once per session; otherwise, leave closed and show the reopen button
   if (bpDialog) {
-    setTimeout(openDialog, 1000);
+    try {
+      const hasShown = sessionStorage.getItem('bpShown');
+      if (!hasShown) {
+        sessionStorage.setItem('bpShown', '1');
+        setTimeout(openDialog, 1000);
+      } else {
+        // Do not auto-open again on navigation; ensure the open button is visible
+        if (bpOpen) bpOpen.classList.remove('hidden');
+      }
+    } catch (e) {
+      // If sessionStorage is unavailable, prefer not to auto-open repeatedly
+      if (bpOpen) bpOpen.classList.remove('hidden');
+    }
   }
 
   if (bpClose) {
@@ -43,7 +56,7 @@
 
   // Close on Escape for accessibility
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !bpDialog.classList.contains('hidden')) {
+    if (bpDialog && e.key === 'Escape' && !bpDialog.classList.contains('hidden')) {
       closeDialog();
     }
   });

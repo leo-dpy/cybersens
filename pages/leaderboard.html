@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard — Cybersens</title>
+  <meta name="description" content="Classements, profils et progression des apprenants Cybersens." />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body class="min-h-screen bg-slate-950">
+  <!-- Header (shared) -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shield" class="w-8 h-8 text-cyan-400"></i>
+        <a href="index.html" class="text-white text-xl">Cybersens</a>
+      </div>
+      <nav class="hidden md:flex items-center gap-6">
+        <a href="index.html#accueil" class="text-slate-300 hover:text-cyan-400 transition-colors">Accueil</a>
+        <a href="cours.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Cours</a>
+        <a href="quiz.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Quiz</a>
+        <a href="leaderboard.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Leaderboard</a>
+        <a href="aide.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Aide</a>
+      </nav>
+      <div class="flex items-center gap-4">
+        <a href="login.html" class="hidden md:inline-flex text-slate-300 hover:text-cyan-400 transition-colors px-3 py-2 rounded-md">Connexion</a>
+        <a href="signup.html" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md">S'inscrire</a>
+        <button id="open-mobile" aria-label="Ouvrir le menu" class="md:hidden text-slate-300 px-2 py-2 rounded-md">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden border-t border-slate-800 bg-slate-950">
+      <div class="container mx-auto px-4 py-4 flex flex-col gap-3">
+        <a href="index.html#accueil" class="text-slate-300 hover:text-cyan-400 transition-colors">Accueil</a>
+        <a href="cours.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Cours</a>
+        <a href="quiz.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Quiz</a>
+        <a href="leaderboard.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Leaderboard</a>
+        <a href="aide.html" class="text-slate-300 hover:text-cyan-400 transition-colors">Aide</a>
+        <div class="flex gap-3 pt-2">
+          <a href="login.html" class="flex-1 bg-slate-800 text-slate-300 hover:bg-slate-800 px-4 py-2 rounded-md text-center">Connexion</a>
+          <a href="signup.html" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md text-center">S'inscrire</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-32 px-4">
+    <section class="container mx-auto">
+      <!-- Header + filters -->
+      <div class="mb-8">
+        <div class="text-center">
+          <div class="inline-flex items-center gap-2 bg-cyan-950/40 border border-cyan-900 rounded-full px-4 py-1.5 mb-4">
+            <i data-lucide="trophy" class="w-4 h-4 text-cyan-400"></i>
+            <span class="text-cyan-300 text-sm">Classement Cybersens</span>
+          </div>
+          <h1 class="text-white text-4xl mb-2">Leaderboard</h1>
+          <p class="text-slate-400">Classement global, progression et cours complétés</p>
+        </div>
+
+        <div class="mt-6 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+          <div class="inline-flex bg-slate-900 border border-slate-800 rounded-lg p-1 w-fit">
+            <button class="px-3 py-1.5 rounded-md bg-slate-800 text-slate-200 text-sm">Global</button>
+            <button class="px-3 py-1.5 rounded-md text-slate-300 text-sm hover:bg-slate-800">Cette semaine</button>
+            <button class="px-3 py-1.5 rounded-md text-slate-300 text-sm hover:bg-slate-800">Amis</button>
+          </div>
+          <div class="flex gap-3">
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input placeholder="Rechercher un pseudo" class="bg-slate-900 border border-slate-800 rounded-md pl-9 pr-3 py-2 text-slate-200 placeholder:text-slate-500 w-56" />
+            </div>
+            <select class="bg-slate-900 border border-slate-800 rounded-md px-3 py-2 text-slate-200">
+              <option>Trier par: Points</option>
+              <option>Pourcentage cours</option>
+              <option>Progression</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Podium top 3 -->
+      <div class="grid md:grid-cols-3 gap-6 mb-10">
+        <!-- 2nd -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm hover:border-cyan-700/50 transition-colors">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center gap-1 text-slate-300 text-sm"><i data-lucide="medal" class="w-4 h-4 text-slate-300"></i> #2</span>
+            <span class="text-slate-400 text-sm">9 420 pts</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-sky-600/30 border border-sky-800 flex items-center justify-center text-sky-200">B</div>
+            <div>
+              <div class="text-white">RootMaster</div>
+              <div class="text-slate-400 text-sm">Points: 9 420 • 88%</div>
+            </div>
+          </div>
+        </div>
+        <!-- 1st -->
+        <div class="relative bg-gradient-to-br from-cyan-950/70 to-slate-900 border border-cyan-800 rounded-2xl p-5 ring-1 ring-cyan-900/50">
+          <div class="absolute -top-3 -right-3 bg-amber-500 text-amber-950 text-xs font-semibold px-2 py-0.5 rounded-full shadow">TOP 1</div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center gap-1 text-amber-300 text-sm"><i data-lucide="crown" class="w-4 h-4"></i> #1</span>
+            <span class="text-amber-300 text-sm inline-flex items-center gap-1"><i data-lucide="sparkles" class="w-4 h-4"></i>9 850 pts</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-200 text-xl">C</div>
+            <div>
+              <div class="text-white text-lg">CyberNinja</div>
+              <div class="text-slate-300 text-sm">% cours: 92%</div>
+              <div class="mt-2 h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-amber-400" style="width:92%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 3rd -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm hover:border-cyan-700/50 transition-colors">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center gap-1 text-rose-300 text-sm"><i data-lucide="medal" class="w-4 h-4"></i> #3</span>
+            <span class="text-slate-400 text-sm">9 010 pts</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-rose-600/30 border border-rose-800 flex items-center justify-center text-rose-200">H</div>
+            <div>
+              <div class="text-white">HashHunter</div>
+              <div class="text-slate-400 text-sm">Points: 9 010 • 86%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Your profile summary -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-6 mb-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-cyan-600/30 border border-cyan-800 text-cyan-200 flex items-center justify-center">A</div>
+            <div>
+              <div class="text-white text-lg">Apprenant42 (vous)</div>
+              <div class="text-slate-400 text-sm">Membre depuis 2025</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 flex-1 md:justify-end">
+            <div>
+              <div class="text-slate-300 text-sm mb-1">% cours réalisés</div>
+              <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500" style="width:68%"></div></div>
+              <div class="text-slate-400 text-xs mt-1">68%</div>
+            </div>
+            <div>
+              <div class="text-slate-300 text-sm mb-1">Classement actuel</div>
+              <div class="text-white">#12</div>
+              <div class="text-emerald-400 text-xs">+1 cette semaine</div>
+            </div>
+            <div>
+              <div class="text-slate-300 text-sm mb-1">Points</div>
+              <div class="text-white">6 130</div>
+              <div class="text-slate-500 text-xs">Objectif: 7 000</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard table -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <div class="hidden md:grid grid-cols-12 px-6 py-3 border-b border-slate-800 text-slate-400 text-sm">
+          <div class="col-span-1">Rang</div>
+          <div class="col-span-5">Pseudo</div>
+          <div class="col-span-2">Points</div>
+          <div class="col-span-2">% Cours</div>
+          <div class="col-span-2">Progression</div>
+        </div>
+
+        <div class="divide-y divide-slate-800">
+          <!-- Row 1 -->
+          <div class="grid grid-cols-12 gap-3 px-4 md:px-6 py-4 items-center hover:bg-slate-800/40 transition-colors">
+            <div class="col-span-2 md:col-span-1 flex items-center gap-2 text-amber-300"><i data-lucide="crown" class="w-4 h-4"></i><span>1</span></div>
+            <div class="col-span-10 md:col-span-5 flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-400 inline-flex items-center justify-center text-amber-200">C</span>
+              <div>
+                <div class="text-white">CyberNinja</div>
+                <div class="text-slate-500 text-xs md:hidden">9 850 pts • 92%</div>
+              </div>
+            </div>
+            <div class="hidden md:block col-span-2 text-white">9 850</div>
+            <div class="hidden md:block col-span-2">
+              <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width:92%"></div></div>
+            </div>
+            <div class="col-span-4 md:col-span-2 text-emerald-400 flex items-center gap-1 justify-end md:justify-start"><i data-lucide="trending-up" class="w-4 h-4"></i><span>+3</span></div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="grid grid-cols-12 gap-3 px-4 md:px-6 py-4 items-center hover:bg-slate-800/40 transition-colors">
+            <div class="col-span-2 md:col-span-1 text-slate-300">2</div>
+            <div class="col-span-10 md:col-span-5 flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-sky-600/20 border border-sky-500 inline-flex items-center justify-center text-sky-200">R</span>
+              <div>
+                <div class="text-white">RootMaster</div>
+                <div class="text-slate-500 text-xs md:hidden">9 420 pts • 88%</div>
+              </div>
+            </div>
+            <div class="hidden md:block col-span-2 text-white">9 420</div>
+            <div class="hidden md:block col-span-2">
+              <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width:88%"></div></div>
+            </div>
+            <div class="col-span-4 md:col-span-2 text-emerald-400 flex items-center gap-1 justify-end md:justify-start"><i data-lucide="trending-up" class="w-4 h-4"></i><span>+1</span></div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="grid grid-cols-12 gap-3 px-4 md:px-6 py-4 items-center hover:bg-slate-800/40 transition-colors">
+            <div class="col-span-2 md:col-span-1 text-rose-300">3</div>
+            <div class="col-span-10 md:col-span-5 flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-rose-600/20 border border-rose-500 inline-flex items-center justify-center text-rose-200">H</span>
+              <div>
+                <div class="text-white">HashHunter</div>
+                <div class="text-slate-500 text-xs md:hidden">9 010 pts • 86%</div>
+              </div>
+            </div>
+            <div class="hidden md:block col-span-2 text-white">9 010</div>
+            <div class="hidden md:block col-span-2">
+              <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width:86%"></div></div>
+            </div>
+            <div class="col-span-4 md:col-span-2 text-orange-400 flex items-center gap-1 justify-end md:justify-start"><i data-lucide="minus" class="w-4 h-4"></i><span>=</span></div>
+          </div>
+
+          <!-- Row 4 -->
+          <div class="grid grid-cols-12 gap-3 px-4 md:px-6 py-4 items-center hover:bg-slate-800/40 transition-colors">
+            <div class="col-span-2 md:col-span-1 text-slate-300">4</div>
+            <div class="col-span-10 md:col-span-5 flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-violet-600/20 border border-violet-500 inline-flex items-center justify-center text-violet-200">P</span>
+              <div>
+                <div class="text-white">PacketWizard</div>
+                <div class="text-slate-500 text-xs md:hidden">8 760 pts • 81%</div>
+              </div>
+            </div>
+            <div class="hidden md:block col-span-2 text-white">8 760</div>
+            <div class="hidden md:block col-span-2">
+              <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width:81%"></div></div>
+            </div>
+            <div class="col-span-4 md:col-span-2 text-red-500 flex items-center gap-1 justify-end md:justify-start"><i data-lucide="trending-down" class="w-4 h-4"></i><span>-2</span></div>
+          </div>
+
+          <!-- Your row -->
+          <div class="grid grid-cols-12 gap-3 px-4 md:px-6 py-4 items-center bg-cyan-950/30 hover:bg-cyan-950/40 border-l-4 border-cyan-700">
+            <div class="col-span-2 md:col-span-1 text-cyan-300">12</div>
+            <div class="col-span-10 md:col-span-5 flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-cyan-600/20 border border-cyan-500 inline-flex items-center justify-center text-cyan-200">A</span>
+              <div>
+                <div class="text-white">Apprenant42 (vous)</div>
+                <div class="text-slate-500 text-xs md:hidden">6 130 pts • 68%</div>
+              </div>
+            </div>
+            <div class="hidden md:block col-span-2 text-white">6 130</div>
+            <div class="hidden md:block col-span-2">
+              <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500" style="width:68%"></div></div>
+            </div>
+            <div class="col-span-4 md:col-span-2 text-emerald-400 flex items-center gap-1 justify-end md:justify-start"><i data-lucide="trending-up" class="w-4 h-4"></i><span>+1</span></div>
+          </div>
+        </div>
+
+        <div class="px-4 md:px-6 py-4">
+          <button class="w-full md:w-auto md:ml-auto bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-md border border-slate-700">Voir plus</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-slate-900 border-t border-slate-800 py-12 px-4 mt-12">
+    <div class="container mx-auto text-center text-slate-400">
+      <p>&copy; 2025 Cybersens. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../main.js"></script>
+</body>
+</html>

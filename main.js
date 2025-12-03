@@ -1,78 +1,63 @@
-// Interactions JS simples pour le menu mobile et la modale de bonnes pratiques
-(function () {
-  // Fonction utilitaire pour sélectionner un élément du DOM
-  function selectionner(selecteur) { return document.querySelector(selecteur); }
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Lucide Icons
+    lucide.createIcons();
 
-  // Sélection des éléments du DOM avec les nouveaux IDs en français
-  const boutonMobile = selectionner('#ouvrir-mobile');
-  const menuMobile = selectionner('#menu-mobile');
-  const fondBonnesPratiques = selectionner('#fond-bonnes-pratiques');
-  const dialogueBonnesPratiques = selectionner('#dialogue-bonnes-pratiques');
-  const boutonFermerBP = selectionner('#fermer-bonnes-pratiques');
-  const boutonOuvrirBP = selectionner('#ouvrir-bonnes-pratiques');
+    // Navigation Logic
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.view-section');
 
-  // Gestion du menu mobile
-  if (boutonMobile && menuMobile) {
-    boutonMobile.addEventListener('click', () => {
-      menuMobile.classList.toggle('hidden');
-    });
-  }
+    function navigateTo(viewId) {
+        // Update Nav State
+        navItems.forEach(item => {
+            if (item.dataset.view === viewId) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
 
-  // Fonction pour ouvrir la boîte de dialogue des bonnes pratiques
-  function ouvrirDialogue() {
-    fondBonnesPratiques.classList.remove('hidden');
-    dialogueBonnesPratiques.classList.remove('hidden');
-    if (boutonOuvrirBP) boutonOuvrirBP.classList.add('hidden');
-  }
-
-  // Fonction pour fermer la boîte de dialogue des bonnes pratiques
-  function fermerDialogue() {
-    fondBonnesPratiques.classList.add('hidden');
-    dialogueBonnesPratiques.classList.add('hidden');
-    if (boutonOuvrirBP) boutonOuvrirBP.classList.remove('hidden');
-  }
-
-  // Ouverture automatique une seule fois par session
-  if (dialogueBonnesPratiques) {
-    try {
-      const aEteAffiche = sessionStorage.getItem('bpAffiche');
-      if (!aEteAffiche) {
-        sessionStorage.setItem('bpAffiche', '1');
-        setTimeout(ouvrirDialogue, 1000);
-      } else {
-        // Ne pas rouvrir automatiquement lors de la navigation ; s'assurer que le bouton d'ouverture est visible
-        if (boutonOuvrirBP) boutonOuvrirBP.classList.remove('hidden');
-      }
-    } catch (e) {
-      // Si sessionStorage n'est pas disponible, préférer ne pas ouvrir automatiquement à répétition
-      if (boutonOuvrirBP) boutonOuvrirBP.classList.remove('hidden');
+        // Update View State
+        sections.forEach(section => {
+            section.classList.remove('active');
+            if (section.id === viewId) {
+                // Small delay to allow fade out if we were doing complex transitions
+                // For now, just switch
+                setTimeout(() => {
+                    section.classList.add('active');
+                }, 50);
+            }
+        });
     }
-  }
 
-  // Ajout des écouteurs d'événements pour les boutons
-  if (boutonFermerBP) {
-    boutonFermerBP.addEventListener('click', fermerDialogue);
-  }
-  if (fondBonnesPratiques) {
-    fondBonnesPratiques.addEventListener('click', fermerDialogue);
-  }
-  if (boutonOuvrirBP) {
-    boutonOuvrirBP.addEventListener('click', ouvrirDialogue);
-  }
-
-  // Fermer avec la touche Échap pour l'accessibilité
-  document.addEventListener('keydown', (e) => {
-    if (dialogueBonnesPratiques && e.key === 'Escape' && !dialogueBonnesPratiques.classList.contains('hidden')) {
-      fermerDialogue();
-    }
-  });
-
-  // Initialiser les icônes Lucide
-  if (window.lucide) {
-    window.lucide.createIcons();
-  } else {
-    document.addEventListener('DOMContentLoaded', () => {
-      if (window.lucide) { window.lucide.createIcons(); }
+    // Add Click Listeners
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const viewId = item.dataset.view;
+            navigateTo(viewId);
+        });
     });
-  }
-})();
+
+    // Interactive Cards (3D Tilt Effect)
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -5; // Max rotation deg
+            const rotateY = ((x - centerX) / centerX) * 5;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        });
+    });
+
+    console.log('System Initialized. Welcome, Agent.');
+});

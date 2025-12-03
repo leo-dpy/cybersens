@@ -1,90 +1,91 @@
 // ==========================================
-// DATABASE CLASS (Replaces database.js)
+// API CLIENT (Replaces LocalStorage DB)
 // ==========================================
-class UserDB {
-    constructor() {
-        this.users = this.loadUsers();
-    }
+const API_URL = 'backend'; // Chemin relatif vers le dossier backend
 
-    loadUsers() {
-        // Try to load from localStorage first
-        const stored = localStorage.getItem('cybersens_users');
-        if (stored) {
-            return JSON.parse(stored);
+class ApiClient {
+    
+    async login(email, password) {
+        try {
+            const response = await fetch(`${API_URL}/login.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            return await response.json();
+        } catch (e) {
+            console.error("Erreur Login:", e);
+            return { success: false, message: "Erreur de connexion au serveur" };
         }
-        
-        // Default users if nothing in storage
-        const defaults = [
-            { id: 1, username: "tom", email: "tom@gmail.com", password: "password", xp: 1200, level: "Initié", group: "Red Team", role: "user" },
-            { id: 2, username: "aaa", email: "aaa@gmail.com", password: "password", xp: 500, level: "Novice", group: "Blue Team", role: "user" },
-            { id: 3, username: "Admin", email: "admin@cybersens.com", password: "admin", xp: 99999, level: "Grand Maître", group: "Staff", role: "admin" }
-        ];
-        this.saveUsers(defaults);
-        return defaults;
     }
 
-    saveUsers(users) {
-        localStorage.setItem('cybersens_users', JSON.stringify(users));
-    }
-
-    // ==========================================
-    // API METHODS
-    // ==========================================
-
-    getUsers() {
-        return this.users;
-    }
-
-    findUser(email, password) {
-        return this.users.find(u => u.email === email && u.password === password);
-    }
-
-    createUser(username, email, password) {
-        const existing = this.users.find(u => u.email === email);
-        if (existing) {
-            return { success: false, message: 'Cet email est déjà utilisé.' };
+    async register(username, email, password) {
+        try {
+            const response = await fetch(`${API_URL}/register.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            });
+            return await response.json();
+        } catch (e) {
+            console.error("Erreur Register:", e);
+            return { success: false, message: "Erreur de connexion au serveur" };
         }
-
-        const newUser = {
-            id: Date.now(),
-            username,
-            email,
-            password,
-            created_at: new Date().toISOString(),
-            role: 'user',
-            xp: 0,
-            level: "Novice",
-            group: "Aucun"
-        };
-        
-        this.users.push(newUser);
-        this.saveUsers(this.users);
-        
-        return { success: true, user: newUser };
     }
 
-    updateUserGroup(id, groupName) {
-        const user = this.users.find(u => u.id === id);
-        if (user) {
-            user.group = groupName;
-            this.saveUsers(this.users);
+    async getUsers() {
+        try {
+            const response = await fetch(`${API_URL}/users.php`);
+            return await response.json();
+        } catch (e) {
+            console.error("Erreur GetUsers:", e);
+            return [];
+        }
+    }
+
+    async deleteUser(id) {
+        try {
+            await fetch(`${API_URL}/users.php`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
             return true;
+        } catch (e) {
+            return false;
         }
-        return false;
     }
 
-    deleteUser(id) {
-        this.users = this.users.filter(u => u.id !== id);
-        this.saveUsers(this.users);
-        return true;
+    async updateUserGroup(id, groupName) {
+        try {
+            await fetch(`${API_URL}/users.php`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, group: groupName })
+            });
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    async getLeaderboard() {
+        try {
+            const response = await fetch(`${API_URL}/leaderboard.php`);
+            return await response.json();
+        } catch (e) {
+            return [];
+        }
     }
 }
 
-const db = new UserDB();
+const api = new ApiClient();
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // No need to wait for DB ready anymore
-    // await db.ready;
+    // Check if running on file:// protocol
+    if (window.location.protocol === 'file:') {
+        alert("⚠️ ATTENTION : Vous avez ouvert le fichier directement.\n\nPour que la base de données fonctionne, vous devez passer par votre serveur WAMP (http://localhost/Cybersens).");
+    }
 
     // Initialize Lucide Icons
     lucide.createIcons();
@@ -224,32 +225,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         // Handle Login
-        document.getElementById('login-form')?.addEventListener('submit', (e) => {
+        document.getElementById('login-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error');
 
-            const user = db.findUser(email, password);
+            const result = await api.login(email, password);
 
-            if (user) {
-                loginUser(user);
+            if (result.success) {
+                loginUser(result.user);
                 errorMsg.style.display = 'none';
             } else {
-                errorMsg.textContent = 'Identifiants invalides.';
+                errorMsg.textContent = result.message;
                 errorMsg.style.display = 'block';
             }
         });
 
         // Handle Signup
-        document.getElementById('signup-form')?.addEventListener('submit', (e) => {
+        document.getElementById('signup-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('signup-username').value;
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const errorMsg = document.getElementById('signup-error');
 
-            const result = db.createUser(username, email, password);
+            const result = await api.register(username, email, password);
 
             if (result.success) {
                 loginUser(result.user);
@@ -291,12 +292,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    function loadAdminTable() {
+    async function loadAdminTable() {
         const tbody = document.getElementById('admin-users-list');
         if (!tbody) return;
         
         tbody.innerHTML = '';
-        const users = db.getUsers();
+        const users = await api.getUsers();
 
         users.forEach(u => {
             const tr = document.createElement('tr');
@@ -327,10 +328,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Add Delete Listeners
         document.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 const id = parseInt(e.target.dataset.id);
                 if (confirm('Confirmer la suppression de cet agent ?')) {
-                    db.deleteUser(id);
+                    await api.deleteUser(id);
                     loadAdminTable();
                 }
             });
@@ -338,10 +339,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Add Group Change Listeners
         document.querySelectorAll('.group-select').forEach(select => {
-            select.addEventListener('change', (e) => {
+            select.addEventListener('change', async (e) => {
                 const id = parseInt(e.target.dataset.id);
                 const newGroup = e.target.value;
-                db.updateUserGroup(id, newGroup);
+                await api.updateUserGroup(id, newGroup);
             });
         });
     }
@@ -350,21 +351,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // LEADERBOARD LOGIC
     // ==========================================
     
-    function loadLeaderboards() {
-        const users = db.getUsers();
+    async function loadLeaderboards() {
+        const sortedGroups = await api.getLeaderboard();
         
-        // Group Leaderboard Calculation
-        const groups = {};
-        users.forEach(u => {
-            const g = u.group || 'Aucun';
-            if (g === 'Aucun' || g === 'Staff') return; 
-            
-            if (!groups[g]) groups[g] = { name: g, totalXp: 0, members: 0 };
-            groups[g].totalXp += u.xp;
-            groups[g].members++;
-        });
-
-        const sortedGroups = Object.values(groups).sort((a, b) => b.totalXp - a.totalXp);
         const groupTbody = document.getElementById('group-leaderboard-list');
         if (!groupTbody) return;
         
@@ -382,7 +371,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 tr.innerHTML = `
                     <td>${rankBadge}</td>
                     <td style="color: var(--primary-color); font-weight: bold;">${g.name}</td>
-                    <td>${g.totalXp.toLocaleString()}</td>
+                    <td>${parseInt(g.totalXp).toLocaleString()}</td>
                     <td>${g.members}</td>
                 `;
                 groupTbody.appendChild(tr);

@@ -1,6 +1,6 @@
-# Cybersens (Version Statique)
+# CyberSens (Version Statique)
 
-Cette version du site "Cybersens" est maintenant **100% HTML / CSS / JavaScript** sans React, sans Node, sans bundler.
+Cette version du site "CyberSens" est maintenant **100% HTML / CSS / JavaScript** sans React, sans Node, sans bundler.
 
 ## Structure
 ```

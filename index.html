@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CyberSens | Next-Gen Security Learning</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -235,6 +236,52 @@
 
         </main>
     </div>
+
+    <!-- Best Practices Modal -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+    <div id="modal-bp" class="modal">
+        <div class="modal-header">
+            <h2><i data-lucide="shield-alert"></i> Bonnes Pratiques</h2>
+            <button id="close-modal-btn" class="close-btn"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-content">
+            <div class="bp-item">
+                <i data-lucide="lock"></i>
+                <div>
+                    <h4>Mots de passe forts</h4>
+                    <p>Utilisez 12+ caractères, mélangez majuscules, chiffres et symboles.</p>
+                </div>
+            </div>
+            <div class="bp-item">
+                <i data-lucide="eye-off"></i>
+                <div>
+                    <h4>Données Personnelles</h4>
+                    <p>Ne partagez jamais d'informations sensibles sur des réseaux non sécurisés.</p>
+                </div>
+            </div>
+            <div class="bp-item">
+                <i data-lucide="mail-warning"></i>
+                <div>
+                    <h4>Phishing</h4>
+                    <p>Vérifiez toujours l'expéditeur et les liens avant de cliquer.</p>
+                </div>
+            </div>
+            <div class="bp-item warning">
+                <i data-lucide="alert-triangle"></i>
+                <div>
+                    <h4>Mises à jour</h4>
+                    <p>Gardez vos systèmes à jour pour combler les failles de sécurité.</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="ack-btn" class="btn btn-primary">J'ai compris</button>
+        </div>
+    </div>
+
+    <button id="open-bp-btn" class="floating-btn" title="Bonnes Pratiques">
+        <i data-lucide="shield-alert"></i>
+    </button>
 
     <script src="main.js"></script>
 </body>

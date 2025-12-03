@@ -60,4 +60,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     console.log('System Initialized. Welcome, Agent.');
+
+    // Modal Logic
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-bp');
+    const closeBtn = document.getElementById('close-modal-btn');
+    const ackBtn = document.getElementById('ack-btn');
+    const openBtn = document.getElementById('open-bp-btn');
+
+    function openModal() {
+        modalOverlay.classList.add('active');
+        // Small delay for animation
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modalOverlay.classList.remove('active');
+        }, 300);
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (ackBtn) ackBtn.addEventListener('click', closeModal);
+    if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
+    if (openBtn) openBtn.addEventListener('click', openModal);
+
+    // Auto-open logic - Always open on launch
+    setTimeout(openModal, 500);
 });

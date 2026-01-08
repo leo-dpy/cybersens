@@ -1,0 +1,37 @@
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Headers: Content-Type');
+
+require 'db.php';
+
+try {
+    $stats = [];
+    
+    // Nombre d'utilisateurs
+    $stats['users'] = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+    
+    // Nombre de cours
+    $stats['courses'] = $pdo->query("SELECT COUNT(*) FROM courses")->fetchColumn();
+    
+    // Nombre de questions
+    $stats['questions'] = $pdo->query("SELECT COUNT(*) FROM questions")->fetchColumn();
+    
+    // Nombre de modules terminés
+    $stats['completions'] = $pdo->query("SELECT COUNT(*) FROM progression WHERE is_completed = 1")->fetchColumn();
+    
+    // Derniers cours
+    $stmt = $pdo->query("SELECT id, title, difficulty FROM courses ORDER BY id DESC LIMIT 5");
+    $stats['recentCourses'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Derniers utilisateurs
+    $stmt = $pdo->query("SELECT id, username, email, created_at FROM users ORDER BY created_at DESC LIMIT 5");
+    $stats['recentUsers'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    echo json_encode(['success' => true, 'stats' => $stats]);
+    
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'message' => 'Erreur: ' . $e->getMessage()]);
+}
+?>

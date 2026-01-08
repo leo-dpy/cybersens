@@ -7,12 +7,18 @@ header('Access-Control-Allow-Headers: Content-Type');
 require 'db.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
-$username = $data['username'] ?? '';
-$email = $data['email'] ?? '';
+$username = trim($data['username'] ?? '');
+$email = trim($data['email'] ?? '');
 $password = $data['password'] ?? '';
 
 if (!$username || !$email || !$password) {
     echo json_encode(['success' => false, 'message' => 'Tous les champs sont requis']);
+    exit;
+}
+
+// Validation email
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['success' => false, 'message' => 'Email invalide']);
     exit;
 }
 
@@ -24,27 +30,54 @@ if ($stmt->fetch()) {
     exit;
 }
 
-// Création de l'utilisateur
+// Vérifier si le username existe déjà
+$stmt = $pdo->prepare("SELECT id FROM users WHERE username = ?");
+$stmt->execute([$username]);
+if ($stmt->fetch()) {
+    echo json_encode(['success' => false, 'message' => 'Ce nom d\'utilisateur est déjà pris']);
+    exit;
+}
+
+// Création de l'utilisateur avec les valeurs par défaut (xp=0, level=1)
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-$sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+$sql = "INSERT INTO users (username, email, password, xp, level, role) VALUES (?, ?, ?, 0, 1, 'user')";
 $stmt = $pdo->prepare($sql);
 
 try {
     $stmt->execute([$username, $email, $passwordHash]);
     $userId = $pdo->lastInsertId();
     
-    // Récupérer l'utilisateur créé pour le renvoyer au frontend
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-    $stmt->execute([$userId]);
-    $user = $stmt->fetch();
+    // Attribuer le badge "first_step" (premier pas)
+    $stmt = $pdo->prepare("SELECT id FROM badges WHERE slug = 'first_step'");
+    $stmt->execute();
+    $badge = $stmt->fetch();
     
-    unset($user['password']);
-    // Ajout de valeurs par défaut pour le frontend
-    $user['group'] = 'Aucun';
-    $user['xp'] = 0;
-    $user['level'] = 'Novice';
+    if ($badge) {
+        $stmt = $pdo->prepare("INSERT INTO user_badges (user_id, badge_id) VALUES (?, ?)");
+        $stmt->execute([$userId, $badge['id']]);
+        
+        // Créer une notification de bienvenue
+        $stmt = $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, 'badge')");
+        $stmt->execute([$userId, 'Bienvenue sur CyberSens!', 'Vous avez obtenu votre premier badge : Premier Pas. Commencez votre apprentissage!']);
+    }
+    
+    // Récupérer l'utilisateur créé
+    $stmt = $pdo->prepare("SELECT id, username, email, avatar, xp, level, role, created_at FROM users WHERE id = ?");
+    $stmt->execute([$userId]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Récupérer les badges de l'utilisateur
+    $stmt = $pdo->prepare("SELECT b.* FROM badges b 
+        JOIN user_badges ub ON b.id = ub.badge_id 
+        WHERE ub.user_id = ?");
+    $stmt->execute([$userId]);
+    $user['badges'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode(['success' => true, 'user' => $user]);
+    echo json_encode([
+        'success' => true, 
+        'user' => $user,
+        'message' => 'Compte créé avec succès!'
+    ]);
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'inscription: ' . $e->getMessage()]);
 }

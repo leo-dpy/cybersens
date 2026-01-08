@@ -1,15 +1,86 @@
 <h1>Zone de <span class="text-gradient">Test</span></h1>
 <p class="subtitle">Évaluez vos compétences en temps réel. Chaque erreur est une leçon.</p>
 
-<div class="bento-grid">
-    <div class="card" style="grid-column: span 2;">
-        <h3>Quiz Rapide</h3>
-        <p>10 questions aléatoires pour tester vos connaissances générales.</p>
-        <button class="btn btn-primary" style="margin-top: 1rem;">Lancer le Quiz</button>
+<div class="quiz-intro-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="card" style="border-left: 4px solid var(--primary-color);">
+        <div class="card-icon"><i data-lucide="brain-circuit"></i></div>
+        <h3>Quiz par Cours</h3>
+        <p>Testez vos connaissances sur un cours spécifique. Obtenez 70% minimum pour valider le cours et recevoir un certificat.</p>
     </div>
-    <div class="card">
-        <h3>Mode Survie</h3>
-        <p>Combien de questions pouvez-vous enchaîner sans erreur ?</p>
-        <button class="btn btn-outline" style="margin-top: 1rem;">Tenter sa chance</button>
+    <div class="card" style="border-left: 4px solid var(--secondary-color);">
+        <div class="card-icon"><i data-lucide="award"></i></div>
+        <h3>Gagnez des Récompenses</h3>
+        <p>Chaque quiz réussi vous rapporte des XP, débloque des badges et génère un certificat vérifiable.</p>
     </div>
 </div>
+
+<h2 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+    <i data-lucide="list" style="color: var(--primary-color);"></i>
+    Sélectionnez un cours
+</h2>
+
+<div class="bento-grid quiz-courses-grid" id="quizCoursesGrid">
+    <!-- Courses will be loaded dynamically -->
+    <div class="loading-placeholder" style="grid-column: span 3; text-align: center; padding: 3rem; color: #666;">
+        <i data-lucide="loader" style="animation: spin 1s linear infinite;"></i>
+        <p>Chargement des cours...</p>
+    </div>
+</div>
+
+<style>
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.quiz-courses-grid .card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quiz-courses-grid .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-color);
+}
+
+.quiz-courses-grid .card .questions-count {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--glass-bg);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #999;
+}
+</style>
+
+<script>
+// Load courses for quiz on page load
+(async function() {
+    const courses = await api.getCourses();
+    const grid = document.getElementById('quizCoursesGrid');
+    
+    if (!courses || courses.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: span 3; text-align: center; padding: 3rem;">
+                <i data-lucide="folder-open" style="width: 48px; height: 48px; color: #666; margin-bottom: 1rem;"></i>
+                <p style="color: #666;">Aucun cours disponible pour le moment.</p>
+            </div>
+        `;
+        lucide.createIcons();
+        return;
+    }
+    
+    grid.innerHTML = courses.map(c => `
+        <div class="card" onclick="startQuiz(${c.id})">
+            <div class="card-icon"><i data-lucide="${c.difficulty === 'Facile' ? 'shield' : c.difficulty === 'Intermédiaire' ? 'shield-alert' : 'skull'}"></i></div>
+            <h3>${c.title}</h3>
+            <p>${c.description}</p>
+            <span class="difficulty-badge difficulty-${c.difficulty?.toLowerCase()}">${c.difficulty}</span>
+            <span class="questions-count">${c.nb_questions || '?'} questions</span>
+        </div>
+    `).join('');
+    
+    lucide.createIcons();
+})();
+</script>

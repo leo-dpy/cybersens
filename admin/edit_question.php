@@ -1,16 +1,15 @@
 <?php
 require_once 'auth.php';
-checkAdmin();
+checkCoursesAccess();
 
-// Vérifier l'ID de la question
+$currentUser = getCurrentUser();
+
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: questions.php");
     exit;
 }
 
 $id = (int)$_GET['id'];
-
-// Récupérer la question
 $stmt = $pdo->prepare("SELECT * FROM questions WHERE id = ?");
 $stmt->execute([$id]);
 $question = $stmt->fetch();
@@ -20,9 +19,7 @@ if (!$question) {
     exit;
 }
 
-// Récupérer tous les cours
 $all_courses = $pdo->query("SELECT id, title FROM courses ORDER BY title")->fetchAll();
-
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -34,19 +31,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $option_d = trim($_POST['option_d'] ?? '');
     $correct_answer = strtoupper($_POST['correct_answer']);
     $explanation = trim($_POST['explanation'] ?? '');
+    $difficulty = $_POST['difficulty'] ?? 'Facile';
+    $xp_reward = (int)($_POST['xp_reward'] ?? 10);
     
     if (empty($course_id) || empty($question_text) || empty($option_a) || empty($option_b) || empty($option_c)) {
         $error = "Veuillez remplir tous les champs obligatoires.";
     } else {
         try {
-            $stmt = $pdo->prepare("UPDATE questions SET course_id = ?, question = ?, option_a = ?, option_b = ?, option_c = ?, option_d = ?, correct_answer = ?, explanation = ? WHERE id = ?");
-            $stmt->execute([$course_id, $question_text, $option_a, $option_b, $option_c, $option_d, $correct_answer, $explanation, $id]);
+            $stmt = $pdo->prepare("UPDATE questions SET course_id = ?, question = ?, option_a = ?, option_b = ?, option_c = ?, option_d = ?, correct_answer = ?, explanation = ?, difficulty = ?, xp_reward = ? WHERE id = ?");
+            $stmt->execute([$course_id, $question_text, $option_a, $option_b, $option_c, $option_d, $correct_answer, $explanation, $difficulty, $xp_reward, $id]);
             
             header("Location: questions.php?course_id=" . $course_id . "&msg=updated");
             exit;
             
         } catch (PDOException $e) {
-            $error = "Erreur lors de la mise à jour : " . $e->getMessage();
+            $error = "Erreur : " . $e->getMessage();
         }
     }
 }
@@ -56,172 +55,166 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier la Question - Admin CyberSens</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <title>Modifier Question - Admin CyberSens</title>
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="admin-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .option-group {
+            display: flex;
+            align-items: stretch;
+            margin-bottom: 1rem;
+        }
+        .option-radio-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-right: none;
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+            cursor: pointer;
+        }
+        .option-radio-label:has(input:checked) {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .option-input {
+            flex: 1;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
+        }
+    </style>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
+    <div class="bg-grid"></div>
+    <div class="app-container">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-            <div class="position-sticky pt-3">
-                <div class="sidebar-brand">
-                    <i class="bi bi-shield-lock-fill"></i>
-                    <h4>CyberSens</h4>
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"><i data-lucide="shield-check"></i></div>
+                <span class="logo-text">CyberSens</span>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 0.6rem; margin-left: auto;">ADMIN</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.php" class="nav-item"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+                <a href="cours.php" class="nav-item"><i data-lucide="book-open"></i><span>Gestion Cours</span></a>
+                <a href="questions.php" class="nav-item active"><i data-lucide="help-circle"></i><span>Banque Questions</span></a>
+                <a href="users.php" class="nav-item"><i data-lucide="users"></i><span>Utilisateurs</span></a>
+                <div class="nav-divider"></div>
+                <a href="../index.html" class="nav-item"><i data-lucide="arrow-left"></i><span>Retour au site</span></a>
+            </div>
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar"><?php echo strtoupper(substr($currentUser['username'], 0, 1)); ?></div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name"><?php echo htmlspecialchars($currentUser['username']); ?></div>
+                    <div class="sidebar-user-role"><?php echo getRoleName($currentUser['role']); ?></div>
                 </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="cours.php">
-                            <i class="bi bi-book"></i> Cours
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="questions.php">
-                            <i class="bi bi-question-circle"></i> Questions
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="users.php">
-                            <i class="bi bi-people"></i> Utilisateurs
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link back-link" href="../index.html">
-                            <i class="bi bi-arrow-left"></i> Retour au site
-                        </a>
-                    </li>
-                </ul>
             </div>
         </nav>
 
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 fw-bold">Modifier la Question #<?php echo $id; ?></h1>
-                <a href="questions.php?course_id=<?php echo $question['course_id']; ?>" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i> Retour
-                </a>
+        <main class="main-content">
+            <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h1>Modifier Question #<?php echo $id; ?></h1>
+                    <p class="subtitle">Mise à jour du contenu.</p>
+                </div>
+                <a href="questions.php" class="btn btn-outline"><i data-lucide="arrow-left"></i> Retour</a>
             </div>
 
             <?php if($error): ?>
-                <div class="alert alert-danger d-flex align-items-center" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <div><?php echo $error; ?></div>
-                </div>
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i data-lucide="alert-circle"></i> <?php echo $error; ?>
+            </div>
             <?php endif; ?>
 
-            <div class="row g-4">
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-body p-4">
-                            <h5 class="fw-bold mb-4"><i class="bi bi-question-circle me-2"></i>Informations de la question</h5>
-                            <form method="POST">
-                                <div class="mb-3">
-                                    <label class="form-label fw-medium">Cours associé <span class="text-danger">*</span></label>
-                                    <select name="course_id" class="form-select" required>
-                                        <?php foreach($all_courses as $c): ?>
-                                            <option value="<?php echo $c['id']; ?>" <?php echo $question['course_id'] == $c['id'] ? 'selected' : ''; ?>>
-                                                <?php echo htmlspecialchars($c['title']); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label fw-medium">Question <span class="text-danger">*</span></label>
-                                    <textarea name="question" class="form-control" rows="3" required><?php echo htmlspecialchars($question['question']); ?></textarea>
-                                </div>
-                                
-                                <hr class="my-4" style="border-color: var(--glass-border);">
-                                <h6 class="mb-3 fw-bold text-uppercase small" style="color: var(--primary-color);"><i class="bi bi-list-check me-2"></i>Options de réponse</h6>
-                                
-                                <div class="mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <input type="radio" name="correct_answer" value="A" class="form-check-input mt-0" required <?php echo $question['correct_answer'] == 'A' ? 'checked' : ''; ?>>
-                                        </span>
-                                        <span class="input-group-text fw-bold">A</span>
-                                        <input type="text" name="option_a" class="form-control" required
-                                               value="<?php echo htmlspecialchars($question['option_a']); ?>">
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <input type="radio" name="correct_answer" value="B" class="form-check-input mt-0" <?php echo $question['correct_answer'] == 'B' ? 'checked' : ''; ?>>
-                                        </span>
-                                        <span class="input-group-text fw-bold">B</span>
-                                        <input type="text" name="option_b" class="form-control" required
-                                               value="<?php echo htmlspecialchars($question['option_b']); ?>">
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <input type="radio" name="correct_answer" value="C" class="form-check-input mt-0" <?php echo $question['correct_answer'] == 'C' ? 'checked' : ''; ?>>
-                                        </span>
-                                        <span class="input-group-text fw-bold">C</span>
-                                        <input type="text" name="option_c" class="form-control" required
-                                               value="<?php echo htmlspecialchars($question['option_c']); ?>">
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <input type="radio" name="correct_answer" value="D" class="form-check-input mt-0" <?php echo $question['correct_answer'] == 'D' ? 'checked' : ''; ?>>
-                                        </span>
-                                        <span class="input-group-text fw-bold">D</span>
-                                        <input type="text" name="option_d" class="form-control"
-                                               value="<?php echo htmlspecialchars($question['option_d'] ?? ''); ?>" placeholder="Option D (optionnel)">
-                                    </div>
-                                </div>
-                                
-                                <hr class="my-4" style="border-color: var(--glass-border);">
-                                
-                                <div class="mb-4">
-                                    <label class="form-label fw-medium">Explication (optionnel)</label>
-                                    <textarea name="explanation" class="form-control" rows="2"><?php echo htmlspecialchars($question['explanation'] ?? ''); ?></textarea>
-                                </div>
-                                
-                                <div class="d-grid d-md-flex justify-content-md-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-check-circle me-2"></i> Enregistrer les modifications
-                                    </button>
-                                </div>
-                            </form>
+            <form method="POST">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    
+                    <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label class="form-label">Cours associé</label>
+                            <select name="course_id" class="form-input" required>
+                                <?php foreach($all_courses as $c): ?>
+                                <option value="<?php echo $c['id']; ?>" <?php echo $question['course_id'] == $c['id'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($c['title']); ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Énoncé de la question</label>
+                            <textarea name="question" class="form-input" rows="3" required><?php echo htmlspecialchars($question['question']); ?></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Réponses (Cochez la bonne réponse)</label>
+                            
+                            <div class="option-group">
+                                <label class="option-radio-label">
+                                    <input type="radio" name="correct_answer" value="A" <?php echo $question['correct_answer'] == 'A' ? 'checked' : ''; ?>>
+                                    <span style="font-weight: bold; margin-left: 0.5rem;">A</span>
+                                </label>
+                                <input type="text" name="option_a" class="form-input option-input" required value="<?php echo htmlspecialchars($question['option_a']); ?>">
+                            </div>
+
+                            <div class="option-group">
+                                <label class="option-radio-label">
+                                    <input type="radio" name="correct_answer" value="B" <?php echo $question['correct_answer'] == 'B' ? 'checked' : ''; ?>>
+                                    <span style="font-weight: bold; margin-left: 0.5rem;">B</span>
+                                </label>
+                                <input type="text" name="option_b" class="form-input option-input" required value="<?php echo htmlspecialchars($question['option_b']); ?>">
+                            </div>
+
+                            <div class="option-group">
+                                <label class="option-radio-label">
+                                    <input type="radio" name="correct_answer" value="C" <?php echo $question['correct_answer'] == 'C' ? 'checked' : ''; ?>>
+                                    <span style="font-weight: bold; margin-left: 0.5rem;">C</span>
+                                </label>
+                                <input type="text" name="option_c" class="form-input option-input" required value="<?php echo htmlspecialchars($question['option_c']); ?>">
+                            </div>
+
+                            <div class="option-group">
+                                <label class="option-radio-label">
+                                    <input type="radio" name="correct_answer" value="D" <?php echo $question['correct_answer'] == 'D' ? 'checked' : ''; ?>>
+                                    <span style="font-weight: bold; margin-left: 0.5rem;">D</span>
+                                </label>
+                                <input type="text" name="option_d" class="form-input option-input" value="<?php echo htmlspecialchars($question['option_d'] ?? ''); ?>" placeholder="Optionnelle">
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="col-lg-4">
-                    <div class="card" style="background: rgba(0, 243, 255, 0.1); border-color: rgba(0, 243, 255, 0.3);">
-                        <div class="card-body p-4">
-                            <h5 class="fw-bold mb-3" style="color: var(--primary-color);"><i class="bi bi-lightbulb me-2"></i>Rappel</h5>
-                            <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
-                                <li><i class="bi bi-check2 me-2" style="color: var(--primary-color);"></i>Cochez le bouton radio à côté de la bonne réponse</li>
-                                <li><i class="bi bi-check2 me-2" style="color: var(--primary-color);"></i>Une seule réponse correcte par question</li>
-                                <li><i class="bi bi-check2 me-2" style="color: var(--primary-color);"></i>L'option D est optionnelle</li>
-                                <li><i class="bi bi-check2 me-2" style="color: var(--primary-color);"></i>L'explication s'affiche après le quiz</li>
-                            </ul>
+
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <h3>Détails</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Difficulté</label>
+                                <select name="difficulty" class="form-input">
+                                    <option value="Facile" <?php echo ($question['difficulty'] ?? 'Facile') == 'Facile' ? 'selected' : ''; ?>>Facile (10 XP)</option>
+                                    <option value="Intermédiaire" <?php echo ($question['difficulty'] ?? '') == 'Intermédiaire' ? 'selected' : ''; ?>>Intermédiaire (15 XP)</option>
+                                    <option value="Difficile" <?php echo ($question['difficulty'] ?? '') == 'Difficile' ? 'selected' : ''; ?>>Difficile (30 XP)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Explication (Feedback)</label>
+                                <textarea name="explanation" class="form-input" rows="4"><?php echo htmlspecialchars($question['explanation'] ?? ''); ?></textarea>
+                            </div>
                         </div>
+
+                        <button type="submit" class="btn btn-primary" style="justify-content: center; width: 100%;">
+                            <i data-lucide="save"></i> Enregistrer
+                        </button>
                     </div>
+
                 </div>
-            </div>
+            </form>
         </main>
     </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

@@ -41,6 +41,7 @@ try {
             $user_id = (int)($data['user_id'] ?? 0);
             $course_id = (int)($data['course_id'] ?? 0);
             $completed = (int)($data['completed'] ?? 0);
+            $score = isset($data['score']) ? (int)$data['score'] : null;
             
             if (!$user_id || !$course_id) {
                 echo json_encode(['success' => false, 'message' => 'user_id et course_id requis']);
@@ -48,18 +49,26 @@ try {
             }
             
             // Vérifier si l'entrée existe
-            $stmt = $pdo->prepare("SELECT id FROM progression WHERE user_id = ? AND course_id = ?");
+            $stmt = $pdo->prepare("SELECT id, best_score, attempts FROM progression WHERE user_id = ? AND course_id = ?");
             $stmt->execute([$user_id, $course_id]);
-            $existing = $stmt->fetch();
+            $existing = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if ($existing) {
                 // Mettre à jour
-                $stmt = $pdo->prepare("UPDATE progression SET is_completed = ?, completed_at = NOW() WHERE user_id = ? AND course_id = ?");
-                $stmt->execute([$completed, $user_id, $course_id]);
+                $best_score = $existing['best_score'] ?? 0;
+                $attempts = ($existing['attempts'] ?? 0) + 1;
+                
+                // Mettre à jour le best_score si le nouveau score est meilleur
+                if ($score !== null && $score > $best_score) {
+                    $best_score = $score;
+                }
+                
+                $stmt = $pdo->prepare("UPDATE progression SET is_completed = ?, score = COALESCE(?, score), best_score = ?, attempts = ?, completed_at = NOW() WHERE user_id = ? AND course_id = ?");
+                $stmt->execute([$completed, $score, $best_score, $attempts, $user_id, $course_id]);
             } else {
                 // Créer
-                $stmt = $pdo->prepare("INSERT INTO progression (user_id, course_id, is_completed, completed_at) VALUES (?, ?, ?, NOW())");
-                $stmt->execute([$user_id, $course_id, $completed]);
+                $stmt = $pdo->prepare("INSERT INTO progression (user_id, course_id, is_completed, score, best_score, attempts, completed_at) VALUES (?, ?, ?, ?, ?, 1, NOW())");
+                $stmt->execute([$user_id, $course_id, $completed, $score ?? 0, $score ?? 0]);
             }
             
             echo json_encode(['success' => true, 'message' => 'Progression enregistrée']);

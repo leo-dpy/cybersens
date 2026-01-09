@@ -43,7 +43,7 @@ function getXpForNextLevel(level) {
 }
 
 class ApiClient {
-    
+
     async login(email, password) {
         try {
             const response = await fetch(`${API_URL}/login.php`, {
@@ -148,9 +148,15 @@ class ApiClient {
     // ==========================================
     // COURSES API
     // ==========================================
-    async getCourses() {
+    async getCourses(userId = null, userRole = null) {
         try {
-            const response = await fetch(`${API_URL}/courses.php`);
+            let url = `${API_URL}/courses.php`;
+            const params = [];
+            if (userId) params.push(`user_id=${userId}`);
+            if (userRole) params.push(`role=${userRole}`);
+            if (params.length > 0) url += '?' + params.join('&');
+
+            const response = await fetch(url);
             const data = await response.json();
             return data.success ? data.courses : [];
         } catch (e) {
@@ -297,12 +303,16 @@ class ApiClient {
     // ==========================================
     // PROGRESSION API
     // ==========================================
-    async saveProgression(userId, courseId, completed) {
+    async saveProgression(userId, courseId, completed, score = null) {
         try {
+            const data = { user_id: userId, course_id: courseId, completed };
+            if (score !== null) {
+                data.score = score;
+            }
             const response = await fetch(`${API_URL}/progression.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: userId, course_id: courseId, completed })
+                body: JSON.stringify(data)
             });
             return await response.json();
         } catch (e) {
@@ -415,10 +425,10 @@ class ApiClient {
             const response = await fetch(`${API_URL}/phishing.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    action: 'answer', 
-                    user_id: userId, 
-                    scenario_id: scenarioId, 
+                body: JSON.stringify({
+                    action: 'answer',
+                    user_id: userId,
+                    scenario_id: scenarioId,
                     is_phishing: isPhishing,
                     time_taken: timeTaken
                 })
@@ -449,7 +459,7 @@ class ApiClient {
             if (category) params.push(`category=${category}`);
             if (difficulty) params.push(`difficulty=${difficulty}`);
             if (params.length) url += '?' + params.join('&');
-            
+
             const response = await fetch(url);
             const data = await response.json();
             return data.success ? data : { resources: [], grouped: {} };
@@ -488,10 +498,29 @@ class ApiClient {
             const response = await fetch(`${API_URL}/notifications.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    action: 'mark_read', 
-                    user_id: userId, 
-                    notification_id: notificationId 
+                body: JSON.stringify({
+                    action: 'mark_read',
+                    user_id: userId,
+                    notification_id: notificationId
+                })
+            });
+            return await response.json();
+        } catch (e) {
+            return { success: false };
+        }
+    }
+
+    async createNotification(userId, title, message, type = 'success', link = null) {
+        try {
+            const response = await fetch(`${API_URL}/notifications.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: userId,
+                    title: title,
+                    message: message,
+                    type: type,
+                    link: link
                 })
             });
             return await response.json();
@@ -503,6 +532,317 @@ class ApiClient {
 
 const api = new ApiClient();
 
+// ==========================================
+// TOAST NOTIFICATIONS SYSTEM
+// ==========================================
+function showToast(title, message, type = 'success', duration = 5000) {
+    // Créer le container s'il n'existe pas
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+        `;
+        document.body.appendChild(container);
+    }
+
+    // Icône selon le type
+    const icons = {
+        success: 'check-circle',
+        unlock: 'unlock',
+        achievement: 'trophy',
+        levelup: 'trending-up',
+        info: 'info',
+        warning: 'alert-triangle',
+        error: 'x-circle'
+    };
+
+    // Couleurs selon le type
+    const colors = {
+        success: '#10b981',
+        unlock: '#00f3ff',
+        achievement: '#ffe600',
+        levelup: '#bc13fe',
+        info: '#3b82f6',
+        warning: '#f59e0b',
+        error: '#ef4444'
+    };
+
+    const icon = icons[type] || icons.info;
+    const color = colors[type] || colors.info;
+
+    // Créer le toast
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.style.cssText = `
+        background: rgba(20, 20, 20, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid ${color}40;
+        border-left: 4px solid ${color};
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 20px ${color}20;
+        animation: slideInRight 0.4s ease-out;
+        cursor: pointer;
+        transition: transform 0.2s, opacity 0.3s;
+    `;
+
+    toast.innerHTML = `
+        <div style="color: ${color}; flex-shrink: 0;">
+            <i data-lucide="${icon}" style="width: 24px; height: 24px;"></i>
+        </div>
+        <div style="flex: 1;">
+            <div style="font-weight: 600; color: #fff; margin-bottom: 4px;">${title}</div>
+            <div style="font-size: 0.9rem; color: #aaa; line-height: 1.4;">${message}</div>
+        </div>
+        <button style="background: none; border: none; color: #666; cursor: pointer; padding: 0; flex-shrink: 0;" onclick="this.parentElement.remove()">
+            <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+    `;
+
+    // Ajouter au container
+    container.appendChild(toast);
+    lucide.createIcons();
+
+    // Hover effect
+    toast.addEventListener('mouseenter', () => {
+        toast.style.transform = 'translateX(-5px)';
+    });
+    toast.addEventListener('mouseleave', () => {
+        toast.style.transform = 'translateX(0)';
+    });
+
+    // Auto-dismiss
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+
+    // Click to dismiss
+    toast.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'BUTTON') {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => toast.remove(), 300);
+        }
+    });
+}
+
+// Ajouter les styles d'animation au document
+const toastStyles = document.createElement('style');
+toastStyles.textContent = `
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+`;
+document.head.appendChild(toastStyles);
+
+// ==========================================
+// NOTIFICATIONS PANEL SYSTEM
+// ==========================================
+let notificationsOpen = false;
+
+async function loadNotifications() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const notifBtn = document.getElementById('notifications-btn');
+    const badge = document.getElementById('notification-badge');
+
+    if (!currentUser) {
+        // Ne pas masquer le bouton, juste arrêter la fonction
+        // if (notifBtn) notifBtn.style.display = 'none'; 
+        return;
+    }
+
+    // Afficher le bouton
+    if (notifBtn) notifBtn.style.display = 'flex';
+
+    // Charger les notifications
+    const data = await api.getNotifications(currentUser.id);
+
+    // Mettre à jour le badge
+    if (badge) {
+        if (data.unread_count > 0) {
+            badge.textContent = data.unread_count > 9 ? '9+' : data.unread_count;
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    // Mettre à jour la liste
+    const list = document.getElementById('notifications-list');
+    if (list) {
+        if (data.notifications && data.notifications.length > 0) {
+            list.innerHTML = data.notifications.map(n => {
+                const iconType = n.type || 'info';
+                const icons = {
+                    success: 'check-circle',
+                    unlock: 'unlock',
+                    achievement: 'trophy',
+                    levelup: 'trending-up',
+                    info: 'info',
+                    warning: 'alert-triangle'
+                };
+                const icon = icons[iconType] || 'bell';
+                const timeAgo = getTimeAgo(new Date(n.created_at));
+
+                return `
+                    <div class="notification-item ${n.is_read ? '' : 'unread'}" data-id="${n.id}">
+                        <div class="notification-icon ${iconType}">
+                            <i data-lucide="${icon}" style="width: 18px; height: 18px;"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">${n.title}</div>
+                            <div class="notification-message">${n.message}</div>
+                            <div class="notification-time">${timeAgo}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        } else {
+            list.innerHTML = `
+                <div class="notifications-empty">
+                    <i data-lucide="bell-off"></i>
+                    <p>Aucune notification</p>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+    }
+}
+
+function getTimeAgo(date) {
+    const now = new Date();
+    const diff = Math.floor((now - date) / 1000);
+
+    if (diff < 60) return 'À l\'instant';
+    if (diff < 3600) return `Il y a ${Math.floor(diff / 60)} min`;
+    if (diff < 86400) return `Il y a ${Math.floor(diff / 3600)} h`;
+    if (diff < 604800) return `Il y a ${Math.floor(diff / 86400)} j`;
+    return date.toLocaleDateString('fr-FR');
+}
+
+function toggleNotificationsPanel() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (!currentUser) {
+        showToast('Accès restreint', 'Veuillez vous connecter pour voir vos notifications.', 'warning');
+        return;
+    }
+
+    const panel = document.getElementById('notifications-panel');
+    notificationsOpen = !notificationsOpen;
+
+    if (panel) {
+        panel.style.display = notificationsOpen ? 'block' : 'none';
+        if (notificationsOpen) {
+            loadNotifications();
+        }
+    }
+}
+
+async function markAllNotificationsRead() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (!currentUser) return;
+
+    await api.markNotificationsRead(currentUser.id);
+    loadNotifications();
+    showToast('Notifications', 'Toutes les notifications ont été marquées comme lues', 'info', 3000);
+}
+
+// Fermer le panneau en cliquant ailleurs
+document.addEventListener('click', (e) => {
+    const panel = document.getElementById('notifications-panel');
+    const btn = document.getElementById('notifications-btn');
+
+    if (notificationsOpen && panel && btn) {
+        if (!panel.contains(e.target) && !btn.contains(e.target)) {
+            notificationsOpen = false;
+            panel.style.display = 'none';
+        }
+    }
+});
+
+// ==========================================
+// QUIZ VIEW LOGIC
+// ==========================================
+async function initQuizView() {
+    const grid = document.getElementById('quizCoursesGrid');
+    if (!grid) return;
+
+    // Récupérer l'utilisateur connecté
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const userId = currentUser ? currentUser.id : null;
+    const userRole = currentUser ? currentUser.role : null;
+
+    // Charger les cours
+    const courses = await api.getCourses(userId, userRole);
+
+    if (!courses || courses.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: span 3; text-align: center; padding: 3rem;">
+                <i data-lucide="folder-open" style="width: 48px; height: 48px; color: #666; margin-bottom: 1rem;"></i>
+                <p style="color: #666;">Aucun cours disponible pour le moment.</p>
+            </div>
+        `;
+        lucide.createIcons();
+        return;
+    }
+
+    // Générer le HTML
+    grid.innerHTML = courses.map(c => {
+        const isLocked = c.is_locked === true || c.is_locked === 1;
+        const isCompleted = c.is_completed === true || c.is_completed === 1;
+        const isRead = c.is_read === true || c.is_read === 1;
+
+        // Déterminer l'icône selon la difficulté
+        const icon = c.difficulty === 'Facile' ? 'shield' :
+            c.difficulty === 'Intermédiaire' ? 'shield-alert' : 'skull';
+
+        return `
+        <div class="card ${isLocked ? 'card-locked' : ''} ${isCompleted ? 'card-completed' : ''} ${isRead ? 'card-read' : ''}" 
+             ${isLocked ? '' : `onclick="startQuiz(${c.id})"`}>
+            
+            ${isLocked ? '<div class="lock-overlay"><i data-lucide="lock" class="lock-icon"></i><span>Terminez le module précédent</span></div>' : ''}
+            ${isCompleted ? '<div class="completed-badge" title="Cours terminé"><i data-lucide="check-circle"></i></div>' : ''}
+            ${isRead && !isCompleted ? '<div class="read-badge" title="Cours lu"><i data-lucide="book-open"></i></div>' : ''}
+            
+            <div class="card-icon"><i data-lucide="${icon}"></i></div>
+            <h3>${c.title}</h3>
+            <p>${c.description}</p>
+            
+            <span class="difficulty-badge difficulty-${c.difficulty?.toLowerCase()}">${c.difficulty}</span>
+            <span class="questions-count">${c.nb_questions || '?'} questions</span>
+            
+            ${isCompleted ? '<span class="status-badge status-completed"><i data-lucide="trophy" style="width:14px;height:14px;"></i> Terminé</span>' : ''}
+            ${isRead && !isCompleted ? '<span class="status-badge status-read"><i data-lucide="book-open" style="width:14px;height:14px;"></i> Lu</span>' : ''}
+            ${isLocked ? '<span class="status-badge status-locked"><i data-lucide="lock" style="width:14px;height:14px;"></i> Verrouillé</span>' : ''}
+        </div>
+    `}).join('');
+
+    // Initialiser les icônes
+    lucide.createIcons();
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Check if running on file:// protocol
     if (window.location.protocol === 'file:') {
@@ -511,6 +851,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize Lucide Icons
     lucide.createIcons();
+
+    // Setup notifications button
+    const notifBtn = document.getElementById('notifications-btn');
+    if (notifBtn) {
+        notifBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleNotificationsPanel();
+        });
+    }
+
+    // Load notifications for logged in user
+    loadNotifications();
 
     const contentArea = document.getElementById('content-area');
     const navItems = document.querySelectorAll('.nav-item');
@@ -521,20 +873,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadTemplate(viewId) {
         try {
-            const response = await fetch(`templates/${viewId}.html`);
+            const response = await fetch(`templates/${viewId}.html?t=${Date.now()}`);
             if (!response.ok) throw new Error('Template not found');
             const html = await response.text();
             contentArea.innerHTML = html;
-            
+
             // Re-initialize icons for new content
             lucide.createIcons();
-            
+
             // Initialize specific view logic
             if (viewId === 'profil') initAuth();
             if (viewId === 'leaderboard') loadLeaderboards();
+
+            // On garde l'effet tilt pour le quiz
             if (viewId === 'home' || viewId === 'cours' || viewId === 'quiz') initTiltEffect();
+
             if (viewId === 'admin') initAdminPanel();
             if (viewId === 'cours') loadCoursesView();
+
+            // APPEL DE LA FONCTION POUR CHARGER LE QUIZ
+            if (viewId === 'quiz') initQuizView();
+
             if (viewId === 'phishing') initPhishingView();
             if (viewId === 'ressources') initResourcesView();
 
@@ -552,23 +911,72 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Add Click Listeners
     navItems.forEach(item => {
-        item.addEventListener('click', () => {
+        item.addEventListener('click', (e) => {
+            // Allow default navigation for links with href (e.g. Admin)
+            if (item.tagName === 'A' && item.getAttribute('href')) {
+                return;
+            }
+
             const viewId = item.dataset.view;
-            loadTemplate(viewId);
+            if (viewId) {
+                loadTemplate(viewId);
+            }
         });
     });
 
     // Check if user is already logged in and show admin nav if applicable
     const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
-    if (sessionUser && sessionUser.role === 'admin') {
-        const adminNavItem = document.querySelector('.nav-item.admin-only');
-        if (adminNavItem) {
-            adminNavItem.style.display = 'flex';
+    if (sessionUser) {
+        // Show admin nav for admin roles
+        if (['admin', 'superadmin', 'creator'].includes(sessionUser.role)) {
+            const adminNavItem = document.querySelector('.nav-item.admin-only');
+            if (adminNavItem) {
+                adminNavItem.style.display = 'flex';
+            }
         }
+
+        // Update sidebar user info
+        updateSidebarUser(sessionUser);
     }
 
     // Load Home by default
     loadTemplate('home');
+
+
+    // ==========================================
+    // SIDEBAR USER UPDATE
+    // ==========================================
+
+    function updateSidebarUser(user) {
+        const sidebarUser = document.getElementById('sidebar-user');
+        const sidebarAvatar = document.getElementById('sidebar-avatar');
+        const sidebarUsername = document.getElementById('sidebar-username');
+        const sidebarRole = document.getElementById('sidebar-role');
+
+        if (sidebarUser && user) {
+            sidebarUser.style.display = 'flex';
+            if (sidebarAvatar) {
+                sidebarAvatar.textContent = user.username ? user.username.charAt(0).toUpperCase() : 'U';
+            }
+            if (sidebarUsername) {
+                sidebarUsername.textContent = user.username || 'Utilisateur';
+            }
+            if (sidebarRole) {
+                const roleLabels = {
+                    'user': 'Membre',
+                    'creator': 'Créateur',
+                    'admin': 'Administrateur',
+                    'superadmin': 'Super Admin'
+                };
+                sidebarRole.textContent = roleLabels[user.role] || 'Membre';
+            }
+        } else if (sidebarUser) {
+            sidebarUser.style.display = 'none';
+        }
+    }
+
+    // Make function globally accessible
+    window.updateSidebarUser = updateSidebarUser;
 
 
     // ==========================================
@@ -582,10 +990,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                
+
                 const rotateX = ((y - centerY) / centerY) * -5;
                 const rotateY = ((x - centerX) / centerX) * 5;
 
@@ -598,40 +1006,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Modal Logic (Global)
-    const modalOverlay = document.getElementById('modal-overlay');
-    const modal = document.getElementById('modal-bp');
-    const closeBtn = document.getElementById('close-modal-btn');
-    const ackBtn = document.getElementById('ack-btn');
-    const openBtn = document.getElementById('open-bp-btn');
+    // Old modal logic removed (replaced by improved version at end of file)
 
-    function openModal() {
-        modalOverlay.classList.add('active');
-        setTimeout(() => modal.classList.add('active'), 10);
-    }
-
-    function closeModal() {
-        modal.classList.remove('active');
-        setTimeout(() => modalOverlay.classList.remove('active'), 300);
-    }
-
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (ackBtn) ackBtn.addEventListener('click', closeModal);
-    if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
-    if (openBtn) openBtn.addEventListener('click', openModal);
-
-    // Auto-open logic
-    setTimeout(openModal, 500);
 
 
     // ==========================================
     // AUTHENTICATION LOGIC
     // ==========================================
-    
+
     function initAuth() {
         const authContainer = document.getElementById('auth-container');
         const userDashboard = document.getElementById('user-dashboard');
-        
+
         const loginView = document.getElementById('login-view');
         const signupView = document.getElementById('signup-view');
         const loginToggleContent = document.getElementById('login-toggle-content');
@@ -643,20 +1029,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateUI(sessionUser);
         }
 
-        // Toggle Forms
-        document.getElementById('show-signup-btn')?.addEventListener('click', () => {
-            loginView.style.display = 'none';
-            signupView.style.display = 'block';
-            loginToggleContent.style.display = 'none';
-            signupToggleContent.style.display = 'block';
-        });
+        // Toggle Views
+        const showSignupBtn = document.getElementById('show-signup-btn');
+        const showLoginBtn = document.getElementById('show-login-btn');
 
-        document.getElementById('show-login-btn')?.addEventListener('click', () => {
-            signupView.style.display = 'none';
-            loginView.style.display = 'block';
-            signupToggleContent.style.display = 'none';
-            loginToggleContent.style.display = 'block';
-        });
+        if (showSignupBtn) {
+            showSignupBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginView.style.display = 'none';
+                signupView.style.display = 'block';
+            });
+        }
+
+        if (showLoginBtn) {
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                signupView.style.display = 'none';
+                loginView.style.display = 'block';
+            });
+        }
 
         // Handle Login
         document.getElementById('login-form')?.addEventListener('submit', async (e) => {
@@ -698,17 +1089,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Handle Logout
         document.getElementById('logout-btn')?.addEventListener('click', () => {
             sessionStorage.removeItem('currentUser');
+            // Hide admin nav
+            const adminNavItem = document.querySelector('.nav-item.admin-only');
+            if (adminNavItem) adminNavItem.style.display = 'none';
+            // Hide sidebar user
+            if (typeof window.updateSidebarUser === 'function') {
+                window.updateSidebarUser(null);
+            }
             loadTemplate('profil'); // Reload profile view to reset
         });
 
         function loginUser(user) {
             sessionStorage.setItem('currentUser', JSON.stringify(user));
             updateUI(user);
+            // Charger les notifications
+            loadNotifications();
         }
 
         function updateUI(user) {
             if (!authContainer) return;
-            
+
             // Hide Auth, Show Dashboard
             authContainer.style.display = 'none';
             userDashboard.style.display = 'block';
@@ -720,7 +1120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const xp = parseInt(user.xp) || 0;
             document.getElementById('user-level-display').textContent = getLevelName(levelNum);
             document.getElementById('user-xp-display').textContent = xp;
-            
+
             // Update XP Progress Bar
             updateXpProgressBar(xp, levelNum);
 
@@ -728,42 +1128,50 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadUserBadges(user.id);
             loadUserCertificates(user.id);
 
-            // Admin Check - Show admin link in sidebar only
-            if (user.role === 'admin') {
+            // Load notifications
+            loadNotifications();
+
+            // Admin Check - Show admin link in sidebar for admin roles
+            if (user.role === 'admin' || user.role === 'creator' || user.role === 'superadmin') {
                 const adminNavItem = document.querySelector('.nav-item.admin-only');
                 if (adminNavItem) {
                     adminNavItem.style.display = 'flex';
                 }
             }
+
+            // Update sidebar user info
+            if (typeof window.updateSidebarUser === 'function') {
+                window.updateSidebarUser(user);
+            }
         }
-        
+
         function updateXpProgressBar(xp, level) {
             const xpCurrentEl = document.getElementById('xp-current-value');
             const xpNextEl = document.getElementById('xp-next-value');
             const progressFill = document.getElementById('xp-progress-fill');
             const currentBadge = document.getElementById('current-level-badge');
             const nextBadge = document.getElementById('next-level-badge');
-            
+
             if (!xpCurrentEl || !progressFill) return;
-            
+
             const xpForNext = getXpForNextLevel(level);
             const xpForCurrent = level > 1 ? getXpForNextLevel(level - 1) : 0;
             const xpInLevel = xp - xpForCurrent;
             const xpNeeded = xpForNext - xpForCurrent;
             const progress = Math.min((xpInLevel / xpNeeded) * 100, 100);
-            
+
             // Animate XP counter
             let currentXp = 0;
             const targetXp = xp;
             const duration = 1000;
             const startTime = performance.now();
-            
+
             function animateXp(currentTime) {
                 const elapsed = currentTime - startTime;
                 const percent = Math.min(elapsed / duration, 1);
                 currentXp = Math.floor(percent * targetXp);
                 xpCurrentEl.textContent = currentXp;
-                
+
                 if (percent < 1) {
                     requestAnimationFrame(animateXp);
                 } else {
@@ -771,18 +1179,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
             requestAnimationFrame(animateXp);
-            
+
             xpNextEl.textContent = xpForNext === Infinity ? '∞' : xpForNext;
-            
+
             // Animate progress bar
             setTimeout(() => {
                 progressFill.style.width = `${progress}%`;
             }, 100);
-            
+
             // Update level badges
             currentBadge.textContent = `Niv. ${level}`;
             nextBadge.textContent = level >= 7 ? 'MAX' : `Niv. ${level + 1}`;
-            
+
             if (level >= 7) {
                 nextBadge.style.background = 'linear-gradient(135deg, gold, orange)';
                 nextBadge.style.color = '#000';
@@ -795,27 +1203,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             const badgesGrid = document.getElementById('user-badges-grid');
             const badgeCountEl = document.getElementById('user-badges-display');
             const coursesCountEl = document.getElementById('user-courses-display');
-            
+
             if (badgeCountEl) {
                 badgeCountEl.textContent = badgesData.unlocked?.length || 0;
             }
-            
+
             // Get progression for courses count
             const progression = await api.getProgression(userId);
             if (coursesCountEl) {
                 coursesCountEl.textContent = progression.length || 0;
             }
-            
+
             if (!badgesGrid) return;
-            
+
             if (!badgesData.badges || badgesData.badges.length === 0) {
                 badgesGrid.innerHTML = '<div class="no-data"><i data-lucide="award"></i><p>Aucun badge disponible</p></div>';
                 lucide.createIcons();
                 return;
             }
-            
+
             const unlockedIds = badgesData.unlocked?.map(b => b.badge_id) || [];
-            
+
             badgesGrid.innerHTML = badgesData.badges.map(b => {
                 const isUnlocked = unlockedIds.includes(b.id);
                 return `
@@ -827,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 `;
             }).join('');
-            
+
             lucide.createIcons();
         }
 
@@ -835,19 +1243,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const certificates = await api.getCertificates(userId);
             const certsGrid = document.getElementById('user-certificates-grid');
             const certCountEl = document.getElementById('user-certs-display');
-            
+
             if (certCountEl) {
                 certCountEl.textContent = certificates.length || 0;
             }
-            
+
             if (!certsGrid) return;
-            
+
             if (!certificates || certificates.length === 0) {
                 certsGrid.innerHTML = '<div class="no-data"><i data-lucide="scroll"></i><p>Complétez des cours avec 70%+ pour obtenir des certificats</p></div>';
                 lucide.createIcons();
                 return;
             }
-            
+
             certsGrid.innerHTML = certificates.map(c => `
                 <div class="certificate-item">
                     <span class="cert-score">${c.score}%</span>
@@ -856,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="cert-date">Obtenu le ${new Date(c.issued_at).toLocaleDateString('fr-FR')}</div>
                 </div>
             `).join('');
-            
+
             lucide.createIcons();
         }
     }
@@ -864,26 +1272,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==========================================
     // LEADERBOARD LOGIC
     // ==========================================
-    
+
     async function loadLeaderboards() {
         const data = await api.getLeaderboard();
-        
+
         const groupTbody = document.getElementById('group-leaderboard-list');
         if (!groupTbody) return;
-        
+
         // Mettre à jour les stats globales
         const totalUsersEl = document.getElementById('lb-total-users');
         const totalXpEl = document.getElementById('lb-total-xp');
-        
+
         if (totalUsersEl && data.stats) {
             totalUsersEl.textContent = data.stats.total_users || 0;
         }
         if (totalXpEl && data.stats) {
             totalXpEl.textContent = (data.stats.total_xp || 0).toLocaleString();
         }
-        
+
         groupTbody.innerHTML = '';
-        
+
         const leaderboard = data.leaderboard || data || [];
 
         if (leaderboard.length === 0) {
@@ -900,7 +1308,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (currentUser && currentUser.id === user.id) {
                     tr.style.background = 'rgba(0, 255, 136, 0.1)';
                 }
-                
+
                 tr.innerHTML = `
                     <td>${rankBadge}</td>
                     <td style="color: var(--primary-color); font-weight: bold;">
@@ -920,7 +1328,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==========================================
     // ADMIN PANEL LOGIC
     // ==========================================
-    
+
     async function initAdminPanel() {
         // Check if user is admin
         const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -1110,31 +1518,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     // COURSES VIEW (Public)
     // ==========================================
     async function loadCoursesView() {
-        const courses = await api.getCourses();
+        // Récupérer l'utilisateur connecté pour le verrouillage
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const userId = currentUser ? currentUser.id : null;
+        const userRole = currentUser ? currentUser.role : null;
+
+        const courses = await api.getCourses(userId, userRole);
         const contentArea = document.getElementById('content-area');
-        
+
         if (courses.length === 0) return;
 
         // Replace static content with dynamic courses
         const bentoGrid = contentArea.querySelector('.bento-grid');
         if (bentoGrid) {
-            bentoGrid.innerHTML = courses.map(c => `
-                <div class="card" data-course-id="${c.id}">
+            bentoGrid.innerHTML = courses.map(c => {
+                const isLocked = c.is_locked === true || c.is_locked === 1;
+                const isCompleted = c.is_completed === true || c.is_completed === 1;
+                const isRead = c.is_read === true || c.is_read === 1;
+
+                return `
+                <div class="card ${isLocked ? 'card-locked' : ''} ${isCompleted ? 'card-completed' : ''} ${isRead ? 'card-read' : ''}" data-course-id="${c.id}">
+                    ${isLocked ? '<div class="lock-overlay"><i data-lucide="lock" class="lock-icon"></i><span>Terminez le module précédent</span></div>' : ''}
+                    ${isCompleted ? '<div class="completed-badge" title="Quiz réussi"><i data-lucide="check-circle"></i></div>' : ''}
+                    ${isRead && !isCompleted ? '<div class="read-badge" title="Cours lu"><i data-lucide="book-open"></i></div>' : ''}
                     <div class="card-icon"><i data-lucide="${getDifficultyIcon(c.difficulty)}"></i></div>
                     <h3>${c.title}</h3>
                     <p>${c.description}</p>
                     <span class="difficulty-badge difficulty-${c.difficulty?.toLowerCase()}">${c.difficulty}</span>
-                    <a href="#" class="card-action" onclick="viewCourse(${c.id}); return false;">Commencer <i data-lucide="play" size="16"></i></a>
+                    ${isLocked
+                        ? '<span class="card-action card-action-locked"><i data-lucide="lock" size="16"></i> Verrouillé</span>'
+                        : `<a href="#" class="card-action" onclick="viewCourse(${c.id}); return false;">${isCompleted ? 'Refaire' : isRead ? 'Continuer' : 'Commencer'} <i data-lucide="play" size="16"></i></a>`
+                    }
                 </div>
-            `).join('');
-            
+            `}).join('');
+
             lucide.createIcons();
             initTiltEffect();
         }
     }
 
     function getDifficultyIcon(difficulty) {
-        switch(difficulty) {
+        switch (difficulty) {
             case 'Facile': return 'shield';
             case 'Intermédiaire': return 'shield-alert';
             case 'Difficile': return 'skull';
@@ -1143,18 +1567,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Make functions globally accessible
-    window.showAddCourseForm = function() {
+    window.showAddCourseForm = function () {
         document.getElementById('course-modal-title').textContent = 'Nouveau Cours';
         document.getElementById('course-form').reset();
         document.getElementById('course-id').value = '';
         document.getElementById('course-modal').style.display = 'flex';
     };
 
-    window.closeCourseModal = function() {
+    window.closeCourseModal = function () {
         document.getElementById('course-modal').style.display = 'none';
     };
 
-    window.showAddQuestionForm = function() {
+    window.showAddQuestionForm = function () {
         document.getElementById('question-modal-title').textContent = 'Nouvelle Question';
         document.getElementById('question-form').reset();
         document.getElementById('question-id').value = '';
@@ -1162,11 +1586,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadAdminQuestions(); // To populate course dropdown
     };
 
-    window.closeQuestionModal = function() {
+    window.closeQuestionModal = function () {
         document.getElementById('question-modal').style.display = 'none';
     };
 
-    window.editCourse = async function(id) {
+    window.editCourse = async function (id) {
         const course = await api.getCourse(id);
         if (!course) return;
 
@@ -1179,7 +1603,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('course-modal').style.display = 'flex';
     };
 
-    window.deleteCourse = async function(id) {
+    window.deleteCourse = async function (id) {
         if (!confirm('Supprimer ce cours et toutes ses questions ?')) return;
         const result = await api.deleteCourse(id);
         if (result.success) {
@@ -1189,7 +1613,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    window.editQuestion = async function(id) {
+    window.editQuestion = async function (id) {
         const questions = await api.getQuestions();
         const question = questions.find(q => q.id == id);
         if (!question) return;
@@ -1207,7 +1631,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('question-modal').style.display = 'flex';
     };
 
-    window.deleteQuestion = async function(id) {
+    window.deleteQuestion = async function (id) {
         if (!confirm('Supprimer cette question ?')) return;
         const result = await api.deleteQuestion(id);
         if (result.success) {
@@ -1217,21 +1641,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    window.toggleAdmin = async function(id) {
+    window.toggleAdmin = async function (id) {
         if (!confirm('Modifier les droits admin de cet utilisateur ?')) return;
         await api.toggleUserAdmin(id);
         loadAdminUsersTable();
     };
 
-    window.deleteUserAdmin = async function(id) {
+    window.deleteUserAdmin = async function (id) {
         if (!confirm('Supprimer cet utilisateur ?')) return;
         await api.deleteUser(id);
         loadAdminUsersTable();
     };
 
-    window.viewCourse = async function(id) {
+    window.viewCourse = async function (id) {
+        // Vérifier si le cours est verrouillé
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const userId = currentUser ? currentUser.id : null;
+        const userRole = currentUser ? currentUser.role : null;
+
+        if (userId) {
+            const courses = await api.getCourses(userId, userRole);
+            const targetCourse = courses.find(c => c.id == id);
+
+            if (targetCourse && (targetCourse.is_locked === true || targetCourse.is_locked === 1)) {
+                alert('Ce module est verrouillé. Veuillez terminer le module précédent avant de continuer.');
+                return;
+            }
+        }
+
         const course = await api.getCourse(id);
         if (!course) return;
+
+        // Marquer le cours comme lu (progression avec completed = 0)
+        if (currentUser) {
+            await api.saveProgression(currentUser.id, id, 0);
+        }
 
         const contentArea = document.getElementById('content-area');
         contentArea.innerHTML = `
@@ -1254,7 +1698,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         lucide.createIcons();
     };
 
-    window.startQuiz = async function(courseId) {
+    window.startQuiz = async function (courseId) {
         const questions = await api.getQuestions(courseId);
         if (questions.length === 0) {
             alert('Aucune question disponible pour ce cours.');
@@ -1262,73 +1706,173 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         let currentQuestion = 0;
-        let score = 0;
+        let userAnswers = new Array(questions.length).fill(null); // Stocker les réponses de l'utilisateur
 
         function renderQuestion() {
             const q = questions[currentQuestion];
             const questionText = q.question || q.question_text;
             const correctAnswer = (q.correct_answer || q.correct_option || '').toUpperCase();
+            const explanation = q.explanation || '';
+            const difficulty = q.difficulty || 'Facile';
+            const xpReward = q.xp_reward || 10;
             const contentArea = document.getElementById('content-area');
-            
+            const previousAnswer = userAnswers[currentQuestion];
+            const hasAnswered = previousAnswer !== null;
+
+            // Badge de difficulté avec couleur
+            const difficultyBadge = difficulty === 'Facile'
+                ? '<span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">🟢 Facile • ' + xpReward + ' XP</span>'
+                : difficulty === 'Intermédiaire'
+                    ? '<span style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">🟠 Intermédiaire • ' + xpReward + ' XP</span>'
+                    : '<span style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">🔴 Difficile • ' + xpReward + ' XP</span>';
+
             // Construire les options (A, B, C, et D si disponible)
-            let optionsHtml = `
-                <button class="btn btn-outline quiz-option" data-option="A" style="text-align: left; padding: 1rem;">
-                    <strong>A.</strong> ${q.option_a}
-                </button>
-                <button class="btn btn-outline quiz-option" data-option="B" style="text-align: left; padding: 1rem;">
-                    <strong>B.</strong> ${q.option_b}
-                </button>
-                <button class="btn btn-outline quiz-option" data-option="C" style="text-align: left; padding: 1rem;">
-                    <strong>C.</strong> ${q.option_c}
-                </button>
-            `;
+            const buildOption = (letter, text) => {
+                let style = 'text-align: left; padding: 1rem;';
+                if (hasAnswered) {
+                    if (letter === correctAnswer) {
+                        style += ' border-color: var(--success, #10b981); background: rgba(16, 185, 129, 0.2);';
+                    } else if (letter === previousAnswer && previousAnswer !== correctAnswer) {
+                        style += ' border-color: var(--danger, #ef4444); background: rgba(239, 68, 68, 0.2);';
+                    }
+                }
+                return `<button class="btn btn-outline quiz-option" data-option="${letter}" style="${style}" ${hasAnswered ? 'disabled' : ''}>
+                    <strong>${letter}.</strong> ${text}
+                </button>`;
+            };
+
+            let optionsHtml = buildOption('A', q.option_a) + buildOption('B', q.option_b) + buildOption('C', q.option_c);
             if (q.option_d && q.option_d.trim()) {
-                optionsHtml += `
-                <button class="btn btn-outline quiz-option" data-option="D" style="text-align: left; padding: 1rem;">
-                    <strong>D.</strong> ${q.option_d}
-                </button>
-                `;
+                optionsHtml += buildOption('D', q.option_d);
             }
-            
+
+            // Boutons de navigation
+            const isLastQuestion = currentQuestion === questions.length - 1;
+            const isFirstQuestion = currentQuestion === 0;
+
             contentArea.innerHTML = `
                 <h1>Quiz <span class="text-gradient">${currentQuestion + 1}/${questions.length}</span></h1>
-                <div class="card" style="max-width: 800px; margin: 2rem auto;">
-                    <h3 style="margin-bottom: 2rem;">${questionText}</h3>
+                
+                <div style="max-width: 800px; margin: 0 auto 1rem;">
+                    <div style="display: flex; gap: 4px;">
+                        ${questions.map((_, i) => `
+                            <div style="flex: 1; height: 6px; border-radius: 3px; background: ${userAnswers[i] !== null
+                    ? (userAnswers[i] === (questions[i].correct_answer || '').toUpperCase() ? 'var(--success, #10b981)' : 'var(--danger, #ef4444)')
+                    : i === currentQuestion ? 'var(--primary-color)' : 'rgba(255,255,255,0.1)'
+                };"></div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="card" style="max-width: 800px; margin: 1rem auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0;">${questionText}</h3>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">${difficultyBadge}</div>
                     <div class="quiz-options" style="display: flex; flex-direction: column; gap: 1rem;">
                         ${optionsHtml}
+                    </div>
+                    <div id="explanation-box" style="${hasAnswered ? 'display: block;' : 'display: none;'} margin-top: 1.5rem; padding: 1rem; border-radius: 8px; ${hasAnswered
+                    ? (previousAnswer === correctAnswer
+                        ? 'background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);'
+                        : 'background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);')
+                    : ''
+                }">
+                        ${hasAnswered && explanation ? `
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 1.2rem;">${previousAnswer === correctAnswer ? '✅' : '❌'}</span>
+                                <strong style="color: ${previousAnswer === correctAnswer ? '#10b981' : '#ef4444'};">
+                                    ${previousAnswer === correctAnswer ? 'Bonne réponse !' : 'Mauvaise réponse'}
+                                </strong>
+                            </div>
+                            <p style="margin: 0; color: #ccc;"><strong>💡 Explication :</strong> ${explanation}</p>
+                        ` : ''}
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <button class="btn btn-outline" id="prevBtn" ${isFirstQuestion ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                            ← Précédent
+                        </button>
+                        <div style="display: flex; gap: 1rem;">
+                            ${hasAnswered ? (isLastQuestion
+                    ? `<button class="btn btn-primary" id="finishBtn">Terminer le quiz 🏁</button>`
+                    : `<button class="btn btn-primary" id="nextBtn">Suivant →</button>`
+                ) : '<span style="color: #666; font-size: 0.9rem; align-self: center;">Sélectionnez une réponse</span>'}
+                        </div>
                     </div>
                 </div>
             `;
 
-            document.querySelectorAll('.quiz-option').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const selected = e.currentTarget.dataset.option.toUpperCase();
-                    const correct = correctAnswer;
-
-                    document.querySelectorAll('.quiz-option').forEach(b => {
-                        b.disabled = true;
-                        if (b.dataset.option.toUpperCase() === correct) {
-                            b.style.borderColor = 'var(--success, #10b981)';
-                            b.style.background = 'rgba(16, 185, 129, 0.2)';
-                        }
-                        if (b.dataset.option.toUpperCase() === selected && selected !== correct) {
-                            b.style.borderColor = 'var(--danger, #ef4444)';
-                            b.style.background = 'rgba(239, 68, 68, 0.2)';
-                        }
-                    });
-
-                    if (selected === correct) score++;
-
-                    setTimeout(() => {
-                        currentQuestion++;
-                        if (currentQuestion < questions.length) {
-                            renderQuestion();
-                        } else {
-                            showQuizResults(courseId, score, questions.length);
-                        }
-                    }, 1500);
-                });
+            // Event listeners pour la navigation
+            document.getElementById('prevBtn')?.addEventListener('click', () => {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    renderQuestion();
+                }
             });
+
+            document.getElementById('nextBtn')?.addEventListener('click', () => {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    renderQuestion();
+                }
+            });
+
+            document.getElementById('finishBtn')?.addEventListener('click', () => {
+                // Calculer le score final
+                let finalScore = 0;
+                questions.forEach((q, i) => {
+                    const correct = (q.correct_answer || q.correct_option || '').toUpperCase();
+                    if (userAnswers[i] === correct) finalScore++;
+                });
+                showQuizResults(courseId, finalScore, questions.length);
+            });
+
+            // Event listeners pour les options (seulement si pas encore répondu)
+            if (!hasAnswered) {
+                document.querySelectorAll('.quiz-option').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const selected = e.currentTarget.dataset.option.toUpperCase();
+                        const correct = correctAnswer;
+                        const isCorrect = selected === correct;
+
+                        // Enregistrer la réponse
+                        userAnswers[currentQuestion] = selected;
+
+                        document.querySelectorAll('.quiz-option').forEach(b => {
+                            b.disabled = true;
+                            if (b.dataset.option.toUpperCase() === correct) {
+                                b.style.borderColor = 'var(--success, #10b981)';
+                                b.style.background = 'rgba(16, 185, 129, 0.2)';
+                            }
+                            if (b.dataset.option.toUpperCase() === selected && selected !== correct) {
+                                b.style.borderColor = 'var(--danger, #ef4444)';
+                                b.style.background = 'rgba(239, 68, 68, 0.2)';
+                            }
+                        });
+
+                        // Afficher l'explication
+                        const explanationBox = document.getElementById('explanation-box');
+                        if (explanation) {
+                            explanationBox.style.display = 'block';
+                            explanationBox.style.background = isCorrect ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+                            explanationBox.style.border = isCorrect ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)';
+                            explanationBox.innerHTML = `
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 1.2rem;">${isCorrect ? '✅' : '❌'}</span>
+                                    <strong style="color: ${isCorrect ? '#10b981' : '#ef4444'};">
+                                        ${isCorrect ? 'Bonne réponse !' : 'Mauvaise réponse'}
+                                    </strong>
+                                </div>
+                                <p style="margin: 0; color: #ccc;"><strong>💡 Explication :</strong> ${explanation}</p>
+                            `;
+                        }
+
+                        // Re-render pour afficher les boutons de navigation
+                        renderQuestion();
+                    });
+                });
+            }
         }
 
         renderQuestion();
@@ -1337,19 +1881,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function showQuizResults(courseId, score, total) {
         const percentage = Math.round((score / total) * 100);
         const contentArea = document.getElementById('content-area');
-        
+
         // Sauvegarder la progression si l'utilisateur est connecté
         const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
         let certificateCode = null;
         let xpGained = 0;
         let leveledUp = false;
-        
+
         if (sessionUser) {
             // Calculer l'XP gagné (basé sur le score)
             xpGained = Math.round(score * 10 * (percentage / 100)); // 10 XP par bonne réponse × multiplicateur
             if (percentage >= 70) xpGained += 20; // Bonus de réussite
             if (percentage === 100) xpGained += 30; // Bonus parfait
-            
+
             // Ajouter l'XP
             const xpResult = await api.addXp(sessionUser.id, xpGained);
             if (xpResult.success) {
@@ -1358,22 +1902,67 @@ document.addEventListener('DOMContentLoaded', async () => {
                 sessionUser.xp = xpResult.new_xp;
                 sessionUser.level = xpResult.new_level;
                 sessionStorage.setItem('currentUser', JSON.stringify(sessionUser));
+
+                // Toast pour l'XP gagné
+                showToast('XP Gagné !', `+${xpGained} XP ajoutés à votre profil`, 'success', 4000);
+
+                // Toast si level up
+                if (leveledUp) {
+                    setTimeout(() => {
+                        showToast('Niveau Supérieur !', `Félicitations ! Vous êtes maintenant ${getLevelName(xpResult.new_level)}`, 'levelup', 6000);
+                    }, 500);
+                }
             }
-            
+
             if (percentage >= 70) {
-                await api.saveProgression(sessionUser.id, courseId, 1);
-                
+                // Sauvegarder la progression avec le score
+                await api.saveProgression(sessionUser.id, courseId, 1, percentage);
+
+                // Vérifier si un nouveau module est débloqué
+                const courses = await api.getCourses(sessionUser.id, sessionUser.role);
+                const currentCourseIndex = courses.findIndex(c => c.id == courseId);
+                if (currentCourseIndex !== -1 && currentCourseIndex < courses.length - 1) {
+                    const nextCourse = courses[currentCourseIndex + 1];
+                    if (!nextCourse.is_locked) {
+                        // Le prochain module est maintenant débloqué !
+                        setTimeout(() => {
+                            showToast('🔓 Module Débloqué !', `"${nextCourse.title}" est maintenant accessible !`, 'unlock', 7000);
+                        }, 1000);
+
+                        // Sauvegarder la notification en base
+                        await api.createNotification(
+                            sessionUser.id,
+                            'Nouveau module débloqué !',
+                            `Vous avez débloqué le module "${nextCourse.title}". Continuez votre progression !`,
+                            'unlock',
+                            '#cours'
+                        );
+                    }
+                }
+
                 // Générer un certificat
                 const certResult = await api.generateCertificate(sessionUser.id, courseId, percentage);
                 if (certResult.success) {
                     certificateCode = certResult.certificate_code;
+                    setTimeout(() => {
+                        showToast('Certificat Obtenu !', 'Un certificat a été généré pour ce cours', 'achievement', 5000);
+                    }, 1500);
                 }
-                
+
                 // Vérifier les nouveaux badges
-                await api.checkBadges(sessionUser.id);
+                const badgeResult = await api.checkBadges(sessionUser.id);
+                if (badgeResult.new_badges && badgeResult.new_badges.length > 0) {
+                    let delay = 2000;
+                    badgeResult.new_badges.forEach(badge => {
+                        setTimeout(() => {
+                            showToast(`🏅 Badge Débloqué !`, `"${badge.name}" - ${badge.description}`, 'achievement', 6000);
+                        }, delay);
+                        delay += 800;
+                    });
+                }
             }
         }
-        
+
         contentArea.innerHTML = `
             <div style="text-align: center; max-width: 600px; margin: 0 auto;">
                 <h1>Quiz <span class="text-gradient">Terminé!</span></h1>
@@ -1482,11 +2071,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==========================================
     async function initPhishingView() {
         const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
-        
+
         // Load scenarios
         const scenarios = await api.getPhishingScenarios(sessionUser?.id);
         renderPhishingScenarios(scenarios);
-        
+
         // Load stats if logged in
         if (sessionUser) {
             const statsData = await api.getPhishingStats(sessionUser.id);
@@ -1500,7 +2089,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const correct = parseInt(stats.correct) || 0;
         const rate = total > 0 ? Math.round((correct / total) * 100) : 0;
         const avgTime = Math.round(parseFloat(stats.avg_time) || 0);
-        
+
         document.getElementById('phishingTotal').textContent = total;
         document.getElementById('phishingCorrect').textContent = correct;
         document.getElementById('phishingRate').textContent = rate + '%';
@@ -1516,11 +2105,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             let statusIcon = '';
             if (s.completed !== undefined && s.completed) {
                 statusClass = s.correct ? 'completed' : 'completed wrong';
-                statusIcon = s.correct 
-                    ? '<i data-lucide="check-circle"></i>' 
+                statusIcon = s.correct
+                    ? '<i data-lucide="check-circle"></i>'
                     : '<i data-lucide="x-circle"></i>';
             }
-            
+
             return `
                 <div class="scenario-card ${statusClass}" data-scenario-id="${s.id}">
                     <span class="type-badge ${s.type}">
@@ -1536,11 +2125,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Add click listeners to scenario cards
         grid.querySelectorAll('.scenario-card').forEach(card => {
-            card.addEventListener('click', function(e) {
+            card.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 const scenarioId = this.getAttribute('data-scenario-id');
-                console.log('Scenario card clicked, ID:', scenarioId);
                 if (scenarioId) {
                     openScenario(parseInt(scenarioId));
                 }
@@ -1552,22 +2140,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let currentScenarioStartTime = null;
 
-    window.openScenario = async function(id) {
-        console.log('openScenario called with id:', id);
+    window.openScenario = async function (id) {
         const scenario = await api.getPhishingScenario(id);
-        console.log('Scenario fetched:', scenario);
         if (!scenario) return;
 
         currentScenarioStartTime = Date.now();
-        
+
         const contentDiv = document.getElementById('scenarioContent');
         const resultDiv = document.getElementById('scenarioResult');
-        
+
         contentDiv.style.display = 'block';
         resultDiv.style.display = 'none';
-        
+
         let previewHtml = '';
-        
+
         if (scenario.type === 'email') {
             previewHtml = `
                 <div class="scenario-preview email">
@@ -1593,7 +2179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
         }
-        
+
         contentDiv.innerHTML = `
             <h2 style="margin-bottom: 1.5rem; text-align: center;">${scenario.title}</h2>
             ${previewHtml}
@@ -1609,37 +2195,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             </div>
         `;
-        
+
         const modal = document.getElementById('scenarioModal');
-        console.log('Modal element:', modal);
         if (modal) {
             modal.style.display = 'flex';
-            console.log('Modal display set to flex');
-        } else {
-            console.error('Modal not found!');
         }
         lucide.createIcons();
     };
 
-    window.submitPhishingAnswer = async function(scenarioId, isPhishing) {
+    window.submitPhishingAnswer = async function (scenarioId, isPhishing) {
         const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!sessionUser) {
             alert('Connectez-vous pour sauvegarder vos résultats');
             return;
         }
-        
+
         const timeTaken = Math.round((Date.now() - currentScenarioStartTime) / 1000);
         const result = await api.submitPhishingAnswer(sessionUser.id, scenarioId, isPhishing, timeTaken);
-        
+
         const contentDiv = document.getElementById('scenarioContent');
         const resultDiv = document.getElementById('scenarioResult');
-        
+
         contentDiv.style.display = 'none';
         resultDiv.style.display = 'block';
-        
+
         const isCorrect = result.is_correct;
         const indicators = result.indicators ? result.indicators.split(',').map(i => `<li>${i.trim()}</li>`).join('') : '';
-        
+
         resultDiv.innerHTML = `
             <div class="result-container ${isCorrect ? 'correct' : 'incorrect'}">
                 <i data-lucide="${isCorrect ? 'check-circle' : 'x-circle'}" class="result-icon"></i>
@@ -1660,14 +2242,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             </div>
         `;
-        
+
         lucide.createIcons();
-        
+
         // Check for new badges
         await api.checkBadges(sessionUser.id);
     };
 
-    window.closeScenarioModal = function() {
+    window.closeScenarioModal = function () {
         document.getElementById('scenarioModal').style.display = 'none';
     };
 
@@ -1692,7 +2274,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         let html = '';
-        
+
         if (data.grouped && Object.keys(data.grouped).length > 0) {
             for (const [cat, resources] of Object.entries(data.grouped)) {
                 html += `
@@ -1732,46 +2314,87 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         contentDiv.innerHTML = html;
-        
+
         // Add click listeners to resource cards
         contentDiv.querySelectorAll('.resource-card').forEach(card => {
-            card.addEventListener('click', function(e) {
+            card.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 const resourceId = this.getAttribute('data-resource-id');
-                console.log('Resource card clicked, ID:', resourceId);
                 if (resourceId) {
                     openResource(parseInt(resourceId));
                 }
             });
         });
-        
+
         lucide.createIcons();
     }
 
-    window.filterResources = function() {
+    window.filterResources = function () {
         const category = document.getElementById('resourceCategoryFilter').value;
         const difficulty = document.getElementById('resourceDifficultyFilter').value;
         loadResources(category || null, difficulty || null);
     };
 
-    window.closeResourceModal = function() {
+    window.closeResourceModal = function () {
         const modal = document.getElementById('resourceModal');
         if (modal) modal.style.display = 'none';
     };
 
-    window.openResource = async function(id) {
-        console.log('openResource called with id:', id);
+    // ==========================================
+    // BEST PRACTICES MODAL LOGIC
+    // ==========================================
+    const modalBp = document.getElementById('modal-bp');
+    const openBpBtn = document.getElementById('open-bp-btn');
+    const closeBpBtn = document.getElementById('close-modal-btn');
+    const ackBtn = document.getElementById('ack-btn');
+
+    function openBpModal() {
+        if (modalBp) {
+            modalBp.style.display = 'flex';
+            setTimeout(() => modalBp.classList.add('active'), 10);
+        }
+    }
+
+    function closeBpModal() {
+        if (modalBp) {
+            modalBp.classList.remove('active');
+            setTimeout(() => modalBp.style.display = 'none', 300);
+        }
+    }
+
+    // Auto-show on first visit
+    if (!localStorage.getItem('bp_acknowledged')) {
+        setTimeout(openBpModal, 1000); // 1s delay for effect
+    }
+
+    if (openBpBtn) openBpBtn.addEventListener('click', openBpModal);
+
+    if (closeBpBtn) closeBpBtn.addEventListener('click', closeBpModal);
+
+    if (ackBtn) {
+        ackBtn.addEventListener('click', () => {
+            closeBpModal();
+            localStorage.setItem('bp_acknowledged', 'true');
+            showToast('Top !', 'Vous connaissez maintenant les bases.', 'success');
+        });
+    }
+
+    // click outside to close
+    window.addEventListener('click', (e) => {
+        if (e.target === modalBp) {
+            closeBpModal();
+        }
+    });
+
+    window.openResource = async function (id) {
         const resource = await api.getResource(id);
-        console.log('Resource fetched:', resource);
         if (!resource) {
-            console.error('Resource not found!');
             return;
         }
 
         const modalContent = document.getElementById('resourceModalContent');
-        console.log('Modal content element:', modalContent);
-        
+
         const categoryColors = {
             article: '#3b82f6',
             video: '#ef4444',
@@ -1779,9 +2402,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             documentation: '#f59e0b',
             external: '#8b5cf6'
         };
-        
+
         let contentHtml = '';
-        
+
         if (resource.content) {
             // Convert markdown-like content to HTML
             contentHtml = resource.content
@@ -1793,7 +2416,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .replace(/\n\d+\. (.*)/g, '\n<li>$1</li>')
                 .replace(/\n/g, '<br>');
         }
-        
+
         modalContent.innerHTML = `
             <div class="resource-modal-header">
                 <div class="icon-wrapper" style="background: ${categoryColors[resource.category]}20; color: ${categoryColors[resource.category]};">
@@ -1813,14 +2436,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </a>
             ` : ''}
         `;
-        
+
         const resourceModal = document.getElementById('resourceModal');
-        console.log('Resource modal element:', resourceModal);
         if (resourceModal) {
             resourceModal.style.display = 'flex';
-            console.log('Resource modal display set to flex');
-        } else {
-            console.error('Resource modal not found!');
         }
         lucide.createIcons();
     };

@@ -1,6 +1,8 @@
 <?php
 require_once 'auth.php';
-checkAdmin();
+checkCoursesAccess();
+
+$currentUser = getCurrentUser();
 
 // Filtre par cours
 $course_filter = isset($_GET['course_id']) ? (int)$_GET['course_id'] : null;
@@ -40,195 +42,208 @@ if ($course_filter) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Questions - Admin CyberSens</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="admin-style.css?v=<?php echo time(); ?>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
+    <div class="bg-grid"></div>
+
+    <div class="app-container">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-            <div class="position-sticky pt-3">
-                <div class="sidebar-brand">
-                    <i class="bi bi-shield-lock-fill"></i>
-                    <h4>CyberSens</h4>
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="shield-check"></i>
                 </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="cours.php">
-                            <i class="bi bi-book"></i> Cours
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="questions.php">
-                            <i class="bi bi-question-circle"></i> Questions
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="users.php">
-                            <i class="bi bi-people"></i> Utilisateurs
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link back-link" href="../index.html">
-                            <i class="bi bi-arrow-left"></i> Retour au site
-                        </a>
-                    </li>
-                </ul>
+                <span class="logo-text">CyberSens</span>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 0.6rem; margin-left: auto;">ADMIN</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="index.php" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <?php if(hasPermission('manage_courses')): ?>
+                <a href="cours.php" class="nav-item">
+                    <i data-lucide="book-open"></i>
+                    <span>Gestion Cours</span>
+                </a>
+                <a href="questions.php" class="nav-item active">
+                    <i data-lucide="help-circle"></i>
+                    <span>Banque Questions</span>
+                </a>
+                <?php endif; ?>
+                
+                <?php if(hasPermission('manage_users')): ?>
+                <a href="users.php" class="nav-item">
+                    <i data-lucide="users"></i>
+                    <span>Utilisateurs</span>
+                </a>
+                <?php endif; ?>
+
+                <div class="nav-divider"></div>
+
+                <a href="../index.html" class="nav-item">
+                    <i data-lucide="arrow-left"></i>
+                    <span>Retour au site</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar">
+                     <?php echo strtoupper(substr($currentUser['username'], 0, 1)); ?>
+                </div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name"><?php echo htmlspecialchars($currentUser['username']); ?></div>
+                    <div class="sidebar-user-role"><?php echo getRoleName($currentUser['role']); ?></div>
+                </div>
             </div>
         </nav>
 
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 fw-bold">
-                    <?php if($course_name): ?>
-                        Questions : <?php echo htmlspecialchars($course_name); ?>
-                    <?php else: ?>
-                        Toutes les Questions
-                    <?php endif; ?>
-                </h1>
-                <a href="add_question.php<?php echo $course_filter ? '?course_id='.$course_filter : ''; ?>" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-2"></i> Nouvelle question
-                </a>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>
+                        <?php if($course_name): ?>
+                            Questions : <?php echo htmlspecialchars($course_name); ?>
+                        <?php else: ?>
+                            Banque de Questions
+                        <?php endif; ?>
+                    </h1>
+                    <p class="subtitle">Gérez les questions et les quiz associés aux cours.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="add_question.php<?php echo $course_filter ? '?course_id='.$course_filter : ''; ?>" class="btn btn-primary">
+                        <i data-lucide="plus-circle"></i> Nouvelle question
+                    </a>
+                </div>
             </div>
 
             <?php if(isset($_GET['msg'])): ?>
-                <?php if($_GET['msg'] == 'created'): ?>
-                    <div class="alert alert-success alert-dismissible fade show">
-                        <i class="bi bi-check-circle me-2"></i> Question créée avec succès !
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php elseif($_GET['msg'] == 'deleted'): ?>
-                    <div class="alert alert-warning alert-dismissible fade show">
-                        <i class="bi bi-trash me-2"></i> Question supprimée !
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php elseif($_GET['msg'] == 'updated'): ?>
-                    <div class="alert alert-info alert-dismissible fade show">
-                        <i class="bi bi-check-circle me-2"></i> Question mise à jour !
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php endif; ?>
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i data-lucide="check-circle"></i>
+                <?php 
+                if($_GET['msg'] == 'created') echo 'Question créée avec succès !';
+                if($_GET['msg'] == 'updated') echo 'Question mise à jour !';
+                if($_GET['msg'] == 'deleted') echo 'Question supprimée !';
+                ?>
+            </div>
             <?php endif; ?>
 
-            <!-- Filtre par cours -->
-            <div class="card-cyber mb-4">
-                <div class="card-body-cyber p-4">
-                    <form method="GET" class="row g-3 align-items-center">
-                        <div class="col-auto">
-                            <label class="form-label mb-0 fw-medium">Filtrer par cours :</label>
-                        </div>
-                        <div class="col-auto flex-grow-1">
-                            <select name="course_id" class="form-select" onchange="this.form.submit()">
-                                <option value="">-- Tous les cours --</option>
-                                <?php foreach($all_courses as $c): ?>
-                                    <option value="<?php echo $c['id']; ?>" <?php echo $course_filter == $c['id'] ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($c['title']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <?php if($course_filter): ?>
-                        <div class="col-auto">
-                            <a href="questions.php" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-lg me-2"></i> Réinitialiser
-                            </a>
-                        </div>
-                        <?php endif; ?>
-                    </form>
-                </div>
+            <!-- Filter Panel -->
+            <div class="card" style="margin-bottom: 2rem; border-color: var(--accent-primary);">
+                <form method="GET" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <label class="fw-medium" style="white-space: nowrap; color: var(--text-primary);">Filtrer par cours :</label>
+                    <select name="course_id" class="form-select" onchange="this.form.submit()" style="flex: 1; min-width: 200px; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.5rem; border-radius: var(--radius-sm);">
+                        <option value="">-- Tous les cours --</option>
+                        <?php foreach($all_courses as $c): ?>
+                            <option value="<?php echo $c['id']; ?>" <?php echo $course_filter == $c['id'] ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($c['title']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if($course_filter): ?>
+                    <a href="questions.php" class="btn btn-outline" style="padding: 0.5rem 1rem;">
+                        <i data-lucide="x"></i> Réinitialiser
+                    </a>
+                    <?php endif; ?>
+                </form>
             </div>
 
-            <div class="card-cyber">
-                <div class="card-body-cyber p-0">
-                    <?php if(count($questions) > 0): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="px-4 py-3">ID</th>
-                                    <th class="px-4 py-3">Cours</th>
-                                    <th class="px-4 py-3">Question</th>
-                                    <th class="px-4 py-3">Options</th>
-                                    <th class="px-4 py-3">Réponse</th>
-                                    <th class="px-4 py-3 text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach($questions as $q): ?>
-                                <tr>
-                                    <td class="px-4 py-3">#<?php echo $q['id']; ?></td>
-                                    <td class="px-4 py-3">
-                                        <a href="questions.php?course_id=<?php echo $q['course_id']; ?>" class="text-decoration-none">
-                                            <?php echo htmlspecialchars($q['course_title']); ?>
-                                        </a>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="fw-medium"><?php echo htmlspecialchars(substr($q['question'], 0, 60)); ?></div>
-                                        <?php if(strlen($q['question']) > 60): ?><small class="text-muted">...</small><?php endif; ?>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <small class="d-flex flex-column gap-1">
-                                            <span class="<?php echo $q['correct_answer'] == 'A' ? 'correct-option' : ''; ?>">A: <?php echo htmlspecialchars(substr($q['option_a'], 0, 25)); ?><?php echo strlen($q['option_a']) > 25 ? '...' : ''; ?></span>
-                                            <span class="<?php echo $q['correct_answer'] == 'B' ? 'correct-option' : ''; ?>">B: <?php echo htmlspecialchars(substr($q['option_b'], 0, 25)); ?><?php echo strlen($q['option_b']) > 25 ? '...' : ''; ?></span>
-                                            <span class="<?php echo $q['correct_answer'] == 'C' ? 'correct-option' : ''; ?>">C: <?php echo htmlspecialchars(substr($q['option_c'], 0, 25)); ?><?php echo strlen($q['option_c']) > 25 ? '...' : ''; ?></span>
-                                            <?php if(!empty($q['option_d'])): ?>
-                                            <span class="<?php echo $q['correct_answer'] == 'D' ? 'correct-option' : ''; ?>">D: <?php echo htmlspecialchars(substr($q['option_d'], 0, 25)); ?><?php echo strlen($q['option_d']) > 25 ? '...' : ''; ?></span>
-                                            <?php endif; ?>
-                                        </small>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="badge bg-success"><?php echo $q['correct_answer']; ?></span>
-                                    </td>
-                                    <td class="px-4 py-3 text-end">
-                                        <div class="btn-group">
-                                            <a href="edit_question.php?id=<?php echo $q['id']; ?>" class="btn btn-sm btn-outline-primary" title="Modifier">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a href="questions.php?delete=<?php echo $q['id']; ?><?php echo $course_filter ? '&course_id='.$course_filter : ''; ?>" 
-                                               class="btn btn-sm btn-outline-danger" title="Supprimer" 
-                                               onclick="return confirm('Supprimer cette question ?');">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <?php else: ?>
-                    <div class="text-center py-5">
-                        <div class="mb-3">
-                            <i class="bi bi-question-circle display-1 text-muted opacity-50"></i>
-                        </div>
-                        <h4 class="fw-bold">Aucune question</h4>
-                        <p class="text-muted mb-4">
-                            <?php if($course_filter): ?>
-                                Ce cours n'a pas encore de questions.
-                            <?php else: ?>
-                                Commencez par créer des questions pour vos cours.
-                            <?php endif; ?>
-                        </p>
-                        <a href="add_question.php<?php echo $course_filter ? '?course_id='.$course_filter : ''; ?>" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i> Ajouter une question
-                        </a>
-                    </div>
-                    <?php endif; ?>
+            <!-- Questions Table -->
+            <div class="admin-table-container">
+                <?php if(count($questions) > 0): ?>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cours</th>
+                            <th>Question</th>
+                            <th>Difficulté</th>
+                            <th>XP</th>
+                            <th>Réponse</th>
+                            <th class="text-end actions-col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($questions as $q): ?>
+                        <?php 
+                            $difficulty = $q['difficulty'] ?? 'Facile';
+                            $xp = $q['xp_reward'] ?? 10;
+                            // Badge color logic
+                            $diffClass = $difficulty == 'Facile' ? 'success' : ($difficulty == 'Intermédiaire' ? 'warning' : 'danger');
+                            $diffColor = $diffClass == 'success' ? 'var(--success)' : ($diffClass == 'warning' ? 'var(--warning)' : 'var(--danger)');
+                            $diffBg = $diffClass == 'success' ? 'rgba(16, 185, 129, 0.15)' : ($diffClass == 'warning' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)');
+                            $diffDot = $difficulty == 'Facile' ? '🟢' : ($difficulty == 'Intermédiaire' ? '🟠' : '🔴');
+                        ?>
+                        <tr>
+                            <td class="text-muted">#<?php echo $q['id']; ?></td>
+                            <td>
+                                <a href="questions.php?course_id=<?php echo $q['course_id']; ?>" style="color: var(--accent-primary); text-decoration: none;">
+                                    <?php echo htmlspecialchars($q['course_title']); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: var(--text-primary); max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?php echo htmlspecialchars($q['question']); ?>">
+                                    <?php echo htmlspecialchars($q['question']); ?>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: <?php echo $diffBg; ?>; color: <?php echo $diffColor; ?>;">
+                                    <?php echo $difficulty; ?>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
+                                    <i data-lucide="zap" style="width: 12px; margin-right: 4px;"></i><?php echo $xp; ?> XP
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2);">
+                                    <?php echo $q['correct_answer']; ?>
+                                </span>
+                            </td>
+                            <td class="text-end actions-col">
+                                <div class="admin-actions">
+                                    <a href="edit_question.php?id=<?php echo $q['id']; ?>" class="btn-icon edit" title="Modifier">
+                                        <i data-lucide="pencil"></i>
+                                    </a>
+                                    <a href="questions.php?delete=<?php echo $q['id']; ?><?php echo $course_filter ? '&course_id='.$course_filter : ''; ?>" 
+                                       class="btn-icon delete" title="Supprimer" 
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette question ?');">
+                                        <i data-lucide="trash-2"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?php else: ?>
+                <div style="padding: 4rem; text-align: center;">
+                    <i data-lucide="help-circle" style="width: 64px; height: 64px; color: var(--text-muted); opacity: 0.5; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">Aucune question</h3>
+                    <p class="text-muted" style="margin-bottom: 1.5rem;">
+                        <?php if($course_filter): ?>
+                            Ce cours n'a pas encore de quiz.
+                        <?php else: ?>
+                            Commencez par créer des questions pour vos cours.
+                        <?php endif; ?>
+                    </p>
+                    <a href="add_question.php<?php echo $course_filter ? '?course_id='.$course_filter : ''; ?>" class="btn btn-primary">
+                        <i data-lucide="plus-circle"></i> Ajouter une question
+                    </a>
                 </div>
+                <?php endif; ?>
             </div>
         </main>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin.js"></script>
 </body>
 </html>

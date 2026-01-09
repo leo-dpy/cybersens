@@ -1,55 +1,60 @@
 <!-- AUTH FORMS -->
 <div id="auth-container">
-    <h1>Accès <span class="text-gradient">Agent</span></h1>
-    <p class="subtitle">Identifiez-vous pour accéder à vos données classifiées.</p>
+    <div class="auth-box">
+        <div class="auth-header">
+            <h1>ACCÈS <span
+                    style="background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AGENT</span>
+            </h1>
+            <p>Portail de Sécurité CyberSens v4.0</p>
+        </div>
 
-    <div class="app-container" style="grid-template-columns: 1fr 1fr; gap: 4rem; padding: 0; max-width: 1000px; margin: 0;">
-        
         <!-- LOGIN FORM -->
-        <div id="login-view" class="card">
-            <h3>Connexion</h3>
-            <form id="login-form" style="margin-top: 2rem;">
+        <div id="login-view">
+            <form id="login-form" class="auth-form">
                 <div class="form-group">
-                    <input type="email" id="login-email" class="form-input" placeholder="Identifiant Agent (Email)" required>
+                    <label>IDENTIFIANT</label>
+                    <input type="email" id="login-email" class="auth-input" placeholder="agent@cybersens.com" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="login-password" class="form-input" placeholder="Code d'accès (Mot de passe)" required>
+                    <label>CODE D'ACCÈS</label>
+                    <input type="password" id="login-password" class="auth-input" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Initialiser la session</button>
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; justify-content: center; margin-top: 1rem;">
+                    INITIALISER LA SESSION
+                </button>
             </form>
-            <p id="login-error" style="color: var(--accent-color); margin-top: 1rem; display: none;"></p>
+            <div class="auth-footer">
+                <p>Nouvelle recrue ? <a href="#" id="show-signup-btn">Créer un dossier</a></p>
+            </div>
+            <p id="login-error" style="color: var(--danger); text-align: center; margin-top: 1rem; display: none;"></p>
         </div>
 
-        <!-- SIGNUP FORM (Hidden initially via JS logic or CSS toggle) -->
-        <div id="signup-view" class="card" style="display: none;">
-            <h3>Nouveau Dossier</h3>
-            <form id="signup-form" style="margin-top: 2rem;">
+        <!-- SIGNUP FORM -->
+        <div id="signup-view" style="display: none;">
+            <form id="signup-form" class="auth-form">
                 <div class="form-group">
-                    <input type="text" id="signup-username" class="form-input" placeholder="Nom de code (Pseudo)" required>
+                    <label>NOM DE CODE</label>
+                    <input type="text" id="signup-username" class="auth-input" placeholder="Votre Pseudo" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" id="signup-email" class="form-input" placeholder="Email" required>
+                    <label>EMAIL SÉCURISÉ</label>
+                    <input type="email" id="signup-email" class="auth-input" placeholder="email@exemple.com" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="signup-password" class="form-input" placeholder="Mot de passe" required>
+                    <label>MOT DE PASSE</label>
+                    <input type="password" id="signup-password" class="auth-input" placeholder="Minimum 8 caractères"
+                        required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Créer le dossier</button>
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; justify-content: center; margin-top: 1rem;">
+                    CRÉER LE DOSSIER
+                </button>
             </form>
-            <p id="signup-error" style="color: var(--accent-color); margin-top: 1rem; display: none;"></p>
-        </div>
-
-        <!-- TOGGLE BUTTONS -->
-        <div class="card" style="background: transparent; border: none; box-shadow: none;">
-            <div id="login-toggle-content">
-                <h3>Nouvelle Recrue ?</h3>
-                <p style="margin-bottom: 2rem;">Rejoignez les rangs de l'élite. La formation commence maintenant.</p>
-                <button id="show-signup-btn" class="btn btn-outline">Créer un dossier agent</button>
+            <div class="auth-footer">
+                <p>Déjà agent ? <a href="#" id="show-login-btn">Connexion</a></p>
             </div>
-            <div id="signup-toggle-content" style="display: none;">
-                <h3>Déjà Agent ?</h3>
-                <p style="margin-bottom: 2rem;">Retournez à votre poste.</p>
-                <button id="show-login-btn" class="btn btn-outline">Connexion</button>
-            </div>
+            <p id="signup-error" style="color: var(--danger); text-align: center; margin-top: 1rem; display: none;"></p>
         </div>
     </div>
 </div>
@@ -57,8 +62,9 @@
 <!-- USER DASHBOARD (Hidden by default) -->
 <div id="user-dashboard" style="display: none;">
     <h1>Dossier <span class="text-gradient" id="user-name-display">Agent</span></h1>
-    <p class="subtitle">Niveau d'accréditation : <span id="user-level-display" style="color: var(--primary-color)">Novice</span></p>
-    
+    <p class="subtitle">Niveau d'accréditation : <span id="user-level-display"
+            style="color: var(--primary-color)">Novice</span></p>
+
     <!-- XP Progress Bar -->
     <div class="xp-progress-container">
         <div class="xp-progress-header">
@@ -74,7 +80,7 @@
             <span id="next-level-badge" class="level-badge level-badge-next">Niv. 2</span>
         </div>
     </div>
-    
+
     <!-- Stats Cards -->
     <div class="profile-stats-grid">
         <div class="profile-stat-card">
@@ -154,7 +160,8 @@
                 </label>
             </div>
             <div class="setting-item">
-                <button id="logout-btn" class="btn btn-outline" style="border-color: var(--accent-color); color: var(--accent-color);">
+                <button id="logout-btn" class="btn btn-outline"
+                    style="border-color: var(--accent-color); color: var(--accent-color);">
                     <i data-lucide="log-out"></i> Déconnexion
                 </button>
             </div>
@@ -163,391 +170,410 @@
 </div>
 
 <style>
-.profile-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
+    .profile-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
 
-.profile-stat-card {
-    background: var(--card-bg, rgba(255,255,255,0.05));
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
-}
+    .profile-stat-card {
+        background: var(--card-bg, rgba(255, 255, 255, 0.05));
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+    }
 
-.profile-stat-card i {
-    width: 40px;
-    height: 40px;
-    color: var(--primary-color, #00f3ff);
-}
+    .profile-stat-card i {
+        width: 40px;
+        height: 40px;
+        color: var(--primary-color, #00f3ff);
+    }
 
-.stat-content {
-    display: flex;
-    flex-direction: column;
-}
+    .stat-content {
+        display: flex;
+        flex-direction: column;
+    }
 
-.stat-content .stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color, #00f3ff);
-}
+    .stat-content .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color, #00f3ff);
+    }
 
-.stat-content .stat-label {
-    font-size: 0.85rem;
-    color: #666;
-}
+    .stat-content .stat-label {
+        font-size: 0.85rem;
+        color: #666;
+    }
 
-.profile-section {
-    margin-bottom: 2rem;
-}
+    .profile-section {
+        margin-bottom: 2rem;
+    }
 
-.profile-section h2 {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    color: var(--text-color, #fff);
-}
+    .profile-section h2 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-color, #fff);
+    }
 
-.profile-section h2 i {
-    width: 24px;
-    height: 24px;
-    color: var(--primary-color, #00f3ff);
-}
+    .profile-section h2 i {
+        width: 24px;
+        height: 24px;
+        color: var(--primary-color, #00f3ff);
+    }
 
-.badges-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 1rem;
-}
+    .badges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 1rem;
+    }
 
-.badge-item {
-    background: var(--card-bg, rgba(255,255,255,0.05));
-    border-radius: 12px;
-    padding: 1rem;
-    text-align: center;
-    border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
-    transition: all 0.3s ease;
-}
+    .badge-item {
+        background: var(--card-bg, rgba(255, 255, 255, 0.05));
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+        transition: all 0.3s ease;
+    }
 
-.badge-item.locked {
-    opacity: 0.4;
-    filter: grayscale(1);
-}
+    .badge-item.locked {
+        opacity: 0.4;
+        filter: grayscale(1);
+    }
 
-.badge-item:not(.locked):hover {
-    transform: translateY(-4px);
-    border-color: var(--primary-color, #00f3ff);
-}
+    .badge-item:not(.locked):hover {
+        transform: translateY(-4px);
+        border-color: var(--primary-color, #00f3ff);
+    }
 
-.badge-item .badge-icon {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .badge-item .badge-icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.badge-item .badge-icon i {
-    width: 40px;
-    height: 40px;
-}
+    .badge-item .badge-icon i {
+        width: 40px;
+        height: 40px;
+    }
 
-.badge-item:not(.locked) .badge-icon {
-    filter: drop-shadow(0 0 8px var(--badge-color, #00f3ff));
-}
+    .badge-item:not(.locked) .badge-icon {
+        filter: drop-shadow(0 0 8px var(--badge-color, #00f3ff));
+    }
 
-.badge-item .badge-name {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-color, #fff);
-}
+    .badge-item .badge-name {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-color, #fff);
+    }
 
-.certificates-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-}
+    .certificates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
 
-.certificate-item {
-    background: linear-gradient(135deg, var(--card-bg, rgba(255,255,255,0.05)), rgba(0, 243, 255, 0.05));
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid var(--primary-color, #00f3ff);
-    position: relative;
-    overflow: hidden;
-}
+    .certificate-item {
+        background: linear-gradient(135deg, var(--card-bg, rgba(255, 255, 255, 0.05)), rgba(0, 243, 255, 0.05));
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 1px solid var(--primary-color, #00f3ff);
+        position: relative;
+        overflow: hidden;
+    }
 
-.certificate-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 80px;
-    height: 80px;
-    background: var(--primary-color, #00f3ff);
-    opacity: 0.1;
-    border-radius: 0 0 0 100%;
-}
+    .certificate-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 80px;
+        height: 80px;
+        background: var(--primary-color, #00f3ff);
+        opacity: 0.1;
+        border-radius: 0 0 0 100%;
+    }
 
-.certificate-item h4 {
-    color: var(--primary-color, #00f3ff);
-    margin-bottom: 0.5rem;
-}
+    .certificate-item h4 {
+        color: var(--primary-color, #00f3ff);
+        margin-bottom: 0.5rem;
+    }
 
-.certificate-item .cert-code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-}
+    .certificate-item .cert-code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
 
-.certificate-item .cert-date {
-    font-size: 0.8rem;
-    color: #999;
-}
+    .certificate-item .cert-date {
+        font-size: 0.8rem;
+        color: #999;
+    }
 
-.certificate-item .cert-score {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: var(--primary-color, #00f3ff);
-    color: #000;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 0.8rem;
-}
+    .certificate-item .cert-score {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--primary-color, #00f3ff);
+        color: #000;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 0.8rem;
+    }
 
-.settings-card {
-    background: var(--card-bg, rgba(255,255,255,0.05));
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
-}
+    .settings-card {
+        background: var(--card-bg, rgba(255, 255, 255, 0.05));
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+    }
 
-.setting-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--glass-border, rgba(255,255,255,0.05));
-}
+    .setting-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.05));
+    }
 
-.setting-item:last-child {
-    border-bottom: none;
-}
+    .setting-item:last-child {
+        border-bottom: none;
+    }
 
-.setting-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
+    .setting-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
 
-.setting-info i {
-    width: 24px;
-    height: 24px;
-    color: var(--primary-color, #00f3ff);
-}
+    .setting-info i {
+        width: 24px;
+        height: 24px;
+        color: var(--primary-color, #00f3ff);
+    }
 
-.setting-title {
-    font-weight: 600;
-    color: var(--text-color, #fff);
-}
+    .setting-title {
+        font-weight: 600;
+        color: var(--text-color, #fff);
+    }
 
-.setting-desc {
-    display: block;
-    font-size: 0.8rem;
-    color: #666;
-}
+    .setting-desc {
+        display: block;
+        font-size: 0.8rem;
+        color: #666;
+    }
 
-.toggle-switch {
-    position: relative;
-    width: 50px;
-    height: 26px;
-}
+    .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 26px;
+    }
 
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
 
-.toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #333;
-    transition: 0.3s;
-    border-radius: 26px;
-}
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #333;
+        transition: 0.3s;
+        border-radius: 26px;
+    }
 
-.toggle-slider::before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.3s;
-    border-radius: 50%;
-}
+    .toggle-slider::before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+    }
 
-.toggle-switch input:checked + .toggle-slider {
-    background-color: var(--primary-color, #00f3ff);
-}
+    .toggle-switch input:checked+.toggle-slider {
+        background-color: var(--primary-color, #00f3ff);
+    }
 
-.toggle-switch input:checked + .toggle-slider::before {
-    transform: translateX(24px);
-}
+    .toggle-switch input:checked+.toggle-slider::before {
+        transform: translateX(24px);
+    }
 
-.no-data {
-    text-align: center;
-    padding: 2rem;
-    color: #666;
-}
+    .no-data {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+    }
 
-.no-data i {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 1rem;
-    opacity: 0.5;
-}
+    .no-data i {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
 
-/* XP Progress Bar Styles */
-.xp-progress-container {
-    background: var(--card-bg, rgba(255,255,255,0.05));
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
-    position: relative;
-    overflow: hidden;
-}
+    /* XP Progress Bar Styles */
+    .xp-progress-container {
+        background: var(--card-bg, rgba(255, 255, 255, 0.05));
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+        position: relative;
+        overflow: hidden;
+    }
 
-.xp-progress-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary-color, #00f3ff), var(--accent-color, #ff00aa), var(--primary-color, #00f3ff));
-    background-size: 200% 100%;
-    animation: shimmer 3s linear infinite;
-}
+    .xp-progress-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary-color, #00f3ff), var(--accent-color, #ff00aa), var(--primary-color, #00f3ff));
+        background-size: 200% 100%;
+        animation: shimmer 3s linear infinite;
+    }
 
-@keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
+    @keyframes shimmer {
+        0% {
+            background-position: -200% 0;
+        }
 
-.xp-progress-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
+        100% {
+            background-position: 200% 0;
+        }
+    }
 
-.xp-current {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--primary-color, #00f3ff);
-}
+    .xp-progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
 
-.xp-current i {
-    width: 24px;
-    height: 24px;
-    animation: pulse 2s ease-in-out infinite;
-}
+    .xp-current {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary-color, #00f3ff);
+    }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.8; }
-}
+    .xp-current i {
+        width: 24px;
+        height: 24px;
+        animation: pulse 2s ease-in-out infinite;
+    }
 
-.xp-next-level {
-    font-size: 0.9rem;
-    color: #888;
-}
+    @keyframes pulse {
 
-.xp-progress-bar {
-    height: 12px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-}
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
 
-.xp-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary-color, #00f3ff), #00ff88);
-    border-radius: 6px;
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    box-shadow: 0 0 20px var(--primary-color, #00f3ff);
-}
+        50% {
+            transform: scale(1.2);
+            opacity: 0.8;
+        }
+    }
 
-.xp-progress-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    animation: progressShine 2s ease-in-out infinite;
-}
+    .xp-next-level {
+        font-size: 0.9rem;
+        color: #888;
+    }
 
-@keyframes progressShine {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
+    .xp-progress-bar {
+        height: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        overflow: hidden;
+        position: relative;
+    }
 
-.xp-progress-glow {
-    position: absolute;
-    top: -50%;
-    left: 0;
-    width: 100%;
-    height: 200%;
-    background: radial-gradient(ellipse at center, var(--primary-color, #00f3ff) 0%, transparent 70%);
-    opacity: 0.2;
-    pointer-events: none;
-}
+    .xp-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color, #00f3ff), #00ff88);
+        border-radius: 6px;
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        box-shadow: 0 0 20px var(--primary-color, #00f3ff);
+    }
 
-.xp-progress-levels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 0.75rem;
-}
+    .xp-progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: progressShine 2s ease-in-out infinite;
+    }
 
-.level-badge {
-    background: linear-gradient(135deg, var(--primary-color, #00f3ff), #0099ff);
-    color: #000;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+    @keyframes progressShine {
+        0% {
+            transform: translateX(-100%);
+        }
 
-.level-badge-next {
-    background: rgba(255,255,255,0.1);
-    color: #888;
-    border: 1px dashed rgba(255,255,255,0.2);
-}
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .xp-progress-glow {
+        position: absolute;
+        top: -50%;
+        left: 0;
+        width: 100%;
+        height: 200%;
+        background: radial-gradient(ellipse at center, var(--primary-color, #00f3ff) 0%, transparent 70%);
+        opacity: 0.2;
+        pointer-events: none;
+    }
+
+    .xp-progress-levels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.75rem;
+    }
+
+    .level-badge {
+        background: linear-gradient(135deg, var(--primary-color, #00f3ff), #0099ff);
+        color: #000;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .level-badge-next {
+        background: rgba(255, 255, 255, 0.1);
+        color: #888;
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+    }
 </style>

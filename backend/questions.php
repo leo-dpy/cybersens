@@ -63,6 +63,8 @@ try {
             $option_d = trim($data['option_d'] ?? '');
             $correct_answer = strtoupper(trim($data['correct_answer'] ?? 'A'));
             $explanation = trim($data['explanation'] ?? '');
+            $difficulty = $data['difficulty'] ?? 'Facile';
+            $xp_reward = (int)($data['xp_reward'] ?? 10);
             $points = (int)($data['points'] ?? 10);
             
             if (!$course_id || empty($question) || empty($option_a) || empty($option_b)) {
@@ -75,9 +77,14 @@ try {
                 $correct_answer = 'A';
             }
             
-            $stmt = $pdo->prepare("INSERT INTO questions (course_id, question, option_a, option_b, option_c, option_d, correct_answer, explanation, points) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$course_id, $question, $option_a, $option_b, $option_c, $option_d, $correct_answer, $explanation, $points]);
+            // Valider difficulty
+            if (!in_array($difficulty, ['Facile', 'Intermédiaire', 'Difficile'])) {
+                $difficulty = 'Facile';
+            }
+            
+            $stmt = $pdo->prepare("INSERT INTO questions (course_id, question, option_a, option_b, option_c, option_d, correct_answer, explanation, difficulty, xp_reward, points) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$course_id, $question, $option_a, $option_b, $option_c, $option_d, $correct_answer, $explanation, $difficulty, $xp_reward, $points]);
             
             $id = $pdo->lastInsertId();
             echo json_encode(['success' => true, 'message' => 'Question créée', 'id' => $id]);
@@ -95,6 +102,8 @@ try {
             $option_d = trim($data['option_d'] ?? '');
             $correct_answer = strtoupper(trim($data['correct_answer'] ?? 'A'));
             $explanation = trim($data['explanation'] ?? '');
+            $difficulty = $data['difficulty'] ?? 'Facile';
+            $xp_reward = (int)($data['xp_reward'] ?? 10);
             $points = (int)($data['points'] ?? 10);
             
             if (!$id) {
@@ -102,8 +111,13 @@ try {
                 exit;
             }
             
-            $stmt = $pdo->prepare("UPDATE questions SET course_id = ?, question = ?, option_a = ?, option_b = ?, option_c = ?, option_d = ?, correct_answer = ?, explanation = ?, points = ? WHERE id = ?");
-            $stmt->execute([$course_id, $question, $option_a, $option_b, $option_c, $option_d, $correct_answer, $explanation, $points, $id]);
+            // Valider difficulty
+            if (!in_array($difficulty, ['Facile', 'Intermédiaire', 'Difficile'])) {
+                $difficulty = 'Facile';
+            }
+            
+            $stmt = $pdo->prepare("UPDATE questions SET course_id = ?, question = ?, option_a = ?, option_b = ?, option_c = ?, option_d = ?, correct_answer = ?, explanation = ?, difficulty = ?, xp_reward = ?, points = ? WHERE id = ?");
+            $stmt->execute([$course_id, $question, $option_a, $option_b, $option_c, $option_d, $correct_answer, $explanation, $difficulty, $xp_reward, $points, $id]);
             
             echo json_encode(['success' => true, 'message' => 'Question mise à jour']);
             break;

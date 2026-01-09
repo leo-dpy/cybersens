@@ -1,6 +1,8 @@
 <?php
 require_once 'auth.php';
-checkAdmin();
+checkCoursesAccess();
+
+$currentUser = getCurrentUser();
 
 // Suppression d'un cours
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
@@ -11,8 +13,25 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     exit;
 }
 
-// Récupérer tous les cours
-$cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_id = c.id) as nb_questions FROM courses c ORDER BY c.created_at DESC")->fetchAll();
+// Mise à jour de l'ordre via AJAX
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_order') {
+    header('Content-Type: application/json');
+    $orders = json_decode($_POST['orders'], true);
+    
+    if ($orders) {
+        foreach ($orders as $item) {
+            $stmt = $pdo->prepare("UPDATE courses SET display_order = ? WHERE id = ?");
+            $stmt->execute([(int)$item['order'], (int)$item['id']]);
+        }
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Invalid data']);
+    }
+    exit;
+}
+
+// Récupérer tous les cours triés par ordre d'affichage
+$cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_id = c.id) as nb_questions FROM courses c ORDER BY c.display_order ASC, c.id ASC")->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -20,152 +39,315 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Cours - Admin CyberSens</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="admin-style.css?v=<?php echo time(); ?>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
+    <div class="bg-grid"></div>
+
+    <div class="app-container">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-            <div class="position-sticky pt-3">
-                <div class="sidebar-brand">
-                    <i class="bi bi-shield-lock-fill"></i>
-                    <h4>CyberSens</h4>
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="shield-check"></i>
                 </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="cours.php">
-                            <i class="bi bi-book"></i> Cours
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="questions.php">
-                            <i class="bi bi-question-circle"></i> Questions
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="users.php">
-                            <i class="bi bi-people"></i> Utilisateurs
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link back-link" href="../index.html">
-                            <i class="bi bi-arrow-left"></i> Retour au site
-                        </a>
-                    </li>
-                </ul>
+                <span class="logo-text">CyberSens</span>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 0.6rem; margin-left: auto;">ADMIN</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="index.php" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <?php if(hasPermission('manage_courses')): ?>
+                <a href="cours.php" class="nav-item active">
+                    <i data-lucide="book-open"></i>
+                    <span>Gestion Cours</span>
+                </a>
+                <a href="questions.php" class="nav-item">
+                    <i data-lucide="help-circle"></i>
+                    <span>Banque Questions</span>
+                </a>
+                <?php endif; ?>
+                
+                <?php if(hasPermission('manage_users')): ?>
+                <a href="users.php" class="nav-item">
+                    <i data-lucide="users"></i>
+                    <span>Utilisateurs</span>
+                </a>
+                <?php endif; ?>
+
+                <div class="nav-divider"></div>
+
+                <a href="../index.html" class="nav-item">
+                    <i data-lucide="arrow-left"></i>
+                    <span>Retour au site</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar">
+                     <?php echo strtoupper(substr($currentUser['username'], 0, 1)); ?>
+                </div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name"><?php echo htmlspecialchars($currentUser['username']); ?></div>
+                    <div class="sidebar-user-role"><?php echo getRoleName($currentUser['role']); ?></div>
+                </div>
             </div>
         </nav>
 
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 fw-bold">Gestion des Cours</h1>
-                <a href="add_cours.php" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-2"></i> Nouveau cours
-                </a>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Cours</h1>
+                    <p class="subtitle">Créez et organisez les modules de formation.</p>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-outline" id="toggleOrderMode">
+                        <i data-lucide="arrow-up-down"></i> Réorganiser
+                    </button>
+                    <a href="add_cours.php" class="btn btn-primary">
+                        <i data-lucide="plus-circle"></i> Nouveau cours
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mode réorganisation -->
+            <div id="orderModePanel" class="card" style="display: none; margin-bottom: 2rem; border-color: var(--accent-primary);">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <h4 style="color: var(--accent-primary); margin-bottom: 0.5rem;"><i data-lucide="arrow-up-down" style="display: inline; width: 20px;"></i> Mode Réorganisation</h4>
+                        <p class="text-muted" style="margin: 0;">Glissez-déposez les cours pour définir l'ordre.</p>
+                    </div>
+                    <button class="btn btn-success" id="saveOrder" disabled>
+                        <i data-lucide="check"></i> Sauvegarder l'ordre
+                    </button>
+                </div>
             </div>
 
             <?php if(isset($_GET['msg'])): ?>
-                <?php if($_GET['msg'] == 'created'): ?>
-                    <div class="alert alert-success alert-dismissible fade show">
-                        <i class="bi bi-check-circle me-2"></i> Cours créé avec succès !
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php elseif($_GET['msg'] == 'updated'): ?>
-                    <div class="alert alert-info alert-dismissible fade show">
-                        <i class="bi bi-check-circle me-2"></i> Cours mis à jour !
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php elseif($_GET['msg'] == 'deleted'): ?>
-                    <div class="alert alert-warning alert-dismissible fade show">
-                        <i class="bi bi-trash me-2"></i> Cours supprimé !
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php endif; ?>
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i data-lucide="check-circle"></i>
+                <?php 
+                if($_GET['msg'] == 'created') echo 'Cours créé avec succès !';
+                if($_GET['msg'] == 'updated') echo 'Cours mis à jour !';
+                if($_GET['msg'] == 'deleted') echo 'Cours supprimé !';
+                ?>
+            </div>
             <?php endif; ?>
 
-            <div class="card-cyber">
-                <div class="card-body-cyber p-0">
-                    <?php if(count($cours) > 0): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="px-4 py-3">ID</th>
-                                    <th class="px-4 py-3">Titre</th>
-                                    <th class="px-4 py-3">Difficulté</th>
-                                    <th class="px-4 py-3">Questions</th>
-                                    <th class="px-4 py-3">Date création</th>
-                                    <th class="px-4 py-3 text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach($cours as $c): ?>
-                                <tr>
-                                    <td class="px-4 py-3">#<?php echo $c['id']; ?></td>
-                                    <td class="px-4 py-3">
-                                        <div class="fw-medium"><?php echo htmlspecialchars($c['title']); ?></div>
-                                        <small class="text-muted"><?php echo htmlspecialchars(substr($c['description'], 0, 50)); ?>...</small>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <?php 
-                                        $diffClass = $c['difficulty'] == 'Facile' ? 'success' : ($c['difficulty'] == 'Intermédiaire' ? 'warning' : 'danger');
-                                        ?>
-                                        <span class="badge bg-<?php echo $diffClass; ?>">
-                                            <?php echo $c['difficulty']; ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="badge bg-secondary">
-                                            <?php echo $c['nb_questions']; ?> questions
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-muted"><?php echo date('d/m/Y', strtotime($c['created_at'])); ?></td>
-                                    <td class="px-4 py-3 text-end">
-                                        <div class="btn-group">
-                                            <a href="edit_cours.php?id=<?php echo $c['id']; ?>" class="btn btn-sm btn-outline-primary" title="Modifier">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a href="questions.php?course_id=<?php echo $c['id']; ?>" class="btn btn-sm btn-outline-primary" title="Gérer les questions">
-                                                <i class="bi bi-question-circle"></i>
-                                            </a>
-                                            <a href="cours.php?delete=<?php echo $c['id']; ?>" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours et toutes ses questions ?');">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <?php else: ?>
-                    <div class="text-center py-5">
-                        <div class="mb-3">
-                            <i class="bi bi-book display-1 text-muted opacity-50"></i>
-                        </div>
-                        <h4 class="fw-bold">Aucun cours</h4>
-                        <p class="text-muted mb-4">Commencez par créer votre premier cours.</p>
-                        <a href="add_cours.php" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i> Créer un cours
-                        </a>
-                    </div>
-                    <?php endif; ?>
+            <div class="admin-table-container">
+                <?php if(count($cours) > 0): ?>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th class="order-handle-col" style="display: none; width: 50px;"></th>
+                            <th>Ordre</th>
+                            <th>Titre</th>
+                            <th>Difficulté</th>
+                            <th>Contenu</th>
+                            <th>Visibilité</th>
+                            <th>Date</th>
+                            <th class="text-end actions-col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coursesTableBody">
+                        <?php $order = 1; foreach($cours as $c): ?>
+                        <tr data-id="<?php echo $c['id']; ?>">
+                            <td class="order-handle-col" style="display: none; text-align: center;">
+                                <i data-lucide="grip-vertical" style="cursor: grab; color: var(--accent-primary);"></i>
+                            </td>
+                            <td>
+                                <span class="badge order-badge" style="background: var(--bg-tertiary); color: var(--text-primary); border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;"><?php echo $order++; ?></span>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: var(--text-primary);"><?php echo htmlspecialchars($c['title']); ?></div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);"><?php echo htmlspecialchars(substr($c['description'], 0, 50)); ?>...</div>
+                            </td>
+                            <td>
+                                <?php 
+                                $diffClass = $c['difficulty'] == 'Facile' ? 'success' : ($c['difficulty'] == 'Intermédiaire' ? 'warning' : 'danger');
+                                $bg = $diffClass == 'success' ? 'rgba(16, 185, 129, 0.15)' : ($diffClass == 'warning' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)');
+                                $color = $diffClass == 'success' ? 'var(--success)' : ($diffClass == 'warning' ? 'var(--warning)' : 'var(--danger)');
+                                ?>
+                                <span class="badge" style="background: <?php echo $bg; ?>; color: <?php echo $color; ?>;">
+                                    <?php echo $c['difficulty']; ?>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: var(--bg-tertiary); color: var(--text-secondary);">
+                                    <?php echo $c['nb_questions']; ?> questions
+                                </span>
+                            </td>
+                            <td>
+                                <?php if(!empty($c['is_hidden']) && $c['is_hidden'] == 1): ?>
+                                    <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">
+                                        <i data-lucide="eye-off" style="width: 14px; margin-right: 4px;"></i> Caché
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+                                        <i data-lucide="eye" style="width: 14px; margin-right: 4px;"></i> Visible
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-muted"><?php echo date('d/m/Y', strtotime($c['created_at'])); ?></td>
+                            <td class="text-end actions-col">
+                                <div class="admin-actions">
+                                    <a href="edit_cours.php?id=<?php echo $c['id']; ?>" class="btn-icon edit" title="Modifier">
+                                        <i data-lucide="pencil"></i>
+                                    </a>
+                                    <a href="questions.php?course_id=<?php echo $c['id']; ?>" class="btn-icon" style="color: var(--accent-primary);" title="Gérer les questions">
+                                        <i data-lucide="help-circle"></i>
+                                    </a>
+                                    <a href="cours.php?delete=<?php echo $c['id']; ?>" class="btn-icon delete" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours et toutes ses questions ?');">
+                                        <i data-lucide="trash-2"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?php else: ?>
+                <div style="padding: 4rem; text-align: center;">
+                    <i data-lucide="book-open" style="width: 64px; height: 64px; color: var(--text-muted); opacity: 0.5; margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">Aucun cours</h3>
+                    <p class="text-muted" style="margin-bottom: 1.5rem;">Commencez par créer votre premier module de formation.</p>
+                    <a href="add_cours.php" class="btn btn-primary">
+                        <i data-lucide="plus-circle"></i> Créer un cours
+                    </a>
                 </div>
+                <?php endif; ?>
             </div>
         </main>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin.js"></script>
+    <script>
+    let orderMode = false;
+    let sortable = null;
+    let orderChanged = false;
+
+    document.getElementById('toggleOrderMode').addEventListener('click', function() {
+        orderMode = !orderMode;
+        const panel = document.getElementById('orderModePanel');
+        const handleCols = document.querySelectorAll('.order-handle-col');
+        const actionsCols = document.querySelectorAll('.actions-col');
+        
+        if (orderMode) {
+            panel.style.display = 'block';
+            handleCols.forEach(col => col.style.display = 'table-cell');
+            actionsCols.forEach(col => col.style.display = 'none');
+            this.innerHTML = '<i data-lucide="x"></i> Annuler';
+            this.classList.remove('btn-outline');
+            this.classList.add('btn-danger');
+            
+            // Initialiser SortableJS
+            sortable = new Sortable(document.getElementById('coursesTableBody'), {
+                handle: '.order-handle-col',
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                onEnd: function() {
+                    orderChanged = true;
+                    document.getElementById('saveOrder').disabled = false;
+                    updateOrderBadges();
+                }
+            });
+        } else {
+            panel.style.display = 'none';
+            handleCols.forEach(col => col.style.display = 'none');
+            actionsCols.forEach(col => col.style.display = 'table-cell');
+            this.innerHTML = '<i data-lucide="arrow-up-down"></i> Réorganiser';
+            this.classList.remove('btn-danger');
+            this.classList.add('btn-outline');
+            
+            if (sortable) {
+                sortable.destroy();
+                sortable = null;
+            }
+            
+            if (orderChanged) {
+                location.reload();
+            }
+        }
+        lucide.createIcons();
+    });
+
+    function updateOrderBadges() {
+        const rows = document.querySelectorAll('#coursesTableBody tr');
+        rows.forEach((row, index) => {
+            // Find the badge inside the second column (or specifically by class logic if easy)
+            // Here we look for the badge in the second TD (index 1) which is "Ordre" normally
+            // But with handle hidden/shown it shifts. 
+            // The handle is TD 0. The badge is in TD 1.
+            // Using querySelector on the row is safer if we marked the badge with a class 'order-badge'
+            const badge = row.querySelector('span.badge'); // First badge is order badge?
+            // Actually I added class="order-badge" in my PHP loop above? Let's check.
+            // Yes: <span class="badge ... class="order-badge"> is invalid HTML syntax (two class attrs).
+            // Wait, inside the loop: <span class="badge" ... class="order-badge"> 
+            // I should fix that in the PHP block above to be: <span class="badge order-badge" ...>
+        });
+        
+        // Let's fix the logic in the JS assuming I fixed the HTML
+        const badges = document.querySelectorAll('#coursesTableBody .order-badge');
+        badges.forEach((badge, index) => {
+            badge.textContent = index + 1;
+        });
+    }
+    
+    // I need to fix the HTML class attribution in the PHP loop above before saving file.
+    // Line 129: <span class="badge" style="..." class="order-badge"> -> <span class="badge order-badge" style="...">
+    
+    document.getElementById('saveOrder').addEventListener('click', function() {
+        const rows = document.querySelectorAll('#coursesTableBody tr');
+        const orders = [];
+        
+        rows.forEach((row, index) => {
+            orders.push({
+                id: row.dataset.id,
+                order: index + 1
+            });
+        });
+        
+        const formData = new FormData();
+        formData.append('action', 'update_order');
+        formData.append('orders', JSON.stringify(orders));
+        
+        fetch('cours.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.innerHTML = '<i data-lucide="check"></i> Sauvegardé !';
+                this.disabled = true;
+                orderChanged = false;
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i data-lucide="check"></i> Sauvegarder l\'ordre';
+                    this.disabled = false; // logic in original was disabling until change?
+                }, 2000);
+            }
+        });
+    });
+    </script>
+    <style>
+    .sortable-ghost {
+        background: rgba(0, 243, 255, 0.1) !important;
+        border: 2px dashed var(--accent-primary) !important;
+    }
+    .order-badge {
+        /* identification class */
+    }
+    </style>
 </body>
 </html>

@@ -63,11 +63,13 @@ try {
                 SELECT 
                     (SELECT COUNT(*) FROM progression WHERE user_id = ? AND is_completed = 1) as courses_completed,
                     (SELECT COUNT(*) FROM phishing_results WHERE user_id = ? AND is_correct = 1) as phishing_correct,
+                    (SELECT COUNT(*) FROM phishing_results WHERE user_id = ?) as phishing_total,
                     (SELECT MAX(score) FROM progression WHERE user_id = ?) as best_quiz_score,
                     (SELECT COUNT(*) FROM progression WHERE user_id = ? AND score = 100) as perfect_quizzes,
+                    (SELECT COUNT(*) FROM progression WHERE user_id = ? AND is_completed = 1) as quizzes_completed,
                     (SELECT level FROM users WHERE id = ?) as user_level
             ");
-            $statsStmt->execute([$user_id, $user_id, $user_id, $user_id, $user_id]);
+            $statsStmt->execute([$user_id, $user_id, $user_id, $user_id, $user_id, $user_id, $user_id]);
             $stats = $statsStmt->fetch();
             
             // Récupérer les badges déjà obtenus
@@ -97,13 +99,17 @@ try {
                     case 'phishing_score':
                         $shouldUnlock = ($stats['phishing_correct'] ?? 0) >= $reqValue;
                         break;
+                    case 'phishing_perfect':
+                        // 10 phishing corrects sans erreur (total = correct)
+                        $shouldUnlock = ($stats['phishing_correct'] ?? 0) >= $reqValue && 
+                                       ($stats['phishing_correct'] ?? 0) == ($stats['phishing_total'] ?? 0);
+                        break;
                     case 'quiz_completed':
+                        // Nombre de quiz terminés
+                        $shouldUnlock = ($stats['quizzes_completed'] ?? 0) >= $reqValue;
+                        break;
                     case 'quiz_score':
-                        if ($reqValue == 100) {
-                            $shouldUnlock = ($stats['perfect_quizzes'] ?? 0) >= 1;
-                        } else {
-                            $shouldUnlock = ($stats['perfect_quizzes'] ?? 0) >= $reqValue;
-                        }
+                        $shouldUnlock = ($stats['best_quiz_score'] ?? 0) >= $reqValue;
                         break;
                     case 'perfect_quiz':
                         $shouldUnlock = ($stats['perfect_quizzes'] ?? 0) >= $reqValue;
@@ -112,6 +118,9 @@ try {
                         $shouldUnlock = ($stats['user_level'] ?? 1) >= $reqValue;
                         break;
                     case 'account_created':
+                        // Toujours accordé pour les comptes existants
+                        $shouldUnlock = true;
+                        break;
                     case 'special':
                         // Les badges spéciaux sont attribués manuellement ou lors d'événements
                         break;

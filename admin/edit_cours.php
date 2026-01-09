@@ -1,16 +1,15 @@
 <?php
 require_once 'auth.php';
-checkAdmin();
+checkCoursesAccess();
 
-// Vérifier l'ID du cours
+$currentUser = getCurrentUser();
+
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: cours.php");
     exit;
 }
 
 $id = (int)$_GET['id'];
-
-// Récupérer le cours
 $stmt = $pdo->prepare("SELECT * FROM courses WHERE id = ?");
 $stmt->execute([$id]);
 $course = $stmt->fetch();
@@ -27,19 +26,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $description = trim($_POST['description']);
     $content = $_POST['content'];
     $difficulty = $_POST['difficulty'];
+    $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
     
     if (empty($title) || empty($description) || empty($content)) {
         $error = "Veuillez remplir tous les champs obligatoires.";
     } else {
         try {
-            $stmt = $pdo->prepare("UPDATE courses SET title = ?, description = ?, content = ?, difficulty = ? WHERE id = ?");
-            $stmt->execute([$title, $description, $content, $difficulty, $id]);
+            $columns = $pdo->query("DESCRIBE courses")->fetchAll(PDO::FETCH_COLUMN);
+            
+            if (in_array('is_hidden', $columns)) {
+                $stmt = $pdo->prepare("UPDATE courses SET title = ?, description = ?, content = ?, difficulty = ?, is_hidden = ? WHERE id = ?");
+                $stmt->execute([$title, $description, $content, $difficulty, $is_hidden, $id]);
+            } else {
+                $stmt = $pdo->prepare("UPDATE courses SET title = ?, description = ?, content = ?, difficulty = ? WHERE id = ?");
+                $stmt->execute([$title, $description, $content, $difficulty, $id]);
+            }
             
             header("Location: cours.php?msg=updated");
             exit;
             
         } catch (PDOException $e) {
-            $error = "Erreur lors de la mise à jour : " . $e->getMessage();
+            $error = "Erreur : " . $e->getMessage();
         }
     }
 }
@@ -49,190 +56,185 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier le Cours - Admin CyberSens</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <title>Modifier Cours - Admin CyberSens</title>
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="admin-style.css">
-    <!-- Quill - Éditeur visuel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <style>
+        .difficulty-pill {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-align: center;
+            flex: 1;
+            transition: var(--transition-base);
+        }
+        .difficulty-pill:hover, .difficulty-pill.selected {
+            border-color: var(--accent-primary);
+        }
+        .difficulty-pill.selected {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-primary);
+        }
         #editor {
-            height: 350px;
-            background: rgba(5, 5, 5, 0.8);
-            color: var(--text-color);
+            height: 400px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+            border: none;
         }
         .ql-toolbar {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px 8px 0 0;
-            border-color: var(--glass-border);
+            background: var(--bg-tertiary);
+            border-color: var(--border-color) !important;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
         }
         .ql-container {
-            border-radius: 0 0 8px 8px;
-            font-size: 16px;
-            border-color: var(--glass-border);
+            border-color: var(--border-color) !important;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            font-family: var(--font-sans);
         }
-        .ql-toolbar .ql-stroke { stroke: var(--text-color); }
-        .ql-toolbar .ql-fill { fill: var(--text-color); }
-        .ql-toolbar .ql-picker { color: var(--text-color); }
-        .ql-editor.ql-blank::before { color: rgba(224, 224, 224, 0.4); }
+        .ql-stroke { stroke: var(--text-secondary) !important; }
+        .ql-fill { fill: var(--text-secondary) !important; }
+        .ql-picker { color: var(--text-secondary) !important; }
     </style>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
+    <div class="bg-grid"></div>
+    <div class="app-container">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-            <div class="position-sticky pt-3">
-                <div class="sidebar-brand">
-                    <i class="bi bi-shield-lock-fill"></i>
-                    <h4>CyberSens</h4>
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"><i data-lucide="shield-check"></i></div>
+                <span class="logo-text">CyberSens</span>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 0.6rem; margin-left: auto;">ADMIN</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.php" class="nav-item"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+                <a href="cours.php" class="nav-item active"><i data-lucide="book-open"></i><span>Gestion Cours</span></a>
+                <a href="questions.php" class="nav-item"><i data-lucide="help-circle"></i><span>Banque Questions</span></a>
+                <a href="users.php" class="nav-item"><i data-lucide="users"></i><span>Utilisateurs</span></a>
+                <div class="nav-divider"></div>
+                <a href="../index.html" class="nav-item"><i data-lucide="arrow-left"></i><span>Retour au site</span></a>
+            </div>
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar"><?php echo strtoupper(substr($currentUser['username'], 0, 1)); ?></div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name"><?php echo htmlspecialchars($currentUser['username']); ?></div>
+                    <div class="sidebar-user-role"><?php echo getRoleName($currentUser['role']); ?></div>
                 </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="cours.php">
-                            <i class="bi bi-book"></i> Cours
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="questions.php">
-                            <i class="bi bi-question-circle"></i> Questions
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="users.php">
-                            <i class="bi bi-people"></i> Utilisateurs
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link back-link" href="../index.html">
-                            <i class="bi bi-arrow-left"></i> Retour au site
-                        </a>
-                    </li>
-                </ul>
             </div>
         </nav>
 
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2 fw-bold">Modifier le Cours</h1>
+        <main class="main-content">
+            <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <a href="questions.php?course_id=<?php echo $id; ?>" class="btn btn-info text-white me-2">
-                        <i class="bi bi-question-circle me-2"></i> Questions
+                    <h1>Modifier le cours</h1>
+                    <p class="subtitle">Édition du contenu : <?php echo htmlspecialchars($course['title']); ?></p>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a href="questions.php?course_id=<?php echo $id; ?>" class="btn btn-outline" style="color: var(--warning); border-color: var(--warning);">
+                        <i data-lucide="help-circle"></i> Gérer Questions
                     </a>
-                    <a href="cours.php" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-2"></i> Retour
-                    </a>
+                    <a href="cours.php" class="btn btn-outline"><i data-lucide="arrow-left"></i> Retour</a>
                 </div>
             </div>
 
             <?php if($error): ?>
-                <div class="alert alert-danger d-flex align-items-center" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <div><?php echo $error; ?></div>
-                </div>
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i data-lucide="alert-circle"></i> <?php echo $error; ?>
+            </div>
             <?php endif; ?>
 
-            <div class="row g-4">
-                <div class="col-lg-8">
-                    <div class="card-cyber">
-                        <div class="card-body-cyber p-4">
-                            <h5 class="fw-bold mb-4"><i class="bi bi-pencil me-2"></i>Informations du cours #<?php echo $id; ?></h5>
-                            <form method="POST">
-                                <div class="mb-3">
-                                    <label class="form-label fw-medium">Titre du cours <span class="text-danger">*</span></label>
-                                    <input type="text" name="title" class="form-control" required 
-                                           value="<?php echo htmlspecialchars($course['title']); ?>">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label fw-medium">Description courte <span class="text-danger">*</span></label>
-                                    <textarea name="description" class="form-control" rows="2" required><?php echo htmlspecialchars($course['description']); ?></textarea>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label fw-medium">Difficulté</label>
-                                    <select name="difficulty" class="form-select">
-                                        <option value="Facile" <?php echo $course['difficulty'] == 'Facile' ? 'selected' : ''; ?>>🟢 Facile</option>
-                                        <option value="Intermédiaire" <?php echo $course['difficulty'] == 'Intermédiaire' ? 'selected' : ''; ?>>🟡 Intermédiaire</option>
-                                        <option value="Difficile" <?php echo $course['difficulty'] == 'Difficile' ? 'selected' : ''; ?>>🔴 Difficile</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label class="form-label fw-medium">Contenu du cours <span class="text-danger">*</span></label>
-                                    <!-- Éditeur Quill -->
-                                    <div id="editor"><?php echo $course['content']; ?></div>
-                                    <input type="hidden" name="content" id="content">
-                                </div>
-                                
-                                <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="bi bi-check-circle me-2"></i> Enregistrer les modifications
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4">
-                    <div class="card-cyber mb-4">
-                        <div class="card-body-cyber p-4">
-                            <h5 class="fw-bold text-secondary mb-3"><i class="bi bi-info-circle me-2"></i>Informations</h5>
-                            <p class="mb-2"><strong>Créé le :</strong> <?php echo date('d/m/Y H:i', strtotime($course['created_at'])); ?></p>
-                            <?php
-                            $nb_questions = $pdo->prepare("SELECT COUNT(*) FROM questions WHERE course_id = ?");
-                            $nb_questions->execute([$id]);
-                            ?>
-                            <p class="mb-0"><strong>Questions :</strong> <?php echo $nb_questions->fetchColumn(); ?></p>
-                        </div>
-                    </div>
+            <form method="POST" id="courseForm">
+                <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 2rem;">
                     
-                    <div class="card-cyber bg-primary-subtle border-primary-subtle">
-                        <div class="card-body-cyber p-4">
-                            <h5 class="fw-bold text-primary mb-3"><i class="bi bi-lightbulb me-2"></i>Conseils de rédaction</h5>
-                            <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
-                                <li><i class="bi bi-check2 text-primary me-2"></i>Utilisez les titres pour structurer le cours</li>
-                                <li><i class="bi bi-check2 text-primary me-2"></i>Mettez en <strong>gras</strong> les concepts clés</li>
-                                <li><i class="bi bi-check2 text-primary me-2"></i>Utilisez des listes à puces pour la lisibilité</li>
-                            </ul>
+                    <!-- Main Content -->
+                    <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 0;">Contenu</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Titre</label>
+                            <input type="text" name="title" class="form-input" required 
+                                   value="<?php echo htmlspecialchars($course['title']); ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-input" rows="3" required><?php echo htmlspecialchars($course['description']); ?></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Contenu</label>
+                            <div id="editor"><?php echo $course['content']; ?></div>
+                            <input type="hidden" name="content" id="content">
                         </div>
                     </div>
+
+                    <!-- Sidebar Settings -->
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 0;">Paramètres</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Difficulté</label>
+                                <input type="hidden" name="difficulty" id="difficultyInput" value="<?php echo $course['difficulty']; ?>">
+                                <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+                                    <div class="difficulty-pill <?php echo $course['difficulty'] == 'Facile' ? 'selected' : ''; ?>" onclick="selectDifficulty('Facile', this)">Facile</div>
+                                    <div class="difficulty-pill <?php echo $course['difficulty'] == 'Intermédiaire' ? 'selected' : ''; ?>" onclick="selectDifficulty('Intermédiaire', this)">Intermédiaire</div>
+                                    <div class="difficulty-pill <?php echo $course['difficulty'] == 'Difficile' ? 'selected' : ''; ?>" onclick="selectDifficulty('Difficile', this)">Difficile</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="display: flex; items-align: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" name="is_hidden" <?php echo (!empty($course['is_hidden']) && $course['is_hidden'] == 1) ? 'checked' : ''; ?> style="width: 16px; height: 16px; accent-color: var(--accent-primary);">
+                                    <span style="color: var(--text-secondary);">Caché (Brouillon)</span>
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Info</label>
+                                <p class="text-muted" style="font-size: 0.8rem;">Créé le <?php echo date('d/m/Y', strtotime($course['created_at'])); ?></p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">
+                            <i data-lucide="save"></i> Enregistrer
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </main>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-<script>
-// Initialisation de Quill
-var quill = new Quill('#editor', {
-    theme: 'snow',
-    modules: {
-        toolbar: [
-            [{ 'header': [2, 3, 4, false] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            ['link', 'code-block'],
-            ['clean']
-        ]
-    }
-});
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'clean']
+                ]
+            }
+        });
 
-// Avant soumission du formulaire, copier le contenu dans le champ caché
-document.querySelector('form').onsubmit = function() {
-    document.getElementById('content').value = quill.root.innerHTML;
-};
-</script>
+        document.getElementById('courseForm').onsubmit = function() {
+            document.getElementById('content').value = quill.root.innerHTML;
+        };
+
+        function selectDifficulty(diff, el) {
+            document.getElementById('difficultyInput').value = diff;
+            document.querySelectorAll('.difficulty-pill').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        lucide.createIcons();
+    </script>
 </body>
 </html>

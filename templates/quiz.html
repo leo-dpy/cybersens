@@ -1,4 +1,4 @@
-<h1>Zone de <span class="text-gradient">Test</span></h1>
+<h1>Zone de <span class="text-gradient">Quiz</span></h1>
 <p class="subtitle">Évaluez vos compétences en temps réel. Chaque erreur est une leçon.</p>
 
 <div class="quiz-intro-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
@@ -20,7 +20,6 @@
 </h2>
 
 <div class="bento-grid quiz-courses-grid" id="quizCoursesGrid">
-    <!-- Courses will be loaded dynamically -->
     <div class="loading-placeholder" style="grid-column: span 3; text-align: center; padding: 3rem; color: #666;">
         <i data-lucide="loader" style="animation: spin 1s linear infinite;"></i>
         <p>Chargement des cours...</p>
@@ -36,11 +35,16 @@
 .quiz-courses-grid .card {
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
 }
 
-.quiz-courses-grid .card:hover {
+.quiz-courses-grid .card:hover:not(.card-locked) {
     transform: translateY(-4px);
     border-color: var(--primary-color);
+}
+
+.quiz-courses-grid .card.card-locked {
+    cursor: not-allowed;
 }
 
 .quiz-courses-grid .card .questions-count {
@@ -52,35 +56,33 @@
     font-size: 0.8rem;
     color: #999;
 }
-</style>
 
-<script>
-// Load courses for quiz on page load
-(async function() {
-    const courses = await api.getCourses();
-    const grid = document.getElementById('quizCoursesGrid');
-    
-    if (!courses || courses.length === 0) {
-        grid.innerHTML = `
-            <div style="grid-column: span 3; text-align: center; padding: 3rem;">
-                <i data-lucide="folder-open" style="width: 48px; height: 48px; color: #666; margin-bottom: 1rem;"></i>
-                <p style="color: #666;">Aucun cours disponible pour le moment.</p>
-            </div>
-        `;
-        lucide.createIcons();
-        return;
-    }
-    
-    grid.innerHTML = courses.map(c => `
-        <div class="card" onclick="startQuiz(${c.id})">
-            <div class="card-icon"><i data-lucide="${c.difficulty === 'Facile' ? 'shield' : c.difficulty === 'Intermédiaire' ? 'shield-alert' : 'skull'}"></i></div>
-            <h3>${c.title}</h3>
-            <p>${c.description}</p>
-            <span class="difficulty-badge difficulty-${c.difficulty?.toLowerCase()}">${c.difficulty}</span>
-            <span class="questions-count">${c.nb_questions || '?'} questions</span>
-        </div>
-    `).join('');
-    
-    lucide.createIcons();
-})();
-</script>
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-completed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-locked {
+    background: rgba(255, 230, 0, 0.15);
+    color: var(--accent-color);
+    border: 1px solid rgba(255, 230, 0, 0.3);
+}
+
+.status-read {
+    background: rgba(0, 243, 255, 0.15);
+    color: var(--primary-color);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+}
+</style>

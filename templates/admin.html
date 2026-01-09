@@ -2,37 +2,37 @@
 <p class="subtitle">Gérez les cours, questions et utilisateurs de la plateforme.</p>
 
 <!-- Statistiques -->
-<div class="stats-container" id="admin-stats">
-    <div class="stat-item">
-        <h4 id="stat-users">-</h4>
+<div class="bento-grid" id="admin-stats" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
+    <div class="stat-card">
+        <h3 id="stat-users">-</h3>
         <p>Utilisateurs</p>
     </div>
-    <div class="stat-item">
-        <h4 id="stat-courses">-</h4>
+    <div class="stat-card">
+        <h3 id="stat-courses">-</h3>
         <p>Cours</p>
     </div>
-    <div class="stat-item">
-        <h4 id="stat-questions">-</h4>
+    <div class="stat-card">
+        <h3 id="stat-questions">-</h3>
         <p>Questions</p>
     </div>
-    <div class="stat-item">
-        <h4 id="stat-completions">-</h4>
+    <div class="stat-card">
+        <h3 id="stat-completions">-</h3>
         <p>Modules Terminés</p>
     </div>
 </div>
 
-<!-- Navigation Admin -->
-<div class="admin-tabs" style="margin: 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
-    <button class="btn btn-primary admin-tab active" data-tab="dashboard">
+<!-- Navigation Admin (SPA Mode) -->
+<div class="tabs-container" style="margin-bottom: 2rem;">
+    <button class="tab-btn active" data-tab="dashboard">
         <i data-lucide="layout-dashboard"></i> Dashboard
     </button>
-    <button class="btn btn-outline admin-tab" data-tab="courses">
+    <button class="tab-btn" data-tab="courses">
         <i data-lucide="book-open"></i> Cours
     </button>
-    <button class="btn btn-outline admin-tab" data-tab="questions">
+    <button class="tab-btn" data-tab="questions">
         <i data-lucide="help-circle"></i> Questions
     </button>
-    <button class="btn btn-outline admin-tab" data-tab="users">
+    <button class="tab-btn" data-tab="users">
         <i data-lucide="users"></i> Utilisateurs
     </button>
 </div>
@@ -41,212 +41,36 @@
 <div id="admin-panel-dashboard" class="admin-panel">
     <div class="bento-grid">
         <div class="card" style="grid-column: span 2;">
-            <div class="card-icon"><i data-lucide="plus-circle"></i></div>
+            <div class="card-icon"><i data-lucide="zap"></i></div>
             <h3>Actions Rapides</h3>
             <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
-                <button class="btn btn-primary" onclick="showAddCourseForm()">
-                    <i data-lucide="book-plus"></i> Nouveau Cours
+                <button class="btn btn-primary" onclick="window.location.href='admin/add_cours.php'">
+                    <i data-lucide="book-plus"></i> Nouveau Cours (PHP)
                 </button>
-                <button class="btn btn-outline" onclick="showAddQuestionForm()">
-                    <i data-lucide="plus"></i> Nouvelle Question
+                <button class="btn btn-outline" onclick="window.location.href='admin/add_question.php'">
+                    <i data-lucide="plus"></i> Nouvelle Question (PHP)
                 </button>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i data-lucide="clock"></i></div>
-            <h3>Derniers Cours</h3>
-            <div id="recent-courses-list" style="margin-top: 1rem;">
-                <!-- Populated by JS -->
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-icon"><i data-lucide="user-plus"></i></div>
-            <h3>Derniers Utilisateurs</h3>
-            <div id="recent-users-list" style="margin-top: 1rem;">
-                <!-- Populated by JS -->
-            </div>
+            <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                <i data-lucide="info" style="width: 14px; display: inline;"></i> Pour une gestion complète, utilisez le
+                <a href="admin/" style="color: var(--accent-primary);">Panneau Admin Dédié</a>.
+            </p>
         </div>
     </div>
 </div>
 
-<!-- Courses Panel -->
-<div id="admin-panel-courses" class="admin-panel" style="display: none;">
-    <div class="card" style="width: 100%;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h3><i data-lucide="book-open"></i> Gestion des Cours</h3>
-            <button class="btn btn-primary" onclick="showAddCourseForm()">
-                <i data-lucide="plus"></i> Ajouter
-            </button>
+<!-- Note: This template might be legacy if the main admin panel is at /admin/ -->
+<div class="card" style="margin-top: 2rem; border-color: var(--accent-primary);">
+    <div style="display: flex; gap: 1rem; align-items: center;">
+        <i data-lucide="shield-check" style="color: var(--accent-primary); width: 32px; height: 32px;"></i>
+        <div>
+            <h4 style="margin: 0;">Accès Administration Complet</h4>
+            <p style="margin: 0; color: var(--text-secondary);">Accédez à l'interface d'administration complète (non
+                SPA) pour gérer tout le site.</p>
         </div>
-        <div style="overflow-x: auto;">
-            <table class="leaderboard-table" id="courses-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Titre</th>
-                        <th>Difficulté</th>
-                        <th>Questions</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="courses-list">
-                    <!-- Populated by JS -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Questions Panel -->
-<div id="admin-panel-questions" class="admin-panel" style="display: none;">
-    <div class="card" style="width: 100%;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h3><i data-lucide="help-circle"></i> Gestion des Questions</h3>
-            <button class="btn btn-primary" onclick="showAddQuestionForm()">
-                <i data-lucide="plus"></i> Ajouter
-            </button>
-        </div>
-        <div style="margin-bottom: 1rem;">
-            <select id="filter-course" class="form-input" style="max-width: 300px;">
-                <option value="">-- Tous les cours --</option>
-            </select>
-        </div>
-        <div style="overflow-x: auto;">
-            <table class="leaderboard-table" id="questions-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Cours</th>
-                        <th>Question</th>
-                        <th>Réponse</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="questions-list">
-                    <!-- Populated by JS -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Users Panel -->
-<div id="admin-panel-users" class="admin-panel" style="display: none;">
-    <div class="card" style="width: 100%;">
-        <h3 style="margin-bottom: 1.5rem;"><i data-lucide="users"></i> Gestion des Utilisateurs</h3>
-        <div style="overflow-x: auto;">
-            <table class="leaderboard-table" id="users-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Utilisateur</th>
-                        <th>Email</th>
-                        <th>Rôle</th>
-                        <th>Cours terminés</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-users-list-full">
-                    <!-- Populated by JS -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Modal pour ajouter/éditer un cours -->
-<div id="course-modal" class="admin-modal" style="display: none;">
-    <div class="admin-modal-content card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h3 id="course-modal-title">Nouveau Cours</h3>
-            <button class="btn btn-outline" onclick="closeCourseModal()" style="padding: 0.5rem;">
-                <i data-lucide="x"></i>
-            </button>
-        </div>
-        <form id="course-form">
-            <input type="hidden" id="course-id">
-            <div class="form-group">
-                <label>Titre *</label>
-                <input type="text" id="course-title" class="form-input" required placeholder="Ex: Introduction à la Cybersécurité">
-            </div>
-            <div class="form-group">
-                <label>Description *</label>
-                <textarea id="course-description" class="form-input" rows="2" required placeholder="Description courte du cours"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Difficulté</label>
-                <select id="course-difficulty" class="form-input">
-                    <option value="Facile">🟢 Facile</option>
-                    <option value="Intermédiaire">🟡 Intermédiaire</option>
-                    <option value="Difficile">🔴 Difficile</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Contenu *</label>
-                <textarea id="course-content" class="form-input" rows="6" required placeholder="Contenu détaillé du cours (HTML supporté)"></textarea>
-            </div>
-            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-                <button type="button" class="btn btn-outline" onclick="closeCourseModal()">Annuler</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Modal pour ajouter/éditer une question -->
-<div id="question-modal" class="admin-modal" style="display: none;">
-    <div class="admin-modal-content card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h3 id="question-modal-title">Nouvelle Question</h3>
-            <button class="btn btn-outline" onclick="closeQuestionModal()" style="padding: 0.5rem;">
-                <i data-lucide="x"></i>
-            </button>
-        </div>
-        <form id="question-form">
-            <input type="hidden" id="question-id">
-            <div class="form-group">
-                <label>Cours associé *</label>
-                <select id="question-course" class="form-input" required>
-                    <option value="">-- Sélectionner un cours --</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Question *</label>
-                <textarea id="question-text" class="form-input" rows="3" required placeholder="Ex: Qu'est-ce que le phishing ?"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Option A *</label>
-                <input type="text" id="option-a" class="form-input" required>
-            </div>
-            <div class="form-group">
-                <label>Option B *</label>
-                <input type="text" id="option-b" class="form-input" required>
-            </div>
-            <div class="form-group">
-                <label>Option C *</label>
-                <input type="text" id="option-c" class="form-input" required>
-            </div>
-            <div class="form-group">
-                <label>Option D (optionnel)</label>
-                <input type="text" id="option-d" class="form-input" placeholder="Quatrième option">
-            </div>
-            <div class="form-group">
-                <label>Bonne réponse</label>
-                <select id="correct-option" class="form-input">
-                    <option value="A">Option A</option>
-                    <option value="B">Option B</option>
-                    <option value="C">Option C</option>
-                    <option value="D">Option D</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Explication</label>
-                <textarea id="question-explanation" class="form-input" rows="2" placeholder="Explication de la bonne réponse"></textarea>
-            </div>
-            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-                <button type="button" class="btn btn-outline" onclick="closeQuestionModal()">Annuler</button>
-            </div>
-        </form>
+        <a href="admin/" class="btn btn-primary" style="margin-left: auto;">
+            Accéder au Panel Admin
+            <i data-lucide="arrow-right"></i>
+        </a>
     </div>
 </div>

@@ -47,19 +47,19 @@ try {
     $stmt->execute([$username, $email, $passwordHash]);
     $userId = $pdo->lastInsertId();
     
-    // Attribuer le badge "first_step" (premier pas)
-    $stmt = $pdo->prepare("SELECT id FROM badges WHERE slug = 'first_step'");
+    // Attribuer le badge "Bienvenue" (account_created)
+    $stmt = $pdo->prepare("SELECT id FROM badges WHERE requirement_type = 'account_created' LIMIT 1");
     $stmt->execute();
     $badge = $stmt->fetch();
     
     if ($badge) {
         $stmt = $pdo->prepare("INSERT INTO user_badges (user_id, badge_id) VALUES (?, ?)");
         $stmt->execute([$userId, $badge['id']]);
-        
-        // Créer une notification de bienvenue
-        $stmt = $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, 'badge')");
-        $stmt->execute([$userId, 'Bienvenue sur CyberSens!', 'Vous avez obtenu votre premier badge : Premier Pas. Commencez votre apprentissage!']);
     }
+    
+    // Créer une notification de bienvenue
+    $stmt = $pdo->prepare("INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, 'success')");
+    $stmt->execute([$userId, 'Bienvenue sur CyberSens!', 'Votre compte a été créé avec succès. Commencez votre apprentissage de la cybersécurité!']);
     
     // Récupérer l'utilisateur créé
     $stmt = $pdo->prepare("SELECT id, username, email, avatar, xp, level, role, created_at FROM users WHERE id = ?");

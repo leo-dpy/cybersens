@@ -15,7 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // CONFIGURATION BASE DE DONNÉES
 // ============================================
 $host = 'localhost';
-$dbname = 'test2';  // Nom de votre base de données
+$dbname = 'cybersens';  // Nom de votre base de données
 $user = 'root';
 $pass = '';
 

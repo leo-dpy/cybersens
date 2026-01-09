@@ -58,14 +58,16 @@ if ($isValid) {
     $user['xp'] = (int)($user['xp'] ?? 0);
     $user['level'] = (int)($user['level'] ?? 1);
     
-    // Vérifier si l'utilisateur est admin (supporte 'role' ET 'is_admin' pour compatibilité)
-    $isAdmin = false;
-    if (isset($user['role']) && $user['role'] === 'admin') {
-        $isAdmin = true;
-    } elseif (isset($user['is_admin']) && $user['is_admin'] == 1) {
-        $isAdmin = true;
+    // Garder le rôle tel quel (user, creator, admin, superadmin)
+    // Compatibilité avec l'ancien système is_admin
+    if (!isset($user['role']) || empty($user['role'])) {
+        if (isset($user['is_admin']) && $user['is_admin'] == 1) {
+            $user['role'] = 'admin';
+        } else {
+            $user['role'] = 'user';
+        }
     }
-    $user['role'] = $isAdmin ? 'admin' : 'user';
+    // Le rôle est déjà défini correctement dans la BDD (user, creator, admin, superadmin)
     
     // Mettre à jour last_login
     try {

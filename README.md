@@ -1,48 +1,55 @@
-# CyberSens (Version Statique)
+# CyberSens
 
-Cette version du site "CyberSens" est maintenant **100% HTML / CSS / JavaScript** sans React, sans Node, sans bundler.
+Plateforme web de sensibilisation à la cybersécurité, avec gestion d’utilisateurs, quiz, progression, badges, ressources, et interface d’administration.
 
-## Structure
+## Structure du projet
 ```
-index.html          # Redirection vers pages/index.html
-pages/              # Toutes les pages HTML du site
-	├─ index.html     # Accueil
-	├─ cours.html     # Cours
-	├─ quiz.html      # Quiz
-	├─ aide.html      # Aide
-	├─ leaderboard.html # Classement
-	├─ login.html     # Connexion
-	└─ signup.html    # Inscription
-styles.css          # Styles globaux
-main.js             # Interactions (menu mobile + modal bonnes pratiques)
-```
+index.html           # Page d’accueil
+main.js              # JS principal
+styles.css           # Styles globaux
+install.php          # Script d’installation
+logout.php           # Déconnexion
 
-## Ouvrir le site
-Ouvrez `index.html` à la racine (vous serez redirigé vers `pages/index.html`) :
-- Double‑cliquez sur le fichier
-- Ou via PowerShell :
-```powershell
-Start-Process $PWD\index.html
+admin/               # Interface d’administration (PHP)
+backend/             # API backend (PHP)
+database/            # Fichiers SQL (structure et données)
+templates/           # Templates HTML (pages principales)
 ```
 
-Aucun serveur n'est nécessaire.
-Astuce: vous pouvez aussi ouvrir directement `pages/index.html`.
+## Prérequis
+- PHP 7.4+
+- MySQL/MariaDB
+- Serveur web (Apache recommandé)
 
-## Fonctionnalités conservées
-- Design identique (mêmes classes utilitaires)
-- Menu mobile (bouton hamburger)
-- Boîte modale "Bonnes pratiques" qui s'ouvre après 1 seconde
-- Icônes via CDN Lucide (`https://unpkg.com/lucide`)
+## Installation
+1. Clonez le dépôt :
+	```sh
+	git clone https://github.com/leo-dpy/cybersens.git
+	```
+2. Importez le fichier `database/cybersens.sql` dans votre base de données MySQL.
+3. Configurez la connexion à la base dans `backend/db.php` (hôte, utilisateur, mot de passe, nom de la base).
+4. Placez le dossier sur votre serveur web (ex : `htdocs` sous XAMPP).
+5. Accédez à `index.html` ou `admin/index.php` via votre navigateur.
+
+## Fonctionnalités principales
+- Authentification et gestion des utilisateurs
+- Quiz interactifs et progression
+- Attribution de badges et certificats
+- Tableau de bord administrateur (ajout/édition de cours, questions, utilisateurs)
+- Classement (leaderboard)
+- Notifications et ressources pédagogiques
+
+## Arborescence simplifiée
+```
+admin/         # Pages et scripts d’administration
+backend/       # API et logique serveur (PHP)
+database/      # Dump SQL
+templates/     # Templates HTML pour le rendu dynamique
+```
 
 ## Personnalisation
-- Pour supprimer l'ouverture automatique du modal, retirez ou commentez `setTimeout(openDialog, 1000);` dans `main.js`.
-- Vous pouvez réduire la taille de `styles.css` en ne gardant que les classes réellement utilisées (optimisation manuelle possible si besoin).
-
-## Prochaines améliorations possibles
-- Ajout d'un fichier `favicon.ico`
-- Minification manuelle du CSS
-- Ajout d'une section "Ressources" réelle
-- Internationalisation (FR/EN)
+- Modifiez les templates HTML dans `templates/` pour adapter le design.
+- Ajoutez des cours/questions via l’interface admin ou directement en base.
 
 ## Licence
 Ce projet est diffusé sous une licence propriétaire. Toute copie, redistribution, publication ou modification du code est interdite sans autorisation écrite préalable du titulaire des droits.
@@ -50,3 +57,5 @@ Ce projet est diffusé sous une licence propriétaire. Toute copie, redistributi
 Usage autorisé sans autorisation préalable : consultation et usage interne pour tests, démonstrations ou maquettes au sein de votre organisation uniquement.
 
 Consultez le fichier `LICENSE` pour les conditions complètes.
+
+

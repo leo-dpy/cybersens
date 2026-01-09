@@ -56,6 +56,6 @@ Ce projet est diffusé sous une licence propriétaire. Toute copie, redistributi
 
 Usage autorisé sans autorisation préalable : consultation et usage interne pour tests, démonstrations ou maquettes au sein de votre organisation uniquement.
 
-Consultez le fichier `LICENSE` pour les conditions complètes.
+Consultez le fichier `LICENSE` pour les conditions complètes
 
 

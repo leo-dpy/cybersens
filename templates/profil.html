@@ -2,30 +2,28 @@
 <div id="auth-container">
     <div class="auth-box">
         <div class="auth-header">
-            <h1>ACCÈS <span
-                    style="background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AGENT</span>
-            </h1>
-            <p>Portail de Sécurité CyberSens v4.0</p>
+            <h1>CONNEXION</h1>
+            <p>Accédez à votre espace formation CyberSens</p>
         </div>
 
         <!-- LOGIN FORM -->
         <div id="login-view">
             <form id="login-form" class="auth-form">
                 <div class="form-group">
-                    <label>IDENTIFIANT</label>
-                    <input type="email" id="login-email" class="auth-input" placeholder="agent@cybersens.com" required>
+                    <label>EMAIL</label>
+                    <input type="email" id="login-email" class="auth-input" placeholder="email@exemple.com" required>
                 </div>
                 <div class="form-group">
-                    <label>CODE D'ACCÈS</label>
+                    <label>MOT DE PASSE</label>
                     <input type="password" id="login-password" class="auth-input" placeholder="••••••••" required>
                 </div>
                 <button type="submit" class="btn btn-primary"
                     style="width: 100%; justify-content: center; margin-top: 1rem;">
-                    INITIALISER LA SESSION
+                    SE CONNECTER
                 </button>
             </form>
             <div class="auth-footer">
-                <p>Nouvelle recrue ? <a href="#" id="show-signup-btn">Créer un dossier</a></p>
+                <p>Pas de compte ? <a href="#" id="show-signup-btn">S'inscrire</a></p>
             </div>
             <p id="login-error" style="color: var(--danger); text-align: center; margin-top: 1rem; display: none;"></p>
         </div>
@@ -34,11 +32,11 @@
         <div id="signup-view" style="display: none;">
             <form id="signup-form" class="auth-form">
                 <div class="form-group">
-                    <label>NOM DE CODE</label>
+                    <label>PSEUDO</label>
                     <input type="text" id="signup-username" class="auth-input" placeholder="Votre Pseudo" required>
                 </div>
                 <div class="form-group">
-                    <label>EMAIL SÉCURISÉ</label>
+                    <label>EMAIL</label>
                     <input type="email" id="signup-email" class="auth-input" placeholder="email@exemple.com" required>
                 </div>
                 <div class="form-group">
@@ -48,11 +46,11 @@
                 </div>
                 <button type="submit" class="btn btn-primary"
                     style="width: 100%; justify-content: center; margin-top: 1rem;">
-                    CRÉER LE DOSSIER
+                    S'INSCRIRE
                 </button>
             </form>
             <div class="auth-footer">
-                <p>Déjà agent ? <a href="#" id="show-login-btn">Connexion</a></p>
+                <p>Déjà un compte ? <a href="#" id="show-login-btn">Connexion</a></p>
             </div>
             <p id="signup-error" style="color: var(--danger); text-align: center; margin-top: 1rem; display: none;"></p>
         </div>
@@ -61,9 +59,8 @@
 
 <!-- USER DASHBOARD (Hidden by default) -->
 <div id="user-dashboard" style="display: none;">
-    <h1>Dossier <span class="text-gradient" id="user-name-display">Agent</span></h1>
-    <p class="subtitle">Niveau d'accréditation : <span id="user-level-display"
-            style="color: var(--primary-color)">Novice</span></p>
+    <h1>Mon Profil <span class="text-gradient" id="user-name-display">Utilisateur</span></h1>
+    <p class="subtitle">Niveau : <span id="user-level-display" style="color: var(--primary)">Débutant</span></p>
 
     <!-- XP Progress Bar -->
     <div class="xp-progress-container">

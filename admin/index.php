@@ -39,7 +39,7 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
                     <i data-lucide="shield-check"></i>
                 </div>
                 <span class="logo-text">CyberSens</span>
-                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 0.6rem; margin-left: auto;">ADMIN</span>
+
             </div>
             
             <div class="nav-menu">

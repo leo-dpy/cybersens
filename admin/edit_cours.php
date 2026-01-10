@@ -109,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="logo">
                 <div class="logo-icon"><i data-lucide="shield-check"></i></div>
                 <span class="logo-text">CyberSens</span>
-                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 0.6rem; margin-left: auto;">ADMIN</span>
+
             </div>
             <div class="nav-menu">
                 <a href="index.php" class="nav-item"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
@@ -211,15 +211,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <!-- Quill Image Resize Module -->
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
     <script>
         var quill = new Quill('#editor', {
             theme: 'snow',
             modules: {
+                imageResize: {
+                    displaySize: true
+                },
                 toolbar: [
-                    [{ 'header': [2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'code-block'],
+                    [{ 'header': [1, 2, 3, false] }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    ['bold', 'italic', 'underline', 'strike', 'code-block'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
                     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    ['link', 'clean']
+                    ['link', 'image', 'video', 'clean']
                 ]
             }
         });

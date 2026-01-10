@@ -58,7 +58,7 @@ if ($course_filter) {
                     <i data-lucide="shield-check"></i>
                 </div>
                 <span class="logo-text">CyberSens</span>
-                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 0.6rem; margin-left: auto;">ADMIN</span>
+
             </div>
             
             <div class="nav-menu">
@@ -194,13 +194,13 @@ if ($course_filter) {
                                 </div>
                             </td>
                             <td>
-                                <span class="badge" style="background: <?php echo $diffBg; ?>; color: <?php echo $diffColor; ?>;">
+                                <span class="badge" style="background: <?php echo $diffBg; ?>; color: <?php echo $diffColor; ?>; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem;">
                                     <?php echo $difficulty; ?>
                                 </span>
                             </td>
                             <td>
-                                <span class="badge" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
-                                    <i data-lucide="zap" style="width: 12px; margin-right: 4px;"></i><?php echo $xp; ?> XP
+                                <span class="badge" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem;">
+                                    <i data-lucide="zap" style="width: 14px; height: 14px;"></i> <?php echo $xp; ?> XP
                                 </span>
                             </td>
                             <td>

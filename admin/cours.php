@@ -56,7 +56,7 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
                     <i data-lucide="shield-check"></i>
                 </div>
                 <span class="logo-text">CyberSens</span>
-                <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 0.6rem; margin-left: auto;">ADMIN</span>
+
             </div>
             
             <div class="nav-menu">
@@ -188,12 +188,12 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
                             </td>
                             <td>
                                 <?php if(!empty($c['is_hidden']) && $c['is_hidden'] == 1): ?>
-                                    <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted);">
-                                        <i data-lucide="eye-off" style="width: 14px; margin-right: 4px;"></i> Caché
+                                    <span class="badge" style="background: var(--bg-tertiary); color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem;">
+                                        <i data-lucide="eye-off" style="width: 14px; height: 14px;"></i> Caché
                                     </span>
                                 <?php else: ?>
-                                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
-                                        <i data-lucide="eye" style="width: 14px; margin-right: 4px;"></i> Visible
+                                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success); display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem;">
+                                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Visible
                                     </span>
                                 <?php endif; ?>
                             </td>

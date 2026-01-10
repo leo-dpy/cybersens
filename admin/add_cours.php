@@ -186,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="bg-grid"></div>
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Barre latérale -->
         <nav class="sidebar">
             <div class="logo">
                 <div class="logo-icon"><i data-lucide="shield-check"></i></div>
@@ -228,7 +228,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form method="POST" id="courseForm">
                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
                     
-                    <!-- Left Column -->
+                    <!-- Colonne de gauche -->
                     <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
                         <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 0;">Contenu du cours</h3>
                         
@@ -249,14 +249,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </div>
 
-                    <!-- Right Column -->
+                    <!-- Colonne de droite -->
                     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                         
-                        <!-- Settings Card -->
+                        <!-- Carte paramètres -->
                         <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
                             <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 0;">Paramètres</h3>
                             
-                            <!-- Difficulty -->
+                            <!-- Difficulté -->
                             <div class="form-group">
                                 <label class="form-label">Difficulté</label>
                                 <input type="hidden" name="difficulty" id="difficultyInput" value="Facile">
@@ -267,7 +267,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
 
-                            <!-- Icon -->
+                            <!-- Icône -->
                             <div class="form-group">
                                 <label class="form-label">Icône</label>
                                 <input type="hidden" name="icon" id="iconInput" value="shield">
@@ -282,7 +282,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
 
-                            <!-- Theme -->
+                            <!-- Thème -->
                             <div class="form-group">
                                 <label class="form-label">Thème</label>
                                 <input type="hidden" name="theme" id="themeInput" value="blue">
@@ -295,7 +295,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
 
-                            <!-- Stats -->
+                            <!-- Statistiques -->
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                 <div class="form-group">
                                     <label class="form-label">XP Récompense</label>
@@ -307,7 +307,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
 
-                            <!-- Hidden -->
+                            <!-- Caché -->
                             <div class="form-group">
                                 <label style="display: flex; items-align: center; gap: 0.5rem; cursor: pointer;">
                                     <input type="checkbox" name="is_hidden" style="width: 16px; height: 16px; accent-color: var(--accent-primary);">
@@ -328,7 +328,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Scripts -->
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-    <!-- Quill Image Resize Module -->
+    <!-- Module de redimensionnement d'image Quill -->
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
     <script>
         // Init Quill
@@ -355,7 +355,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             document.getElementById('content').value = quill.root.innerHTML;
         };
 
-        // Selection Helpers
+        // Aides à la sélection
         function selectDifficulty(diff, el) {
             document.getElementById('difficultyInput').value = diff;
             document.querySelectorAll('.difficulty-pill').forEach(e => e.classList.remove('selected'));
@@ -375,7 +375,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         function updatePreview() {
-            // Optional: Real-time preview implementation
+            // Optionnel : Implémentation de l'aperçu en temps réel
         }
 
         lucide.createIcons();

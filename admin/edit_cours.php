@@ -104,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="bg-grid"></div>
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Barre latérale -->
         <nav class="sidebar">
             <div class="logo">
                 <div class="logo-icon"><i data-lucide="shield-check"></i></div>
@@ -151,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form method="POST" id="courseForm">
                 <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 2rem;">
                     
-                    <!-- Main Content -->
+                    <!-- Contenu principal -->
                     <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
                         <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 0;">Contenu</h3>
                         
@@ -173,7 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </div>
 
-                    <!-- Sidebar Settings -->
+                    <!-- Paramètres latéraux -->
                     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                         <div class="card" style="display: flex; flex-direction: column; gap: 1.5rem;">
                             <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 0;">Paramètres</h3>
@@ -211,7 +211,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-    <!-- Quill Image Resize Module -->
+    <!-- Module de redimensionnement d'image Quill -->
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
     <script>
         var quill = new Quill('#editor', {

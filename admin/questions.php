@@ -51,7 +51,7 @@ if ($course_filter) {
     <div class="bg-grid"></div>
 
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Barre latérale -->
         <nav class="sidebar">
             <div class="logo">
                 <div class="logo-icon">
@@ -104,7 +104,7 @@ if ($course_filter) {
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Contenu principal -->
         <main class="main-content">
             <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
@@ -135,7 +135,7 @@ if ($course_filter) {
             </div>
             <?php endif; ?>
 
-            <!-- Filter Panel -->
+            <!-- Panneau de filtre -->
             <div class="card" style="margin-bottom: 2rem; border-color: var(--accent-primary);">
                 <form method="GET" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
                     <label class="fw-medium" style="white-space: nowrap; color: var(--text-primary);">Filtrer par cours :</label>
@@ -155,7 +155,7 @@ if ($course_filter) {
                 </form>
             </div>
 
-            <!-- Questions Table -->
+            <!-- Tableau des questions -->
             <div class="admin-table-container">
                 <?php if(count($questions) > 0): ?>
                 <table class="admin-table">
@@ -175,7 +175,7 @@ if ($course_filter) {
                         <?php 
                             $difficulty = $q['difficulty'] ?? 'Facile';
                             $xp = $q['xp_reward'] ?? 10;
-                            // Badge color logic
+                            // Logique de couleur des badges
                             $diffClass = $difficulty == 'Facile' ? 'success' : ($difficulty == 'Intermédiaire' ? 'warning' : 'danger');
                             $diffColor = $diffClass == 'success' ? 'var(--success)' : ($diffClass == 'warning' ? 'var(--warning)' : 'var(--danger)');
                             $diffBg = $diffClass == 'success' ? 'rgba(16, 185, 129, 0.15)' : ($diffClass == 'warning' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)');

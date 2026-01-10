@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="bg-grid"></div>
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Barre latérale -->
         <nav class="sidebar">
             <div class="logo">
                 <div class="logo-icon"><i data-lucide="shield-check"></i></div>

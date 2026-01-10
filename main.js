@@ -1,5 +1,5 @@
 // ==========================================
-// API CLIENT (Replaces LocalStorage DB)
+// CLIENT API (Remplace la DB LocalStorage)
 // ==========================================
 const API_URL = 'backend'; // Chemin relatif vers le dossier backend
 
@@ -146,7 +146,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // COURSES API
+    // API COURS
     // ==========================================
     async getCourses(userId = null, userRole = null) {
         try {
@@ -216,7 +216,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // QUESTIONS API
+    // API QUESTIONS
     // ==========================================
     async getQuestions(courseId = null) {
         try {
@@ -271,7 +271,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // STATS API
+    // API STATS
     // ==========================================
     async getStats() {
         try {
@@ -285,7 +285,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // USER ADMIN API
+    // API ADMINISTRATION UTILISATEURS
     // ==========================================
     async toggleUserAdmin(id) {
         try {
@@ -301,7 +301,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // PROGRESSION API
+    // API PROGRESSION
     // ==========================================
     async saveProgression(userId, courseId, completed, score = null) {
         try {
@@ -331,7 +331,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // BADGES API
+    // API BADGES
     // ==========================================
     async getBadges(userId) {
         try {
@@ -357,7 +357,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // CERTIFICATES API
+    // API CERTIFICATS
     // ==========================================
     async getCertificates(userId) {
         try {
@@ -392,7 +392,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // PHISHING API
+    // API PHISHING
     // ==========================================
     async getPhishingScenarios(userId = null) {
         try {
@@ -450,7 +450,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // RESOURCES API
+    // API RESSOURCES
     // ==========================================
     async getResources(category = null, difficulty = null) {
         try {
@@ -479,7 +479,7 @@ class ApiClient {
     }
 
     // ==========================================
-    // NOTIFICATIONS API
+    // API NOTIFICATIONS
     // ==========================================
     async getNotifications(userId, unreadOnly = false) {
         try {
@@ -533,7 +533,7 @@ class ApiClient {
 const api = new ApiClient();
 
 // ==========================================
-// TOAST NOTIFICATIONS SYSTEM
+// SYSTÈME DE NOTIFICATIONS TOAST
 // ==========================================
 function showToast(title, message, type = 'success', duration = 5000) {
     // Créer le container s'il n'existe pas
@@ -657,7 +657,7 @@ toastStyles.textContent = `
 document.head.appendChild(toastStyles);
 
 // ==========================================
-// NOTIFICATIONS PANEL SYSTEM
+// SYSTÈME DE PANNEAU DE NOTIFICATIONS
 // ==========================================
 let notificationsOpen = false;
 
@@ -782,7 +782,7 @@ document.addEventListener('click', (e) => {
 });
 
 // ==========================================
-// QUIZ VIEW LOGIC
+// LOGIQUE VUE QUIZ
 // ==========================================
 async function initQuizView() {
     const grid = document.getElementById('quizCoursesGrid');
@@ -843,15 +843,15 @@ async function initQuizView() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Check if running on file:// protocol
+    // Vérifier si on exécute via protocole file://
     if (window.location.protocol === 'file:') {
         alert("⚠️ ATTENTION : Vous avez ouvert le fichier directement.\n\nPour que la base de données fonctionne, vous devez passer par votre serveur WAMP (http://localhost/Cybersens).");
     }
 
-    // Initialize Lucide Icons
+    // Initialiser les icônes Lucide
     lucide.createIcons();
 
-    // Setup notifications button
+    // Configurer le bouton de notifications
     const notifBtn = document.getElementById('notifications-btn');
     if (notifBtn) {
         notifBtn.addEventListener('click', (e) => {
@@ -860,14 +860,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Load notifications for logged in user
+    // Charger les notifications pour l'utilisateur connecté
     loadNotifications();
 
     const contentArea = document.getElementById('content-area');
     const navItems = document.querySelectorAll('.nav-item');
 
     // ==========================================
-    // NAVIGATION & TEMPLATE LOADING
+    // NAVIGATION ET CHARGEMENT DES TEMPLATES
     // ==========================================
 
     async function loadTemplate(viewId) {
@@ -877,10 +877,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const html = await response.text();
             contentArea.innerHTML = html;
 
-            // Re-initialize icons for new content
+            // Réinitialiser les icônes pour le nouveau contenu
             lucide.createIcons();
 
-            // Initialize specific view logic
+            // Initialiser la logique de vue spécifique
             if (viewId === 'profil') initAuth();
             if (viewId === 'leaderboard') loadLeaderboards();
 
@@ -896,22 +896,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (viewId === 'phishing') initPhishingView();
             if (viewId === 'ressources') initResourcesView();
 
-            // Update Active State in Sidebar
+            // Mettre à jour l'état actif dans la barre latérale
             navItems.forEach(item => {
                 if (item.dataset.view === viewId) item.classList.add('active');
                 else item.classList.remove('active');
             });
 
         } catch (error) {
-            console.error('Error loading template:', error);
+            console.error('Erreur de chargement du template:', error);
             contentArea.innerHTML = '<h1>Erreur 404</h1><p>Impossible de charger le contenu.</p>';
         }
     }
 
-    // Add Click Listeners
+    // Ajouter les écouteurs de clic
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            // Allow default navigation for links with href (e.g. Admin)
+            // Permettre la navigation par défaut pour les liens avec href (ex: Admin)
             if (item.tagName === 'A' && item.getAttribute('href')) {
                 return;
             }
@@ -923,10 +923,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Check if user is already logged in and show admin nav if applicable
+    // Vérifier si l'utilisateur est déjà connecté et afficher la nav admin si applicable
     const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
     if (sessionUser) {
-        // Show admin nav for admin roles
+        // Afficher la nav admin pour les rôles admin
         if (['admin', 'superadmin', 'creator'].includes(sessionUser.role)) {
             const adminNavItem = document.querySelector('.nav-item.admin-only');
             if (adminNavItem) {
@@ -934,16 +934,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // Update sidebar user info
+        // Mettre à jour les infos utilisateur de la barre latérale
         updateSidebarUser(sessionUser);
     }
 
-    // Load Home by default
+    // Charger l'accueil par défaut
     loadTemplate('home');
 
 
     // ==========================================
-    // SIDEBAR USER UPDATE
+    // MISE À JOUR UTILISATEUR BARRE LATÉRALE
     // ==========================================
 
     function updateSidebarUser(user) {
@@ -974,7 +974,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Make function globally accessible
+    // Rendre la fonction accessible globalement
     window.updateSidebarUser = updateSidebarUser;
 
 
@@ -1022,13 +1022,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const loginToggleContent = document.getElementById('login-toggle-content');
         const signupToggleContent = document.getElementById('signup-toggle-content');
 
-        // Check Session
+        // Vérifier la session
         const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (sessionUser) {
             updateUI(sessionUser);
         }
 
-        // Toggle Views
+        // Basculer les vues
         const showSignupBtn = document.getElementById('show-signup-btn');
         const showLoginBtn = document.getElementById('show-login-btn');
 
@@ -1048,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // Handle Login
+        // Gérer la connexion
         document.getElementById('login-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -1066,7 +1066,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Handle Signup
+        // Gérer l'inscription
         document.getElementById('signup-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('signup-username').value;
@@ -1085,13 +1085,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Handle Logout
+        // Gérer la déconnexion
         document.getElementById('logout-btn')?.addEventListener('click', () => {
             sessionStorage.removeItem('currentUser');
-            // Hide admin nav
+            // Masquer la nav admin
             const adminNavItem = document.querySelector('.nav-item.admin-only');
             if (adminNavItem) adminNavItem.style.display = 'none';
-            // Hide sidebar user
+            // Masquer l'utilisateur de la barre latérale
             if (typeof window.updateSidebarUser === 'function') {
                 window.updateSidebarUser(null);
             }
@@ -1108,11 +1108,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         function updateUI(user) {
             if (!authContainer) return;
 
-            // Hide Auth, Show Dashboard
+            // Masquer Auth, Afficher Dashboard
             authContainer.style.display = 'none';
             userDashboard.style.display = 'block';
 
-            // Update User Info
+            // Mettre à jour les infos utilisateur
             document.getElementById('user-name-display').textContent = user.username;
             // Convertir le niveau numérique en texte
             const levelNum = parseInt(user.level) || 1;
@@ -1120,17 +1120,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('user-level-display').textContent = getLevelName(levelNum);
             document.getElementById('user-xp-display').textContent = xp;
 
-            // Update XP Progress Bar
+            // Mettre à jour la barre de progression XP
             updateXpProgressBar(xp, levelNum);
 
-            // Load badges and certificates
+            // Charger les badges et certificats
             loadUserBadges(user.id);
             loadUserCertificates(user.id);
 
-            // Load notifications
+            // Charger les notifications
             loadNotifications();
 
-            // Admin Check - Show admin link in sidebar for admin roles
+            // Vérification Admin - Afficher le lien admin pour les rôles admin
             if (user.role === 'admin' || user.role === 'creator' || user.role === 'superadmin') {
                 const adminNavItem = document.querySelector('.nav-item.admin-only');
                 if (adminNavItem) {
@@ -1138,7 +1138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
 
-            // Update sidebar user info
+            // Mettre à jour les infos utilisateur de la barre latérale
             if (typeof window.updateSidebarUser === 'function') {
                 window.updateSidebarUser(user);
             }
@@ -1186,7 +1186,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 progressFill.style.width = `${progress}%`;
             }, 100);
 
-            // Update level badges
+            // Mettre à jour les badges de niveau
             currentBadge.textContent = `Niv. ${level}`;
             nextBadge.textContent = level >= 7 ? 'MAX' : `Niv. ${level + 1}`;
 
@@ -1207,7 +1207,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 badgeCountEl.textContent = badgesData.unlocked?.length || 0;
             }
 
-            // Get progression for courses count
+            // Récupérer la progression pour le compte des cours
             const progression = await api.getProgression(userId);
             if (coursesCountEl) {
                 coursesCountEl.textContent = progression.length || 0;
@@ -1325,18 +1325,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ==========================================
-    // ADMIN PANEL LOGIC
+    // LOGIQUE PANNEAU ADMIN
     // ==========================================
 
     async function initAdminPanel() {
-        // Check if user is admin
+        // Vérifier si l'utilisateur est admin
         const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!sessionUser || sessionUser.role !== 'admin') {
             loadTemplate('home');
             return;
         }
 
-        // Load stats
+        // Charger les statistiques
         const stats = await api.getStats();
         if (stats) {
             document.getElementById('stat-users').textContent = stats.users || 0;
@@ -1344,7 +1344,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('stat-questions').textContent = stats.questions || 0;
             document.getElementById('stat-completions').textContent = stats.completions || 0;
 
-            // Recent courses
+            // Cours récents
             const recentCoursesList = document.getElementById('recent-courses-list');
             if (recentCoursesList && stats.recentCourses) {
                 recentCoursesList.innerHTML = stats.recentCourses.map(c => `
@@ -1355,7 +1355,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 `).join('') || '<p style="color:#666;">Aucun cours</p>';
             }
 
-            // Recent users
+            // Utilisateurs récents
             const recentUsersList = document.getElementById('recent-users-list');
             if (recentUsersList && stats.recentUsers) {
                 recentUsersList.innerHTML = stats.recentUsers.map(u => `
@@ -1367,7 +1367,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // Tab navigation
+        // Navigation par onglets
         document.querySelectorAll('.admin-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.admin-tab').forEach(t => {
@@ -1382,14 +1382,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
                 document.getElementById(`admin-panel-${tab.dataset.tab}`).style.display = 'block';
 
-                // Load data for specific tabs
+                // Charger les données pour les onglets spécifiques
                 if (tab.dataset.tab === 'courses') loadAdminCourses();
                 if (tab.dataset.tab === 'questions') loadAdminQuestions();
                 if (tab.dataset.tab === 'users') loadAdminUsersTable();
             });
         });
 
-        // Initialize icons
+        // Initialiser les icônes
         lucide.createIcons();
     }
 
@@ -1424,7 +1424,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function loadAdminQuestions() {
-        // Load courses for filter
+        // Charger les cours pour le filtre
         const courses = await api.getCourses();
         const filterSelect = document.getElementById('filter-course');
         const questionCourseSelect = document.getElementById('question-course');
@@ -1445,7 +1445,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
         }
 
-        // Load all questions
+        // Charger toutes les questions
         const questions = await api.getQuestions();
         renderQuestions(questions);
     }
@@ -1576,7 +1576,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Make functions globally accessible
+    // Rendre les fonctions accessibles globalement
     window.showAddCourseForm = function () {
         document.getElementById('course-modal-title').textContent = 'Nouveau Cours';
         document.getElementById('course-form').reset();
@@ -2077,20 +2077,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Make loadTemplate globally accessible for onclick handlers
+    // Rendre loadTemplate accessible globalement pour les handlers onclick
     window.loadTemplate = loadTemplate;
 
     // ==========================================
-    // PHISHING SIMULATION VIEW
+    // VUE SIMULATION PHISHING
     // ==========================================
     async function initPhishingView() {
         const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
-        // Load scenarios
+        // Charger les scénarios
         const scenarios = await api.getPhishingScenarios(sessionUser?.id);
         renderPhishingScenarios(scenarios);
 
-        // Load stats if logged in
+        // Charger les stats si connecté
         if (sessionUser) {
             const statsData = await api.getPhishingStats(sessionUser.id);
             updatePhishingStats(statsData.stats);
@@ -2137,7 +2137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
         }).join('') || '<p style="text-align: center; color: var(--text-muted);">Aucun scénario disponible</p>';
 
-        // Add click listeners to scenario cards
+        // Ajouter les écouteurs de clic aux cartes de scénarios
         grid.querySelectorAll('.scenario-card').forEach(card => {
             card.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -2259,7 +2259,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         lucide.createIcons();
 
-        // Check for new badges
+        // Vérifier les nouveaux badges
         await api.checkBadges(sessionUser.id);
     };
 
@@ -2268,7 +2268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // ==========================================
-    // RESOURCES VIEW
+    // VUE RESSOURCES
     // ==========================================
     async function initResourcesView() {
         await loadResources();
@@ -2329,7 +2329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         contentDiv.innerHTML = html;
 
-        // Add click listeners to resource cards
+        // Ajouter les écouteurs de clic aux cartes de ressources
         contentDiv.querySelectorAll('.resource-card').forEach(card => {
             card.addEventListener('click', function (e) {
                 e.preventDefault();

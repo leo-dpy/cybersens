@@ -155,7 +155,7 @@ require 'backend/db.php';
                     )");
                     $results[] = ['success', 'Table "users" créée avec succès'];
                 } else {
-                    // Check columns like role and is_protected
+                    // Vérifier les colonnes comme role et is_protected
                     $cols = $pdo->query("SHOW COLUMNS FROM users")->fetchAll(PDO::FETCH_COLUMN);
                     if(!in_array('role', $cols)) {
                         $pdo->exec("ALTER TABLE users ADD COLUMN role VARCHAR(20) DEFAULT 'user'");

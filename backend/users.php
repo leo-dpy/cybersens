@@ -24,7 +24,7 @@ if ($method === 'GET') {
         $stmt = $pdo->query($sql);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        // Fallback sans progression si erreur
+        // Solution de repli sans progression si erreur
         $sql = "SELECT u.id, u.username, u.email, u.role, u.xp, u.level, u.avatar, u.created_at, u.last_login
                 FROM users u ORDER BY u.id DESC";
         $stmt = $pdo->query($sql);
@@ -147,7 +147,7 @@ if ($method === 'GET') {
     $data = json_decode(file_get_contents('php://input'), true);
     $id = (int)($data['id'] ?? 0);
     
-    // Toggle admin/user role
+    // Basculer le rôle admin/utilisateur
     if (isset($data['toggle_admin']) && $data['toggle_admin']) {
         $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
         $stmt->execute([$id]);

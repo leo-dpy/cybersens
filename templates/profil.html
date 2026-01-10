@@ -1,4 +1,4 @@
-<!-- AUTH FORMS -->
+<!-- FORMULAIRES D'AUTHENTIFICATION -->
 <div id="auth-container">
     <div class="auth-box">
         <div class="auth-header">
@@ -6,7 +6,7 @@
             <p>Accédez à votre espace formation CyberSens</p>
         </div>
 
-        <!-- LOGIN FORM -->
+        <!-- FORMULAIRE DE CONNEXION -->
         <div id="login-view">
             <form id="login-form" class="auth-form">
                 <div class="form-group">
@@ -28,7 +28,7 @@
             <p id="login-error" style="color: var(--danger); text-align: center; margin-top: 1rem; display: none;"></p>
         </div>
 
-        <!-- SIGNUP FORM -->
+        <!-- FORMULAIRE D'INSCRIPTION -->
         <div id="signup-view" style="display: none;">
             <form id="signup-form" class="auth-form">
                 <div class="form-group">
@@ -57,12 +57,12 @@
     </div>
 </div>
 
-<!-- USER DASHBOARD (Hidden by default) -->
+<!-- DASHBOARD UTILISATEUR (Caché par défaut) -->
 <div id="user-dashboard" style="display: none;">
     <h1>Mon Profil <span class="text-gradient" id="user-name-display">Utilisateur</span></h1>
     <p class="subtitle">Niveau : <span id="user-level-display" style="color: var(--primary)">Débutant</span></p>
 
-    <!-- XP Progress Bar -->
+    <!-- Barre de progression XP -->
     <div class="xp-progress-container">
         <div class="xp-progress-header">
             <span class="xp-current"><i data-lucide="zap"></i> <span id="xp-current-value">0</span> XP</span>
@@ -78,7 +78,7 @@
         </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- Cartes statistiques -->
     <div class="profile-stats-grid">
         <div class="profile-stat-card">
             <i data-lucide="zap"></i>
@@ -110,23 +110,23 @@
         </div>
     </div>
 
-    <!-- Badges Section -->
+    <!-- Section Badges -->
     <div class="profile-section">
         <h2><i data-lucide="award"></i> Mes Badges</h2>
         <div class="badges-grid" id="user-badges-grid">
-            <!-- Badges loaded dynamically -->
+            <!-- Badges chargés dynamiquement -->
         </div>
     </div>
 
-    <!-- Certificates Section -->
+    <!-- Section Certificats -->
     <div class="profile-section">
         <h2><i data-lucide="scroll"></i> Mes Certificats</h2>
         <div class="certificates-grid" id="user-certificates-grid">
-            <!-- Certificates loaded dynamically -->
+            <!-- Certificats chargés dynamiquement -->
         </div>
     </div>
 
-    <!-- Settings -->
+    <!-- Paramètres -->
     <div class="profile-section">
         <h2><i data-lucide="settings"></i> Paramètres</h2>
         <div class="settings-card">
@@ -416,7 +416,7 @@
         opacity: 0.5;
     }
 
-    /* XP Progress Bar Styles */
+    /* Styles barre de progression XP */
     .xp-progress-container {
         background: var(--card-bg, rgba(255, 255, 255, 0.05));
         border-radius: 16px;

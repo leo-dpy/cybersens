@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
 });
 
-/* Modal Logic */
+/* Logique Modale */
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'flex';
-        // Trigger reflow
+        // Forcer le redessin
         modal.offsetHeight;
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -25,14 +25,14 @@ function closeModal(modalId) {
     }
 }
 
-// Close modal when clicking outside
+// Fermer la modale au clic en dehors
 window.onclick = function (event) {
     if (event.target.classList.contains('admin-modal')) {
         closeModal(event.target.id);
     }
 }
 
-/* User Management Specifics */
+/* Gestion Utilisateurs */
 function openEditModal(user, isSuperAdmin) {
     document.getElementById('edit_user_id').value = user.id;
     document.getElementById('edit_username').value = user.username;
@@ -41,7 +41,7 @@ function openEditModal(user, isSuperAdmin) {
     document.getElementById('edit_level').value = user.level;
     document.getElementById('edit_group').value = user.group_name || 'Aucun';
 
-    // Role selection
+    // Sélection du rôle
     if (document.getElementById('edit_role_container')) {
         const roleSelect = document.getElementById('edit_role');
         if (roleSelect) {
@@ -67,7 +67,7 @@ function openRoleModal(userId, username, currentRole) {
     document.getElementById('role_user_id').value = userId;
     document.getElementById('role_username').textContent = username;
 
-    // Select current role
+    // Sélectionner le rôle actuel
     const radios = document.getElementsByName('new_role');
     for (let r of radios) {
         if (r.value === currentRole) r.click();
@@ -77,7 +77,7 @@ function openRoleModal(userId, username, currentRole) {
 }
 
 function selectRole(role) {
-    // Visual selection logic if needed
+    // Logique visuelle si nécessaire
     document.querySelectorAll('.role-option').forEach(el => el.classList.remove('selected'));
     const input = document.querySelector(`input[name="new_role"][value="${role}"]`);
     if (input) {

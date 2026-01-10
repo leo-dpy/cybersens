@@ -38,7 +38,7 @@
     <div class="phishing-scenarios">
         <h2><i data-lucide="list"></i> Scénarios disponibles</h2>
         <div class="scenarios-grid" id="scenariosGrid">
-            <!-- Scenarios loaded dynamically -->
+            <!-- Scénarios chargés dynamiquement -->
         </div>
     </div>
 
@@ -48,18 +48,18 @@
             <button class="modal-close" onclick="closeScenarioModal()">&times;</button>
 
             <div id="scenarioContent">
-                <!-- Scenario content loaded here -->
+                <!-- Contenu du scénario chargé ici -->
             </div>
 
             <div id="scenarioResult" style="display: none;">
-                <!-- Result shown here -->
+                <!-- Résultat affiché ici -->
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    /* Modal styles for phishing - with !important to override global styles */
+    /* Styles du modal pour le phishing - avec !important pour écraser les styles globaux */
     #scenarioModal {
         position: fixed !important;
         top: 0 !important;
@@ -114,7 +114,7 @@
         color: black;
     }
 
-    /* Force clickable scenario cards */
+    /* Forcer les cartes de scénarios cliquables */
     .scenarios-grid .scenario-card {
         cursor: pointer !important;
         pointer-events: auto !important;
@@ -253,24 +253,24 @@
     }
 
     /* =========================================
-       SCENARIO PREVIEW - THE "PAPER" LOOK
+       APERCU SCENARIO - LE STYLE "PAPIER"
        ========================================= */
     .scenario-preview {
         background: #ffffff;
-        /* White Paper Background */
+        /* Fond blanc papier */
         color: #1a1a1a;
-        /* Dark Text */
+        /* Texte sombre */
         border-radius: 12px;
         padding: 2rem;
         margin-bottom: 2rem;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         font-family: 'Arial', sans-serif;
-        /* Standard email font */
+        /* Police email standard */
         position: relative;
         overflow: hidden;
     }
 
-    /* Header Bar Simulation */
+    /* Simulation de la barre d'en-tête */
     .scenario-preview::before {
         content: '';
         position: absolute;
@@ -284,17 +284,17 @@
         background: #3b82f6;
     }
 
-    /* Blue for Email */
+    /* Bleu pour Email */
     .scenario-preview.sms::before {
         background: #10b981;
     }
 
-    /* Green for SMS */
+    /* Vert pour SMS */
     .scenario-preview.website::before {
         background: #8b5cf6;
     }
 
-    /* Purple for Web */
+    /* Violet pour Web */
 
     .email-header {
         background: #f8f9fa;
@@ -357,7 +357,7 @@
         margin-right: 0.5rem;
     }
 
-    /* Interactive Buttons */
+    /* Boutons interactifs */
     .scenario-question h3 {
         color: #fff;
         margin-bottom: 1.5rem;
@@ -405,7 +405,7 @@
         background: #059669;
     }
 
-    /* Results */
+    /* Résultats */
     .result-container h2 {
         font-size: 2rem;
         margin-bottom: 1rem;

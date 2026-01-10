@@ -32,7 +32,7 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
     <div class="bg-grid"></div>
 
     <div class="app-container">
-        <!-- Sidebar Navigation -->
+        <!-- Navigation latérale -->
         <nav class="sidebar">
             <div class="logo">
                 <div class="logo-icon">
@@ -74,7 +74,7 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
                 </a>
             </div>
             
-            <!-- User Profile Section -->
+            <!-- Section profil utilisateur -->
             <div class="sidebar-user">
                 <div class="sidebar-user-avatar">
                      <?php echo strtoupper(substr($currentUser['username'], 0, 1)); ?>
@@ -86,7 +86,7 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
             </div>
         </nav>
 
-        <!-- Main Content Area -->
+        <!-- Zone de contenu principal -->
         <main class="main-content">
             <div class="page-header">
                 <h1>Tableau de bord</h1>
@@ -100,7 +100,7 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
             </div>
             <?php endif; ?>
 
-            <!-- Stats Grid -->
+            <!-- Grille de statistiques -->
             <div class="stats-grid">
                 <div class="stat-card-admin">
                     <div class="icon-box bg-primary-subtle">
@@ -157,7 +157,7 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
                     </div>
                 </div>
 
-                <!-- Recent Courses -->
+                <!-- Cours récents -->
                 <div class="card" style="grid-column: span 2;">
                     <h3 style="margin-bottom: 1.5rem;">Derniers Cours Ajoutés</h3>
                     <?php

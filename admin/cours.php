@@ -49,7 +49,7 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
     <div class="bg-grid"></div>
 
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Barre latérale -->
         <nav class="sidebar">
             <div class="logo">
                 <div class="logo-icon">
@@ -102,7 +102,7 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Contenu principal -->
         <main class="main-content">
             <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
@@ -283,27 +283,27 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
     function updateOrderBadges() {
         const rows = document.querySelectorAll('#coursesTableBody tr');
         rows.forEach((row, index) => {
-            // Find the badge inside the second column (or specifically by class logic if easy)
-            // Here we look for the badge in the second TD (index 1) which is "Ordre" normally
-            // But with handle hidden/shown it shifts. 
-            // The handle is TD 0. The badge is in TD 1.
-            // Using querySelector on the row is safer if we marked the badge with a class 'order-badge'
-            const badge = row.querySelector('span.badge'); // First badge is order badge?
-            // Actually I added class="order-badge" in my PHP loop above? Let's check.
-            // Yes: <span class="badge ... class="order-badge"> is invalid HTML syntax (two class attrs).
-            // Wait, inside the loop: <span class="badge" ... class="order-badge"> 
-            // I should fix that in the PHP block above to be: <span class="badge order-badge" ...>
+            // Trouver le badge dans la deuxième colonne (ou spécifiquement par logique de classe)
+            // Ici on cherche le badge dans le deuxième TD (index 1) qui est "Ordre" normalement
+            // Mais avec le handle caché/affiché ça décale.
+            // Le handle est TD 0. Le badge est dans TD 1.
+            // Utiliser querySelector sur la ligne est plus sûr si on a marqué le badge avec une classe 'order-badge'
+            const badge = row.querySelector('span.badge'); // Premier badge est le badge d'ordre?
+            // En fait j'ai ajouté class="order-badge" dans ma boucle PHP ci-dessus? Vérifions.
+            // Oui: <span class="badge ... class="order-badge"> est une syntaxe HTML invalide (deux attributs class).
+            // Attends, dans la boucle: <span class="badge" ... class="order-badge">
+            // Je devrais corriger ça dans le bloc PHP ci-dessus pour avoir: <span class="badge order-badge" ...>
         });
         
-        // Let's fix the logic in the JS assuming I fixed the HTML
+        // Corrigeons la logique dans le JS en supposant que j'ai corrigé le HTML
         const badges = document.querySelectorAll('#coursesTableBody .order-badge');
         badges.forEach((badge, index) => {
             badge.textContent = index + 1;
         });
     }
     
-    // I need to fix the HTML class attribution in the PHP loop above before saving file.
-    // Line 129: <span class="badge" style="..." class="order-badge"> -> <span class="badge order-badge" style="...">
+    // Je dois corriger l'attribution de classe HTML dans la boucle PHP ci-dessus avant de sauvegarder le fichier.
+    // Ligne 129: <span class="badge" style="..." class="order-badge"> -> <span class="badge order-badge" style="...">
     
     document.getElementById('saveOrder').addEventListener('click', function() {
         const rows = document.querySelectorAll('#coursesTableBody tr');

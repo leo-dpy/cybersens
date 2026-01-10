@@ -82,7 +82,7 @@ try {
             $badges = $badgesStmt->fetchAll();
             
             foreach ($badges as $badge) {
-                // Skip si déjà obtenu
+                // Ignorer si déjà obtenu
                 if (in_array($badge['id'], $existingBadges)) {
                     continue;
                 }
@@ -100,7 +100,7 @@ try {
                         $shouldUnlock = ($stats['phishing_correct'] ?? 0) >= $reqValue;
                         break;
                     case 'phishing_perfect':
-                        // 10 phishing corrects sans erreur (total = correct)
+                        // 10 détections de phishing correctes sans erreur (total = correct)
                         $shouldUnlock = ($stats['phishing_correct'] ?? 0) >= $reqValue && 
                                        ($stats['phishing_correct'] ?? 0) == ($stats['phishing_total'] ?? 0);
                         break;

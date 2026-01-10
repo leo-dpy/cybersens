@@ -72,12 +72,12 @@ try {
                 exit;
             }
             
-            // Valider correct_answer
+            // Valider la réponse correcte
             if (!in_array($correct_answer, ['A', 'B', 'C', 'D'])) {
                 $correct_answer = 'A';
             }
             
-            // Valider difficulty
+            // Valider la difficulté
             if (!in_array($difficulty, ['Facile', 'Intermédiaire', 'Difficile'])) {
                 $difficulty = 'Facile';
             }
@@ -111,7 +111,7 @@ try {
                 exit;
             }
             
-            // Valider difficulty
+            // Valider la difficulté
             if (!in_array($difficulty, ['Facile', 'Intermédiaire', 'Difficile'])) {
                 $difficulty = 'Facile';
             }

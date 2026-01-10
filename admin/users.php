@@ -203,7 +203,7 @@ foreach ($users as $u) {
     <div class="bg-grid"></div>
 
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Barre latérale -->
         <nav class="sidebar">
             <div class="logo">
                 <div class="logo-icon">
@@ -256,7 +256,7 @@ foreach ($users as $u) {
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Contenu principal -->
         <main class="main-content">
             <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
@@ -275,7 +275,7 @@ foreach ($users as $u) {
             </div>
             <?php endif; ?>
 
-            <!-- Stats Grid -->
+            <!-- Grille de statistiques -->
             <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div class="stat-card-admin">
                     <div class="icon-box bg-primary-subtle"><i data-lucide="users"></i></div>
@@ -301,7 +301,7 @@ foreach ($users as $u) {
                 </div>
             </div>
 
-            <!-- Users Table -->
+            <!-- Tableau des utilisateurs -->
             <div class="admin-table-container">
                 <table class="admin-table">
                     <thead>

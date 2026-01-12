@@ -569,6 +569,7 @@ foreach ($users as $u) {
         </div>
     </div>
 
-    <script src="admin.js"></script>
+    <script src="../js/admin/shared.js"></script>
+    <script src="../js/admin/users.js"></script>
 </body>
 </html>

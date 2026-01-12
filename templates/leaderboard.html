@@ -1,20 +1,20 @@
 <h1>Classement des <span class="text-gradient">Cyber-Agents</span></h1>
 <p class="subtitle">Les meilleurs défenseurs du cyberespace. Grimpez dans le classement !</p>
 
-<div class="leaderboard-stats" style="display: flex; gap: 2rem; justify-content: center; margin-bottom: 2rem;">
-    <div class="stat-card"
-        style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 12px;">
-        <span class="stat-value" id="lb-total-users" style="font-size: 2rem; color: var(--primary-color);">0</span>
-        <span class="stat-label" style="display: block; color: var(--text-secondary);">Participants</span>
+<link rel="stylesheet" href="css/templates/leaderboard.css">
+
+<div class="leaderboard-stats">
+    <div class="stat-card">
+        <span class="stat-value" id="lb-total-users">0</span>
+        <span class="stat-label">Participants</span>
     </div>
-    <div class="stat-card"
-        style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 12px;">
-        <span class="stat-value" id="lb-total-xp" style="font-size: 2rem; color: var(--accent-color);">0</span>
-        <span class="stat-label" style="display: block; color: var(--text-secondary);">XP Total</span>
+    <div class="stat-card">
+        <span class="stat-value" id="lb-total-xp">0</span>
+        <span class="stat-label">XP Total</span>
     </div>
 </div>
 
-<div id="lb-group-container" class="card ranking-table-container" style="max-width: 900px; margin: 0 auto; padding: 0;">
+<div id="lb-group-container" class="card ranking-table-container">
     <div class="table-responsive">
         <table class="ranking-table">
             <thead>

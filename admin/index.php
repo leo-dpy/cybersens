@@ -201,8 +201,6 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
         </main>
     </div>
 
-    <script>
-        lucide.createIcons();
-    </script>
+    <script src="../js/admin/shared.js"></script>
 </body>
 </html>

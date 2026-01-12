@@ -1,0 +1,38 @@
+/* Styles spécifiques pour le classement */
+
+.leaderboard-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.leaderboard-stats .stat-card {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.leaderboard-stats .stat-value {
+    font-size: 2rem;
+}
+
+.leaderboard-stats #lb-total-users {
+    color: var(--primary-color);
+}
+
+.leaderboard-stats #lb-total-xp {
+    color: var(--accent-color);
+}
+
+.leaderboard-stats .stat-label {
+    display: block;
+    color: var(--text-secondary);
+}
+
+.ranking-table-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+}

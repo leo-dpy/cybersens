@@ -244,6 +244,6 @@ if ($course_filter) {
         </main>
     </div>
 
-    <script src="admin.js"></script>
+    <script src="../js/admin/shared.js"></script>
 </body>
 </html>

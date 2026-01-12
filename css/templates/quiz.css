@@ -1,0 +1,63 @@
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.quiz-courses-grid .card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.quiz-courses-grid .card:hover:not(.card-locked) {
+    transform: translateY(-4px);
+    border-color: var(--primary-color);
+}
+
+.quiz-courses-grid .card.card-locked {
+    cursor: not-allowed;
+}
+
+.quiz-courses-grid .card .questions-count {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--glass-bg);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-completed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-locked {
+    background: rgba(255, 230, 0, 0.15);
+    color: var(--accent-color);
+    border: 1px solid rgba(255, 230, 0, 0.3);
+}
+
+.status-read {
+    background: rgba(0, 243, 255, 0.15);
+    color: var(--primary-color);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+}

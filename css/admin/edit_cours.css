@@ -1,0 +1,51 @@
+.difficulty-pill {
+    padding: 0.5rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: center;
+    flex: 1;
+    transition: var(--transition-base);
+}
+
+.difficulty-pill:hover,
+.difficulty-pill.selected {
+    border-color: var(--accent-primary);
+}
+
+.difficulty-pill.selected {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent-primary);
+}
+
+#editor {
+    height: 400px;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+    border: none;
+}
+
+.ql-toolbar {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color) !important;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.ql-container {
+    border-color: var(--border-color) !important;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    font-family: var(--font-sans);
+}
+
+.ql-stroke {
+    stroke: var(--text-secondary) !important;
+}
+
+.ql-fill {
+    fill: var(--text-secondary) !important;
+}
+
+.ql-picker {
+    color: var(--text-secondary) !important;
+}

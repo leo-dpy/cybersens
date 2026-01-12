@@ -1,0 +1,395 @@
+/* Styles spécifiques au phishing et simulation */
+
+/* Styles du modal pour le phishing - avec !important pour écraser les styles globaux si nécessaire */
+#scenarioModal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 99999 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+}
+
+#scenarioModal .modal-content {
+    background: #14141a !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 750px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+}
+
+#scenarioModal .modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: 0.2s;
+    z-index: 10;
+}
+
+#scenarioModal .modal-close:hover {
+    background: white;
+    color: black;
+}
+
+/* Forcer les cartes de scénarios cliquables */
+.scenarios-grid .scenario-card {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.phishing-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.phishing-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.phishing-header h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--primary);
+}
+
+.phishing-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.phishing-stats .stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.phishing-stats .stat-card i {
+    color: var(--primary);
+    width: 32px;
+    height: 32px;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.phishing-scenarios h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+}
+
+.scenarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.scenario-card {
+    background: rgba(20, 20, 25, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: 0.3s;
+}
+
+.scenario-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+}
+
+.scenario-card .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.scenario-card .type-badge.email {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+.scenario-card .type-badge.sms {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+
+.scenario-card .type-badge.website {
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+}
+
+.scenario-card h3 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.scenario-card .difficulty {
+    font-size: 0.8rem;
+}
+
+.scenario-card .difficulty.facile {
+    color: #34d399;
+}
+
+.scenario-card .difficulty.moyen {
+    color: #facc15;
+}
+
+.scenario-card .difficulty.difficile {
+    color: #f87171;
+}
+
+/* =========================================
+   APERCU SCENARIO - LE STYLE "PAPIER"
+   ========================================= */
+.scenario-preview {
+    background: #ffffff;
+    /* Fond blanc papier */
+    color: #1a1a1a;
+    /* Texte sombre */
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    font-family: 'Arial', sans-serif;
+    /* Police email standard */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Simulation de la barre d'en-tête */
+.scenario-preview::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+}
+
+.scenario-preview.email::before {
+    background: #3b82f6;
+}
+
+/* Bleu pour Email */
+.scenario-preview.sms::before {
+    background: #10b981;
+}
+
+/* Vert pour SMS */
+.scenario-preview.website::before {
+    background: #8b5cf6;
+}
+
+/* Violet pour Web */
+
+.email-header {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.email-header .from,
+.email-header .subject {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.email-header .label {
+    font-weight: 700;
+    color: #4b5563;
+    min-width: 60px;
+}
+
+.email-header .value {
+    color: #111827;
+}
+
+.email-body,
+.website-body {
+    color: #1f2937;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.sms-body {
+    background: #e5e7eb;
+    padding: 1rem 1.5rem;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    display: inline-block;
+    max-width: 80%;
+    color: #000;
+}
+
+.website-url {
+    background: #f1f5f9;
+    color: #059669;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-family: monospace;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+}
+
+.website-url::before {
+    content: '🔒 ';
+    margin-right: 0.5rem;
+}
+
+/* Boutons interactifs */
+.scenario-question h3 {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+.answer-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.answer-btn {
+    padding: 1rem 2.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.answer-btn.phishing {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.answer-btn.phishing:hover {
+    transform: translateY(-2px);
+    background: #dc2626;
+}
+
+.answer-btn.legitimate {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.answer-btn.legitimate:hover {
+    transform: translateY(-2px);
+    background: #059669;
+}
+
+/* Résultats */
+.result-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.result-explanation {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    text-align: left;
+}
+
+.result-explanation h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.result-explanation p {
+    color: #d1d5db;
+    line-height: 1.6;
+}
+
+.indicators-list li {
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.result-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn-next {
+    background: var(--primary);
+    color: #000;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}

@@ -62,44 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-    <style>
-        .difficulty-pill {
-            padding: 0.5rem 1rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            text-align: center;
-            flex: 1;
-            transition: var(--transition-base);
-        }
-        .difficulty-pill:hover, .difficulty-pill.selected {
-            border-color: var(--accent-primary);
-        }
-        .difficulty-pill.selected {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent-primary);
-        }
-        #editor {
-            height: 400px;
-            background: rgba(0, 0, 0, 0.2);
-            color: var(--text-primary);
-            border: none;
-        }
-        .ql-toolbar {
-            background: var(--bg-tertiary);
-            border-color: var(--border-color) !important;
-            border-radius: var(--radius-md) var(--radius-md) 0 0;
-        }
-        .ql-container {
-            border-color: var(--border-color) !important;
-            border-radius: 0 0 var(--radius-md) var(--radius-md);
-            font-family: var(--font-sans);
-        }
-        .ql-stroke { stroke: var(--text-secondary) !important; }
-        .ql-fill { fill: var(--text-secondary) !important; }
-        .ql-picker { color: var(--text-secondary) !important; }
-    </style>
+    <link rel="stylesheet" href="../css/admin/edit_cours.css">
 </head>
 <body>
     <div class="bg-grid"></div>
@@ -213,36 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <!-- Module de redimensionnement d'image Quill -->
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
-    <script>
-        var quill = new Quill('#editor', {
-            theme: 'snow',
-            modules: {
-                imageResize: {
-                    displaySize: true
-                },
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    [{ 'size': ['small', false, 'large', 'huge'] }],
-                    ['bold', 'italic', 'underline', 'strike', 'code-block'],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'align': [] }],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    ['link', 'image', 'video', 'clean']
-                ]
-            }
-        });
-
-        document.getElementById('courseForm').onsubmit = function() {
-            document.getElementById('content').value = quill.root.innerHTML;
-        };
-
-        function selectDifficulty(diff, el) {
-            document.getElementById('difficultyInput').value = diff;
-            document.querySelectorAll('.difficulty-pill').forEach(e => e.classList.remove('selected'));
-            el.classList.add('selected');
-        }
-
-        lucide.createIcons();
-    </script>
+    <script src="../js/admin/shared.js"></script>
+    <script src="../js/admin/edit_cours.js"></script>
 </body>
 </html>

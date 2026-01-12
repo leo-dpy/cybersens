@@ -1,0 +1,66 @@
+/* Styles spécifiques pour le dashboard admin (SPA) */
+
+#admin-stats {
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 2rem;
+}
+
+.tabs-container {
+    margin-bottom: 2rem;
+}
+
+.admin-dashboard-card {
+    grid-column: span 2;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.admin-hint {
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.admin-hint i {
+    width: 14px;
+    display: inline;
+}
+
+.admin-hint a {
+    color: var(--accent-primary);
+}
+
+.full-admin-access-card {
+    margin-top: 2rem;
+    border-color: var(--accent-primary);
+}
+
+.full-admin-access-content {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.full-admin-access-icon {
+    color: var(--accent-primary);
+    width: 32px;
+    height: 32px;
+}
+
+.full-admin-access-text h4 {
+    margin: 0;
+}
+
+.full-admin-access-text p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.full-admin-btn {
+    margin-left: auto;
+}

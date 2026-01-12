@@ -60,30 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="admin-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        .option-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            gap: 0.75rem;
-        }
-        .option-radio-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .option-radio-label input[type="radio"] {
-            width: 1.25rem;
-            height: 1.25rem;
-            accent-color: var(--success, #10b981);
-            cursor: pointer;
-            margin-top: 0.35rem;
-        }
-        .option-input {
-            flex: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/admin/edit_question.css">
 </head>
 <body>
     <div class="bg-grid"></div>
@@ -208,6 +185,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
         </main>
     </div>
-    <script>lucide.createIcons();</script>
+    <script src="../js/admin/shared.js"></script>
 </body>
 </html>

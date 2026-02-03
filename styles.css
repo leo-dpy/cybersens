@@ -251,6 +251,9 @@ p {
     gap: 0.5rem;
     flex: 1;
     overflow-y: auto;
+    overflow-x: visible; /* Try to allow horizontal overflow */
+    padding: 0 5px; /* Add small padding to prevent clipping */
+    margin: 0 -5px; /* Negative margin to counteract padding for alignment */
     /* Scrollbar invisible */
     scrollbar-width: none;
 }
@@ -273,7 +276,7 @@ p {
     font-weight: 500;
     letter-spacing: 0.02em;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; Removed to prevent clipping of hover effects */
 }
 
 .nav-item i {
@@ -488,13 +491,20 @@ p {
     box-shadow: 0 0 15px rgba(255, 0, 60, 0.4);
 }
 
-.floating-btn {
+.floating-actions {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
+    display: flex;
+    flex-direction: column; /* Stack downwards */
+    gap: 1rem;
+    z-index: 900;
+}
+
+.floating-btn {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
+    border-radius: 12px;
     background: var(--bg-panel);
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
@@ -503,7 +513,6 @@ p {
     justify-content: center;
     box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
     cursor: pointer;
-    z-index: 900;
     transition: 0.3s;
 }
 
@@ -514,10 +523,22 @@ p {
     background: var(--bg-panel-hover);
 }
 
-.notifications-btn {
-    bottom: 7rem;
-    background: var(--bg-panel);
-    border: 1px solid var(--glass-border);
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: var(--danger);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-panel);
+    transform: translate(25%, -25%);
 }
 
 /* Formulaires */
@@ -772,8 +793,8 @@ p {
 /* Panneau de Notifications */
 .notifications-panel {
     position: fixed;
-    bottom: 6rem;
-    right: 6rem;
+    bottom: 8rem; /* AlignÃ© approximativement avec le bouton de notif duo haut */
+    right: 7.5rem; /* Un peu d'ecart par rapport aux boutons */
     width: 350px;
     background: #0a0a0e;
     border: 1px solid var(--glass-border);
@@ -781,6 +802,8 @@ p {
     padding: 1rem;
     z-index: 1000;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    /* Arrow style to point to the button */
+    display: none; /* Managed by JS, but good default */
 }
 
 /* Squelette de Chargement */

@@ -918,7 +918,168 @@ document.addEventListener('DOMContentLoaded', async () => {
     // NAVIGATION ET CHARGEMENT DES TEMPLATES
     // ==========================================
 
+    let statsInterval = null; // Variable pour stocker l'intervalle de rafraichissement
+
+    async function loadHomeStats(isUpdate = false) {
+        try {
+            const response = await fetch(`${API_URL}/stats.php`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const s = data.stats;
+                
+                // Animate value helper
+                const animateValue = (id, target, duration, suffix = '') => {
+                    const obj = document.getElementById(id);
+                    if (!obj) return;
+                    
+                    // Si mode mise à jour (rafraichissement silencieux), récupérer valeur actuelle pour départ
+                    // Sinon (chargement page), partir de 0
+                    let start = 0;
+                    if(isUpdate) {
+                         const currentText = obj.innerText.replace(/[^0-9]/g, ''); // Enlever le texte non numérique
+                         start = parseInt(currentText) || 0;
+                         if(start === target) return; // Pas de changement, pas d'animation
+                    }
+
+                    let startTimestamp = null;
+                    const step = (timestamp) => {
+                        if (!startTimestamp) startTimestamp = timestamp;
+                        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                        obj.innerHTML = Math.floor(progress * (target - start) + start) + suffix;
+                        if (progress < 1) {
+                            window.requestAnimationFrame(step);
+                        }
+                    };
+                    window.requestAnimationFrame(step);
+                };
+
+                // Update stats with animation
+                if(s.questions) animateValue("stat-questions", s.questions, 1000);
+                if(s.courses) animateValue("stat-courses", s.courses, 1000);
+                if(s.successRate) animateValue("stat-success-rate", s.successRate, 1000, "%");
+                if(s.certificates) animateValue("stat-certificates", s.certificates, 1000);
+
+            }
+        } catch (e) {
+            console.error("Erreur chargement stats home:", e);
+        }
+    }
+
+    async function loadRealNews() {
+        const newsFeed = document.getElementById('news-feed');
+        const tickerContainer = document.getElementById('attacks-ticker');
+        const logContainer = document.getElementById('attacks-log');
+        
+        // On continue même si newsFeed n'existe pas, car on veut peut-être juste le ticker
+        if(!newsFeed && !tickerContainer && !logContainer) return;
+
+        try {
+            const response = await fetch(`${API_URL}/news.php`);
+            const data = await response.json();
+
+            // Optim: Si les données n'ont pas changé, on ne touche pas au DOM (évite reset des animations)
+            const currentDataStr = JSON.stringify(data.news);
+            if (window.lastNewsData === currentDataStr) return;
+            window.lastNewsData = currentDataStr;
+
+            if (data.success && data.news.length > 0) {
+                let newsHTML = '';
+                let logHTML = '';
+                
+                // Fonction helper pour la date
+                const formatDate = (timestamp) => {
+                    return new Date(timestamp * 1000).toLocaleDateString('fr-FR', {
+                        day: 'numeric', month: 'long', hour: '2-digit', minute:'2-digit'
+                    });
+                };
+                
+                const formatLogDate = (timestamp) => {
+                    const d = new Date(timestamp * 1000);
+                    return `[${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}]`;
+                };
+
+                // 1. Ticker (Comme avant, liste complète pour l'effet)
+                if(tickerContainer) {
+                    const fullList = [...data.news, ...data.news]; 
+                    const itemsHTML = fullList.map(item => `
+                        <div class="ticker-item">
+                            <span style="font-weight:600; margin-right:5px;">${new Date(item.date * 1000).toLocaleDateString('fr-FR')} : </span>
+                            <a href="${item.link}" target="_blank" style="color:inherit; text-decoration:none; border-bottom:1px dotted var(--text-muted);">${item.title}</a>
+                        </div>
+                    `).join('');
+                    tickerContainer.innerHTML = `<div class="ticker-track">${itemsHTML}</div>`;
+                }
+
+                // 2. Feed Principal (UNIQUEMENT LE TOP 3)
+                if (newsFeed) {
+                    // On prend les 3 premiers items seulement pour ne pas alourdir
+                    const topNews = data.news.slice(0, 3);
+                    
+                    topNews.forEach(item => {
+                        let icon = 'alert-triangle';
+                        let colorStyle = "color: var(--danger);"; 
+                        if(item.source.includes('Fuite')) { icon = 'database'; colorStyle="color: #ff6b6b;"; }
+                        if(item.source.includes('Rançongiciel')) { icon = 'lock'; colorStyle="color: #fca5a5;"; }
+                        if(item.source.includes('Piratage')) { icon = 'skull'; colorStyle="color: #ef4444;"; }
+
+                        newsHTML += `
+                            <a href="${item.link}" target="_blank" class="news-card type-external" style="text-decoration:none; border-color: rgba(220,38,38,0.3);">
+                                <div class="news-header">
+                                    <div class="news-icon" style="background: rgba(220, 38, 38, 0.1); ${colorStyle}">
+                                        <i data-lucide="${icon}"></i>
+                                    </div>
+                                    <span style="font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px; ${colorStyle}">${item.source}</span>
+                                </div>
+                                <div class="news-content">
+                                    <h3 style="font-size:1rem; line-height:1.4;">${item.title}</h3>
+                                    <p style="font-size:0.9rem; opacity:0.8;">${item.description}</p>
+                                </div>
+                                <div class="news-time">
+                                    <i data-lucide="calendar" style="width:12px; height:12px; display:inline-block; vertical-align:middle;"></i>
+                                    ${formatDate(item.date)}
+                                </div>
+                            </a>
+                        `;
+                    });
+                    newsFeed.innerHTML = newsHTML;
+                }
+
+                // 3. Journal des Attaques (TOUT LE RESTE + LE TOP 3) -> Liste complète
+                if (logContainer) {
+                    // Pour montrer "tout ce qu'il y a eu"
+                    data.news.forEach(item => {
+                        let sourceClass = "";
+                        if(item.source.includes('Piratage') || item.source.includes('Rançongiciel')) sourceClass = "danger";
+
+                        logHTML += `
+                            <div class="log-entry">
+                                <span class="log-date">${formatLogDate(item.date)}</span>
+                                <span class="log-source ${sourceClass}">${item.source}</span><br>
+                                <a href="${item.link}" target="_blank" class="log-link">> ${item.title}</a>
+                            </div>
+                        `;
+                    });
+                    logContainer.innerHTML = logHTML;
+                }
+
+
+                lucide.createIcons();
+            } else {
+                if(newsFeed) newsFeed.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Aucune actualité récente trouvée.</p>';
+            }
+        } catch (e) {
+            console.error("Erreur news:", e);
+        }
+    }
+
     async function loadTemplate(viewId) {
+        // Arrêter l'intervalle de statistiques s'il existe (quand on quitte l'accueil)
+        if(statsInterval) {
+            clearInterval(statsInterval);
+            statsInterval = null;
+        }
+
         try {
             const response = await fetch(`templates/${viewId}.html?t=${Date.now()}`);
             if (!response.ok) throw new Error('Template not found');
@@ -931,6 +1092,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Initialiser la logique de vue spécifique
             if (viewId === 'profil') initAuth();
             if (viewId === 'leaderboard') loadLeaderboards();
+            
+            if (viewId === 'home') {
+                 loadHomeStats(); // Premier chargement
+                 loadRealNews(); // Charger les actus externes
+                 // Rafraichir les stats et news toutes les 10 secondes si l'utilisateur reste sur la page
+                 statsInterval = setInterval(() => {
+                     loadHomeStats(true);
+                     loadRealNews();
+                 }, 10000);
+            }
 
             // On garde l'effet tilt pour le quiz
             if (viewId === 'home' || viewId === 'cours' || viewId === 'quiz') initTiltEffect();

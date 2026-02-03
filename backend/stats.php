@@ -18,6 +18,13 @@ try {
     // Nombre de questions
     $stats['questions'] = $pdo->query("SELECT COUNT(*) FROM questions")->fetchColumn();
     
+    // Nombre de certificats
+    $stats['certificates'] = $pdo->query("SELECT COUNT(*) FROM certificates")->fetchColumn();
+    
+    // Taux de réussite (Moyenne des scores des certifications, ou 0 si vide)
+    $avgScore = $pdo->query("SELECT AVG(score) FROM certificates")->fetchColumn();
+    $stats['successRate'] = $avgScore ? round($avgScore, 1) : 0;
+    
     // Nombre de modules terminés
     $stats['completions'] = $pdo->query("SELECT COUNT(*) FROM progression WHERE is_completed = 1")->fetchColumn();
     
@@ -28,6 +35,15 @@ try {
     // Derniers utilisateurs
     $stmt = $pdo->query("SELECT id, username, email, created_at FROM users ORDER BY created_at DESC LIMIT 5");
     $stats['recentUsers'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Derniers certificats (Pour le fil d'actualité)
+    $stmt = $pdo->query("SELECT c.id, u.username, co.title as course_title, c.issued_at 
+                         FROM certificates c 
+                         JOIN users u ON c.user_id = u.id 
+                         JOIN courses co ON c.course_id = co.id 
+                         ORDER BY c.issued_at DESC 
+                         LIMIT 5");
+    $stats['recentCertificates'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     echo json_encode(['success' => true, 'stats' => $stats]);
     

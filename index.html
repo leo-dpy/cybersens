@@ -160,15 +160,17 @@
         </div>
     </div>
 
-    <button id="open-bp-btn" class="floating-btn" title="Bonnes Pratiques">
-        <i data-lucide="shield-alert"></i>
-    </button>
+    <div class="floating-actions">
+        <!-- Cloche de notification -->
+        <button id="notifications-btn" class="floating-btn" title="Notifications">
+            <i data-lucide="bell"></i>
+            <span id="notification-badge" class="notification-badge" style="display: none;">0</span>
+        </button>
 
-    <!-- Cloche de notification -->
-    <button id="notifications-btn" class="floating-btn notifications-btn" title="Notifications">
-        <i data-lucide="bell"></i>
-        <span id="notification-badge" class="notification-badge" style="display: none;">0</span>
-    </button>
+        <button id="open-bp-btn" class="floating-btn" title="Bonnes Pratiques">
+            <i data-lucide="shield-alert"></i>
+        </button>
+    </div>
 
     <!-- Panneau de notifications -->
     <div id="notifications-panel" class="notifications-panel" style="display: none;">

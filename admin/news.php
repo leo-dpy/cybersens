@@ -92,9 +92,6 @@ try {
         <!-- Barre latérale -->
         <nav class="sidebar">
             <div class="logo">
-                <div class="logo-icon">
-                    <i data-lucide="shield-check"></i>
-                </div>
                 <span class="logo-text">CyberSens</span>
             </div>
             

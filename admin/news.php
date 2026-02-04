@@ -79,8 +79,9 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Actualités - Admin CyberSens</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="admin-style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/admin/news.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>

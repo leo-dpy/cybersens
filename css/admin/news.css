@@ -1,0 +1,16 @@
+/* Styles spécifiques pour la gestion des actualités */
+
+/* Description handling inside the news table */
+.admin-table td:nth-child(4) {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+    .admin-table td:nth-child(2), /* Source */
+    .admin-table td:nth-child(4) { /* Description */
+        display: none;
+    }
+}

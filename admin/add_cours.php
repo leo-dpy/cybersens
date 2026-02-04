@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer un Cours - Admin CyberSens</title>
     <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">

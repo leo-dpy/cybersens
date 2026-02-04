@@ -1,70 +1,56 @@
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* -- PALETTE : Black & Electric Blue -- */
-    --bg-deep: #000000;
-    /* Pure Black */
-    --bg-page: #000000;
-    /* Pure Black - Was #050508 */
-    --bg-panel: rgba(5, 5, 5, 0.9);
-    /* Dark Neutral - Was rgba(10, 10, 15, 0.8) */
-    --bg-panel-hover: rgba(20, 20, 20, 0.95);
-    /* Dark Neutral - Was rgba(20, 20, 35, 0.9) */
+    /* -- PALETTE : Noir & Blanc (Monochrome Precision) -- */
+    --bg-deep: #000000; /* Pure Black */
+    --bg-page: #050505; /* Black */
+    
+    --bg-panel: rgba(20, 20, 20, 0.9); /* Dark Grey Glass */
+    --bg-panel-hover: rgba(40, 40, 40, 0.95);
 
-    /* -- ACCENTS : Deep Neon Blue -- */
-    --primary: #0055ff;
-    /* Electric Royal Blue */
+    /* -- ACCENTS : Monochrome -- */
+    --primary: #ffffff; /* Pure White */
     --primary-color: var(--primary);
     --accent-primary: var(--primary);
-    --primary-dim: #0033cc;
-    --primary-glow: rgba(0, 85, 255, 0.2); 
-    /* Reduced Glow */
+    --primary-dim: #cccccc; /* Light Grey */
+    --primary-glow: rgba(255, 255, 255, 0.15);
 
-    --secondary: #4d00ff;
-    /* Deep Violet Blue */
-    --secondary-dim: #3300aa;
-    --secondary-glow: rgba(77, 0, 255, 0.4);
+    --secondary: #808080; /* Grey */
+    --secondary-dim: #666666;
+    --secondary-glow: rgba(128, 128, 128, 0.2);
 
-    --accent: #00ddff;
-    /* Cyan Highlight */
+    --accent: #ffffff; /* White */
     --accent-color: var(--accent);
-    --success: #00ff88;
-    /* Neon Green */
-    --warning: #ffaa00;
-    /* Neon Orange */
-    --danger: #ff0044;
-    /* Neon Red */
+    
+    --success: #ffffff; /* White (with icon distinction) */
+    --warning: #dddddd; /* Very Light Grey */
+    --danger: #ef4444; /* Red for alerts */
 
-    /* -- TEXTE -- */
+    /* -- TEXT -- */
     --text-main: #ffffff;
-    --text-muted: #999999; 
-    /* Neutral Grey - Was #8899aa */
+    --text-muted: #999999;
     --text-dim: #666666;
-    /* Darker Grey - Was #556677 */
 
-    /* -- BORDURES ET VERRE -- */
-    --glass-border: rgba(255, 255, 255, 0.1); 
-    /* White/Grey Border - Was rgba(0, 85, 255, 0.2) */
+    /* -- BORDERS & GLASS -- */
+    --glass-border: rgba(255, 255, 255, 0.15); 
     --glass-border-hover: rgba(255, 255, 255, 0.3); 
-    /* Brighter White Border - Was rgba(0, 85, 255, 0.6) */
-    --glass-highlight: rgba(255, 255, 255, 0.1);
-    --backdrop-blur: 16px;
+    --glass-highlight: rgba(255, 255, 255, 0.08);
+    --backdrop-blur: 12px;
 
-    /* -- OMBRES -- */
-    --shadow-glow: 0 0 30px rgba(0, 0, 0, 0.8);
-    /* Black Shadow - Was rgba(0, 85, 255, 0.25) */
-    --shadow-card: 0 10px 50px rgba(0, 0, 0, 0.95);
+    /* -- SHADOWS -- */
+    --shadow-glow: 0 0 30px rgba(255, 255, 255, 0.1);
+    --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.9);
 
-    /* -- TYPOGRAPHIE -- */
+    /* -- TYPOGRAPHY -- */
     --font-heading: 'Exo 2', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
-    /* -- MISE EN PAGE -- */
+    /* -- LAYOUT -- */
     --radius-sm: 4px;
-    --radius-md: 12px;
-    --radius-lg: 20px;
-    --radius-xl: 32px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
     --sidebar-width: 280px;
 
     /* -- TRANSITIONS -- */
@@ -115,8 +101,8 @@ body::before {
     right: 0;
     height: 100vh;
     background:
-        radial-gradient(circle at 10% 20%, rgba(0, 85, 255, 0.02) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(77, 0, 255, 0.02) 0%, transparent 40%);
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
     pointer-events: none;
     z-index: -2;
 }
@@ -156,11 +142,11 @@ h1 {
     font-size: 2.8rem;
     font-weight: 800;
     text-transform: uppercase;
-    background: linear-gradient(135deg, #fff 20%, var(--primary) 60%, var(--accent) 100%);
+    background: linear-gradient(135deg, #fff 40%, #888 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
-    filter: drop-shadow(0 0 20px rgba(0, 85, 255, 0.15));
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
     letter-spacing: -0.02em;
 }
 
@@ -311,10 +297,10 @@ p {
 }
 
 .nav-item.active {
-    background: linear-gradient(90deg, rgba(0, 243, 255, 0.15), rgba(0, 243, 255, 0.05));
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
     color: var(--primary);
-    border: 1px solid rgba(0, 243, 255, 0.3);
-    box-shadow: 0 0 25px rgba(0, 243, 255, 0.1), inset 0 0 10px rgba(0, 243, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05), inset 0 0 10px rgba(255, 255, 255, 0.02);
 }
 
 .nav-item.active i {

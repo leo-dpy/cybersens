@@ -592,9 +592,11 @@ function showToast(title, message, type = 'success', duration = 5000) {
 
     // Créer le toast
     const toast = document.createElement('div');
+    const bgStyle = type === 'error' ? `rgba(220, 38, 38, 0.9)` : `var(--bg-panel)`;
+    
     toast.className = 'toast-notification';
     toast.style.cssText = `
-        background: rgba(20, 20, 20, 0.95);
+        background: ${bgStyle};
         backdrop-filter: blur(20px);
         border: 1px solid ${color}40;
         border-left: 4px solid ${color};

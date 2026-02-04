@@ -21,8 +21,8 @@ $roleHierarchy = [
 $rolePermissions = [
     ROLE_USER => [],
     ROLE_CREATOR => ['manage_courses', 'manage_questions', 'view_dashboard'],
-    ROLE_ADMIN => ['manage_users', 'view_dashboard'],
-    ROLE_SUPERADMIN => ['manage_courses', 'manage_questions', 'manage_users', 'manage_roles', 'view_dashboard', 'delete_admins']
+    ROLE_ADMIN => ['manage_users', 'view_dashboard', 'manage_content'],
+    ROLE_SUPERADMIN => ['manage_courses', 'manage_questions', 'manage_users', 'manage_roles', 'view_dashboard', 'delete_admins', 'manage_content']
 ];
 
 // Récupérer le rôle de l'utilisateur connecté
@@ -175,12 +175,12 @@ function canChangeRole($targetUserId, $newRole) {
 // Vérifier l'accès admin (créateur, admin ou superadmin)
 function checkAdmin() {
     if (!isset($_SESSION['user_id'])) {
-        header("Location: ../index.html");
+        header("Location: ../index.html?evt=session_expired");
         exit;
     }
     
     if (!hasMinimumRole(ROLE_CREATOR)) {
-        header("Location: ../index.html");
+        header("Location: ../index.html?evt=forbidden");
         exit;
     }
 }

@@ -75,6 +75,13 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
                     <span>Banque Questions</span>
                 </a>
                 <?php endif; ?>
+
+                <?php if(hasPermission('manage_content')): ?>
+                <a href="news.php" class="nav-item">
+                    <i data-lucide="rss"></i>
+                    <span>Actualités</span>
+                </a>
+                <?php endif; ?>
                 
                 <?php if(hasPermission('manage_users')): ?>
                 <a href="users.php" class="nav-item">

@@ -58,6 +58,13 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
                     <span>Banque Questions</span>
                 </a>
                 <?php endif; ?>
+
+                <?php if(hasPermission('manage_content')): ?>
+                <a href="news.php" class="nav-item">
+                    <i data-lucide="rss"></i>
+                    <span>Actualités</span>
+                </a>
+                <?php endif; ?>
                 
                 <?php if($canManageUsers): ?>
                 <a href="users.php" class="nav-item">
@@ -65,7 +72,6 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
                     <span>Utilisateurs</span>
                 </a>
                 <?php endif; ?>
-
                 <div class="nav-divider"></div>
 
                 <a href="../index.html" class="nav-item">

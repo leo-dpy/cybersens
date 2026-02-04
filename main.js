@@ -891,6 +891,15 @@ async function initQuizView() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Gestion des retours d'erreur session de l'admin (PHP -> JS)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('evt') === 'session_expired') {
+        sessionStorage.removeItem('currentUser');
+        alert("Votre session administrateur a expiré. Veuillez vous reconnecter.");
+        // Nettoyer l'URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     // Vérifier si on exécute via protocole file://
     if (window.location.protocol === 'file:') {
         alert("⚠️ ATTENTION : Vous avez ouvert le fichier directement.\n\nPour que la base de données fonctionne, vous devez passer par votre serveur WAMP (http://localhost/Cybersens).");
@@ -1130,8 +1139,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Ajouter les écouteurs de clic
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            // Permettre la navigation par défaut pour les liens avec href (ex: Admin)
+            // Pour le lien Admin (balise A avec href)
             if (item.tagName === 'A' && item.getAttribute('href')) {
+                const href = item.getAttribute('href');
+                // On force la navigation pour être sûr
+                if(href && href !== '#') {
+                    window.location.href = href;
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
                 return;
             }
 

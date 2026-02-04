@@ -76,6 +76,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="index.php" class="nav-item"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
                 <a href="cours.php" class="nav-item"><i data-lucide="book-open"></i><span>Gestion Cours</span></a>
                 <a href="questions.php" class="nav-item active"><i data-lucide="help-circle"></i><span>Banque Questions</span></a>
+                
+                <?php if(hasPermission('manage_content')): ?>
+                <a href="news.php" class="nav-item"><i data-lucide="rss"></i><span>Actualités</span></a>
+                <?php endif; ?>
+
                 <a href="users.php" class="nav-item"><i data-lucide="users"></i><span>Utilisateurs</span></a>
                 <div class="nav-divider"></div>
                 <a href="../index.html" class="nav-item"><i data-lucide="arrow-left"></i><span>Retour au site</span></a>

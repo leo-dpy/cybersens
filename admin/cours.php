@@ -136,7 +136,7 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
             </div>
 
             <?php if(isset($_GET['msg'])): ?>
-            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+            <div class="alert alert-success">
                 <i data-lucide="check-circle"></i>
                 <?php 
                 if($_GET['msg'] == 'created') echo 'Cours créé avec succès !';
@@ -176,11 +176,11 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
                             </td>
                             <td>
                                 <?php 
-                                $diffClass = $c['difficulty'] == 'Facile' ? 'success' : ($c['difficulty'] == 'Intermédiaire' ? 'warning' : 'danger');
-                                $bg = $diffClass == 'success' ? 'rgba(16, 185, 129, 0.15)' : ($diffClass == 'warning' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)');
-                                $color = $diffClass == 'success' ? 'var(--success)' : ($diffClass == 'warning' ? 'var(--warning)' : 'var(--danger)');
+                                $diffCss = 'facile';
+                                if($c['difficulty'] == 'Intermédiaire' || $c['difficulty'] == 'Moyen') $diffCss = 'moyen';
+                                if($c['difficulty'] == 'Difficile') $diffCss = 'difficile';
                                 ?>
-                                <span class="badge" style="background: <?php echo $bg; ?>; color: <?php echo $color; ?>;">
+                                <span class="difficulty-badge <?php echo $diffCss; ?>">
                                     <?php echo $c['difficulty']; ?>
                                 </span>
                             </td>
@@ -195,7 +195,7 @@ $cours = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM questions WHERE course_i
                                         <i data-lucide="eye-off" style="width: 14px; height: 14px;"></i> Caché
                                     </span>
                                 <?php else: ?>
-                                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success); display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem;">
+                                    <span class="badge badge-success" style="display: inline-flex; align-items: center; gap: 0.4rem;">
                                         <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Visible
                                     </span>
                                 <?php endif; ?>

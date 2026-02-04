@@ -16,7 +16,6 @@ if (!$username || !$email || !$password) {
     exit;
 }
 
-// Validation email
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['success' => false, 'message' => 'Email invalide']);
     exit;

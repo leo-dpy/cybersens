@@ -144,7 +144,7 @@ try {
                                             <?php echo htmlspecialchars($item['event_date']); ?>
                                         </td>
                                         <td>
-                                            <span class="badge" style="background: rgba(220, 38, 38, 0.1); color: var(--danger);">
+                                            <span class="badge badge-danger">
                                                 <?php echo htmlspecialchars($item['source']); ?>
                                             </span>
                                         </td>

@@ -162,18 +162,18 @@
 }
 
 .scenario-card .type-badge.email {
-    background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary);
 }
 
 .scenario-card .type-badge.sms {
-    background: rgba(16, 185, 129, 0.15);
-    color: #34d399;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary);
 }
 
 .scenario-card .type-badge.website {
-    background: rgba(139, 92, 246, 0.15);
-    color: #a78bfa;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary);
 }
 
 .scenario-card h3 {
@@ -188,18 +188,18 @@
 }
 
 .scenario-card .difficulty.facile {
-    color: #4ade80; /* Vert plus vif */
-    text-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+    color: var(--accent-green);
+    text-shadow: 0 0 15px var(--accent-green-glow);
 }
 
 .scenario-card .difficulty.moyen {
-    color: #fbbf24; /* Jaune or */
-    text-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+    color: var(--accent-orange);
+    text-shadow: 0 0 15px var(--accent-orange-glow);
 }
 
 .scenario-card .difficulty.difficile {
-    color: #ef4444; /* Rouge vif */
-    text-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    color: var(--accent-red);
+    text-shadow: 0 0 15px var(--accent-red-glow);
 }
 
 /* =========================================
@@ -562,7 +562,7 @@
 }
 
 .result-explanation {
-    background: rgba(255, 255, 255, 0.05);
+    background: #000000;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 1.5rem;

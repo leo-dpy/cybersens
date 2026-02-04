@@ -14,9 +14,6 @@ if ($method === 'OPTIONS') {
 }
 
 try {
-    // Les tables phishing_scenarios et phishing_results existent déjà dans cybersens.sql
-    // Pas besoin de les créer ici
-    
     switch ($method) {
         case 'GET':
             $action = $_GET['action'] ?? 'list';

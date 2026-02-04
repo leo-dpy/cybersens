@@ -26,6 +26,22 @@
     --warning: #dddddd; /* Very Light Grey */
     --danger: #ef4444; /* Red for alerts */
 
+    /* -- VIBRANT ACCENTS -- */
+    --accent-cyan: #06b6d4;
+    --accent-cyan-glow: rgba(6, 182, 212, 0.15);
+    
+    --accent-green: #10b981;
+    --accent-green-glow: rgba(16, 185, 129, 0.15);
+
+    --accent-orange: #f59e0b;
+    --accent-orange-glow: rgba(245, 158, 11, 0.15);
+
+    --accent-red: #ef4444;
+    --accent-red-glow: rgba(239, 68, 68, 0.15);
+
+    --accent-purple: #8b5cf6;
+    --accent-purple-glow: rgba(139, 92, 246, 0.15);
+
     /* -- TEXT -- */
     --text-main: #ffffff;
     --text-muted: #999999;
@@ -339,14 +355,14 @@ p {
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: var(--gradient-primary, linear-gradient(135deg, #00f3ff, #bc13fe));
+    background: var(--primary);
     color: #000;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.9rem;
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .sidebar-user-name {
@@ -427,8 +443,8 @@ p {
 .scenario-card:hover,
 .resource-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(0, 243, 255, 0.3);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 243, 255, 0.1);
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--shadow-glow);
     background: rgba(20, 20, 26, 0.6);
 }
 
@@ -465,7 +481,7 @@ p {
 .btn-primary {
     background: var(--primary);
     color: #000;
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
 }
 
 .btn-primary:hover {
@@ -511,7 +527,7 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     cursor: pointer;
     transition: 0.3s;
 }
@@ -556,7 +572,7 @@ p {
 
 .form-input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     background: rgba(0, 0, 0, 0.5);
 }
 
@@ -735,7 +751,7 @@ p {
 }
 
 .bp-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: #000000;
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     padding: 1rem;
@@ -746,17 +762,17 @@ p {
 }
 
 .bp-card:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: #0a0a0a;
     border-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
 }
 
 .bp-icon {
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    background: rgba(0, 243, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     color: var(--primary);
     display: flex;
     align-items: center;
@@ -911,9 +927,9 @@ p {
     }
 
     .nav-item.active {
-        box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         border: none;
-        background: rgba(0, 243, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1);
         color: var(--primary);
     }
 
@@ -973,7 +989,7 @@ p {
 .btn-outline:hover {
     border-color: var(--primary);
     color: var(--primary);
-    background: rgba(0, 243, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .badge {
@@ -994,22 +1010,66 @@ p {
 }
 
 .difficulty-badge.facile {
-    background: rgba(10, 255, 96, 0.1);
-    color: var(--success);
-    border-color: rgba(10, 255, 96, 0.2);
+    background: var(--accent-green-glow);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .difficulty-badge.moyen {
-    background: rgba(255, 204, 0, 0.1);
-    color: var(--warning);
-    border-color: rgba(255, 204, 0, 0.2);
+    background: var(--accent-orange-glow);
+    color: var(--accent-orange);
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .difficulty-badge.difficile {
-    background: rgba(255, 0, 60, 0.1);
-    color: var(--danger);
-    border-color: rgba(255, 0, 60, 0.2);
+    background: var(--accent-red-glow);
+    color: var(--accent-red);
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
+
+/* Nouveaux Badges Admin */
+.badge-xp {
+    background: var(--accent-cyan-glow);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.badge-answer {
+    background: var(--accent-green-glow);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Badge générique dynamique */
+.badge-success {
+    background: var(--accent-green-glow);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge-warning {
+    background: var(--accent-orange-glow);
+    color: var(--accent-orange);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.badge-danger {
+    background: var(--accent-red-glow);
+    color: var(--accent-red);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.badge-info {
+    background: var(--accent-cyan-glow);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+.badge-purple {
+    background: var(--accent-purple-glow);
+    color: var(--accent-purple);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
 
 .w-full {
     width: 100%;
@@ -1108,8 +1168,8 @@ p {
 
 .auth-input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(0, 243, 255, 0.1);
-    background: rgba(0, 243, 255, 0.02);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     outline: none;
 }
 
@@ -1223,12 +1283,12 @@ table.ranking-table tr:hover td {
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(12px);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
 .scenario-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 25px var(--shadow-glow);
     background: rgba(13, 13, 18, 0.95);
 }
 
@@ -1260,10 +1320,10 @@ table.ranking-table tr:hover td {
 }
 
 .scenario-card:hover .type-badge {
-    background: rgba(0, 243, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-color: var(--primary);
     color: var(--primary);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .type-badge i {
@@ -1335,13 +1395,14 @@ table.ranking-table tr:hover td {
     height: 100%;
     position: relative;
     z-index: 1;
-    box-shadow: 0 0 15px rgba(188, 19, 254, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
 .resource-card:hover {
     transform: translateY(-5px);
-    background: rgba(20, 20, 25, 0.95);
-    box-shadow: 0 0 25px rgba(188, 19, 254, 0.3);
+    background: rgba(20, 20, 25, 0.6);
+    box-shadow: 0 0 25px var(--shadow-glow);
+    border-color: var(--glass-border-hover);
 }
 
 .resource-card::before {
@@ -1367,9 +1428,9 @@ table.ranking-table tr:hover td {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(188, 19, 254, 0.1);
-    border: 1px solid var(--secondary);
-    color: var(--secondary);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
     transition: 0.3s;
     margin-right: 1rem;
     flex-shrink: 0;
@@ -1597,12 +1658,12 @@ body {
 .admin-modal-content {
     background: #08080c;
     border: 1px solid var(--primary);
-    box-shadow: 0 0 50px rgba(0, 243, 255, 0.15);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-md);
 }
 
 .admin-modal-header {
-    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .admin-modal-header h2 {
@@ -1673,9 +1734,9 @@ body {
 
 .role-card:has(input:checked),
 .role-card.active {
-    background: rgba(0, 243, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08);
     border-color: var(--primary);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.15) inset;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15) inset;
 }
 
 .role-card-icon {
@@ -1728,7 +1789,7 @@ body {
 .stat-card-admin:hover {
     border-color: var(--primary);
     transform: translateY(-5px);
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
     background: rgba(13, 13, 18, 0.8);
 }
 
@@ -1906,7 +1967,7 @@ body {
 .course-card:hover {
     transform: translateY(-5px);
     border-color: var(--primary);
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
     background: #0a0a0a;
 }
 
@@ -2061,10 +2122,10 @@ body {
 }
 
 .btn-icon.edit:hover {
-    color: var(--primary);
-    background: rgba(0, 243, 255, 0.1);
-    border-color: rgba(0, 243, 255, 0.2);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    color: var(--accent-cyan);
+    background: var(--accent-cyan-glow);
+    border-color: rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 10px var(--accent-cyan-glow);
 }
 
 .btn-icon.delete:hover {
@@ -2172,7 +2233,7 @@ input[type=number] {
 
 input[type=number]:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 
@@ -2231,7 +2292,7 @@ input[type=number]:focus {
     color: #fff;
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.4));
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
 }
 
 .admin-table-container {
@@ -2371,15 +2432,15 @@ input[type=number]:focus {
 }
 
 .alert-success {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    background: var(--accent-green-glow);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: var(--accent-green);
 }
 
 .alert-danger {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    background: var(--accent-red-glow);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: var(--accent-red);
 }
 /* ============================================
    ELEMENTS D'INTERFACE ADMIN (Boutons, Forms)
@@ -2456,7 +2517,7 @@ input[type=number]:focus {
     border-color: var(--primary) !important;
     background: rgba(0, 0, 0, 0.5) !important;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.1);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
 /* Fix text colors */

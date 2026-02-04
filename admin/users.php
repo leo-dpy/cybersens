@@ -272,7 +272,7 @@ foreach ($users as $u) {
             </div>
 
             <?php if($message): ?>
-            <div style="background: <?php echo $messageType === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'; ?>; border: 1px solid <?php echo $messageType === 'success' ? 'var(--success)' : 'var(--danger)'; ?>; color: <?php echo $messageType === 'success' ? 'var(--success)' : 'var(--danger)'; ?>; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+            <div class="alert alert-<?php echo $messageType; ?>">
                 <i data-lucide="<?php echo $messageType === 'success' ? 'check-circle' : 'alert-circle'; ?>"></i>
                 <?php echo $message; ?>
             </div>
@@ -335,7 +335,7 @@ foreach ($users as $u) {
                                         <div style="font-size: 0.8rem; color: var(--text-muted);"><?php echo htmlspecialchars($u['email']); ?></div>
                                     </div>
                                     <?php if($isProtected): ?>
-                                    <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; margin-left: auto;">PROTÉGÉ</span>
+                                    <span class="badge badge-danger" style="margin-left: auto;">PROTÉGÉ</span>
                                     <?php endif; ?>
                                 </div>
                             </td>
@@ -351,10 +351,10 @@ foreach ($users as $u) {
                             </td>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 0.8rem;">
-                                    <div style="display: inline-flex; align-items: center; gap: 0.3rem; color: var(--warning); font-weight: 600;">
+                                    <div style="display: inline-flex; align-items: center; gap: 0.3rem; color: var(--accent-orange); font-weight: 600;">
                                         <i data-lucide="zap" style="width: 14px; height: 14px;"></i> <?php echo $u['xp']; ?>
                                     </div>
-                                    <span class="badge" style="font-size: 0.7rem; background: rgba(255, 255, 255, 0.1); color: var(--text-main);">LVL <?php echo $u['level']; ?></span>
+                                    <span class="badge badge-purple" style="font-size: 0.7rem;">LVL <?php echo $u['level']; ?></span>
                                 </div>
                             </td>
                             <td>

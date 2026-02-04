@@ -128,7 +128,7 @@ if ($course_filter) {
             </div>
 
             <?php if(isset($_GET['msg'])): ?>
-            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+            <div class="alert alert-success">
                 <i data-lucide="check-circle"></i>
                 <?php 
                 if($_GET['msg'] == 'created') echo 'Question créée avec succès !';
@@ -178,11 +178,10 @@ if ($course_filter) {
                         <?php 
                             $difficulty = $q['difficulty'] ?? 'Facile';
                             $xp = $q['xp_reward'] ?? 10;
-                            // Logique de couleur des badges
-                            $diffClass = $difficulty == 'Facile' ? 'success' : ($difficulty == 'Intermédiaire' ? 'warning' : 'danger');
-                            $diffColor = $diffClass == 'success' ? 'var(--success)' : ($diffClass == 'warning' ? 'var(--warning)' : 'var(--danger)');
-                            $diffBg = $diffClass == 'success' ? 'rgba(16, 185, 129, 0.15)' : ($diffClass == 'warning' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)');
-                            $diffDot = $difficulty == 'Facile' ? '🟢' : ($difficulty == 'Intermédiaire' ? '🟠' : '🔴');
+                            
+                            $diffCss = 'facile';
+                            if($difficulty == 'Intermédiaire' || $difficulty == 'Moyen') $diffCss = 'moyen';
+                            if($difficulty == 'Difficile') $diffCss = 'difficile';
                         ?>
                         <tr>
                             <td class="text-muted">#<?php echo $q['id']; ?></td>
@@ -197,17 +196,17 @@ if ($course_filter) {
                                 </div>
                             </td>
                             <td>
-                                <span class="badge" style="background: <?php echo $diffBg; ?>; color: <?php echo $diffColor; ?>; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem;">
-                                    <?php echo $difficulty; ?>
+                                <span class="difficulty-badge <?php echo $diffCss; ?>">
+                                    <?php echo strtoupper($difficulty); ?>
                                 </span>
                             </td>
                             <td>
-                                <span class="badge" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem;">
+                                <span class="badge badge-xp">
                                     <i data-lucide="zap" style="width: 14px; height: 14px;"></i> <?php echo $xp; ?> XP
                                 </span>
                             </td>
                             <td>
-                                <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2);">
+                                <span class="badge badge-answer">
                                     <?php echo $q['correct_answer']; ?>
                                 </span>
                             </td>

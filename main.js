@@ -1,7 +1,7 @@
 // ==========================================
 // CLIENT API (Remplace la DB LocalStorage)
 // ==========================================
-const API_URL = 'backend'; // Chemin relatif vers le dossier backend
+const API_URL = 'backend';
 
 // Fonction utilitaire pour convertir le niveau numérique en texte
 function getLevelName(level) {
@@ -15,17 +15,6 @@ function getLevelName(level) {
         7: 'Légende'
     };
     return levels[level] || `Niveau ${level}`;
-}
-
-// Calculer le niveau à partir de l'XP
-function calculateLevel(xp) {
-    if (xp < 100) return 1;
-    if (xp < 300) return 2;
-    if (xp < 600) return 3;
-    if (xp < 1000) return 4;
-    if (xp < 1500) return 5;
-    if (xp < 2500) return 6;
-    return 7;
 }
 
 // XP requis pour le prochain niveau
@@ -2336,7 +2325,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                     ` : ''}
                     ${certificateCode ? `
-                        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(0, 243, 255, 0.1); border-radius: 8px; border: 1px solid var(--primary-color);">
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid var(--primary-color);">
                             <p style="color: var(--primary-color); font-weight: 600;">🏆 Certificat obtenu !</p>
                             <p style="font-family: 'JetBrains Mono', monospace; color: #999;">${certificateCode}</p>
                         </div>

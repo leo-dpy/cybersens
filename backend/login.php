@@ -20,12 +20,10 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
 $stmt->execute([$email]);
 $user = $stmt->fetch();
 
-// Vérification du mot de passe (supporte haché et clair pour dev)
+// Vérification du mot de passe
 $isValid = false;
 if ($user) {
     if (password_verify($password, $user['password'])) {
-        $isValid = true;
-    } elseif ($user['password'] === $password) {
         $isValid = true;
     }
 }

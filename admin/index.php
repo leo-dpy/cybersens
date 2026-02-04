@@ -96,7 +96,7 @@ $errorMsg = isset($_GET['error']) && $_GET['error'] === 'no_permission' ? "Vous 
             </div>
 
             <?php if($errorMsg): ?>
-            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: var(--danger-light); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+            <div class="alert alert-danger">
                 <i data-lucide="alert-circle"></i>
                 <?php echo $errorMsg; ?>
             </div>

@@ -14,7 +14,7 @@
 }
 
 .home-stats-grid .stat-card {
-    background: var(--bg-panel);
+    background: #000000;
     border: 1px solid var(--glass-border); /* Bordure subtile */
     border-radius: 16px;
     padding: 1.5rem;

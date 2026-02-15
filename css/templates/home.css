@@ -25,14 +25,7 @@
     overflow: hidden;
     backdrop-filter: none; /* Désactive l'effet de flou global */
     box-shadow: none; /* Style plat sans ombre portée excessive */
-    transition: all 0.3s ease;
     height: 100%;
-}
-
-.home-stats-grid .stat-card:hover {
-    border-color: rgba(255, 255, 255, 0.15);
-    background: #0a0a0a;
-    transform: translateY(-2px);
 }
 
 /* Désactiver l'effet brillant du style global */
@@ -98,7 +91,6 @@
     color: #ffffff;
     line-height: 1;
     margin-bottom: 0.5rem;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 /* Libellé en bas */
@@ -255,7 +247,6 @@
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -264,8 +255,6 @@
 }
 
 .news-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
     border-color: var(--primary);
 }
 

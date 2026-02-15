@@ -103,7 +103,6 @@
 
 .quiz-intro-grid .card:hover .card-action {
     opacity: 1;
-    gap: 0.75rem; /* Petite animation de flèche */
 }
 
 /* Accents discrets */
@@ -117,12 +116,11 @@
 
 .quiz-courses-grid .card {
     cursor: pointer;
-    transition: all 0.3s ease;
+    /* transition: all 0.3s ease; */
     position: relative;
 }
 
 .quiz-courses-grid .card:hover:not(.card-locked) {
-    transform: translateY(-4px);
     border-color: var(--primary-color);
 }
 

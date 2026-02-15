@@ -399,40 +399,23 @@ p {
     z-index: 0;
 }
 
-/* Effet de brillance au survol */
+/* Effet de brillance au survol - DESACTIVE */
 .card::after,
-.stat-card::after,
 .scenario-card::after,
 .resource-card::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-    opacity: 0;
-    transform: scale(0.5);
-    transition: all 0.5s ease;
-    pointer-events: none;
-    z-index: 1;
+    display: none;
 }
 
 .card:hover::after,
-.stat-card:hover::after,
 .scenario-card:hover::after,
 .resource-card:hover::after {
-    opacity: 1;
-    transform: scale(1);
+    opacity: 0;
 }
 
 .card:hover,
-.stat-card:hover,
 .scenario-card:hover,
 .resource-card:hover {
-    transform: translateY(-5px);
     border-color: var(--glass-border-hover);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--shadow-glow);
     background: rgba(20, 20, 26, 0.6);
 }
 
@@ -748,8 +731,6 @@ p {
 .bp-card:hover {
     background: #0a0a0a;
     border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
 }
 
 .bp-icon {
@@ -766,7 +747,6 @@ p {
 .bp-card:hover .bp-icon {
     background: var(--primary);
     color: #000;
-    box-shadow: 0 0 10px var(--primary-glow);
 }
 
 .bp-info h4 {
@@ -1215,10 +1195,7 @@ table.ranking-table td:last-child {
 }
 
 table.ranking-table tr:hover {
-    background: rgba(255, 255, 255, 0.08);
-    /* Plus visible */
-    transform: scale(1.01);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 table.ranking-table tr:hover td {

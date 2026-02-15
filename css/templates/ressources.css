@@ -184,8 +184,6 @@
 .resource-card:hover {
     border-color: var(--glass-border-hover);
     background: #0a0a0a;
-    transform: translateY(-4px);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 .resource-card .card-header {

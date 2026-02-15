@@ -77,11 +77,6 @@
     filter: grayscale(1);
 }
 
-.badge-item:not(.locked):hover {
-    transform: translateY(-4px);
-    border-color: var(--primary-color, #00f3ff);
-}
-
 .badge-item .badge-icon {
     width: 48px;
     height: 48px;
@@ -273,15 +268,7 @@
 }
 
 .xp-progress-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary-color, #00f3ff), var(--accent-color, #ff00aa), var(--primary-color, #00f3ff));
-    background-size: 200% 100%;
-    animation: shimmer 3s linear infinite;
+    display: none;
 }
 
 @keyframes shimmer {

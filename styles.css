@@ -2,34 +2,44 @@
 
 :root {
     /* PALETTE : Noir & Blanc (Monochrome Precision) */
-    --bg-deep: #000000; /* Pure Black */
-    --bg-page: #050505; /* Black */
-    
-    --bg-panel: rgba(20, 20, 20, 0.9); /* Dark Grey Glass */
+    --bg-deep: #000000;
+    /* Pure Black */
+    --bg-page: #050505;
+    /* Black */
+
+    --bg-panel: rgba(20, 20, 20, 0.9);
+    /* Dark Grey Glass */
     --bg-panel-hover: rgba(40, 40, 40, 0.95);
 
     /* ACCENTS : Monochrome */
-    --primary: #ffffff; /* Pure White */
+    --primary: #ffffff;
+    /* Pure White */
     --primary-color: var(--primary);
     --accent-primary: var(--primary);
-    --primary-dim: #cccccc; /* Light Grey */
+    --primary-dim: #cccccc;
+    /* Light Grey */
     --primary-glow: rgba(255, 255, 255, 0.15);
 
-    --secondary: #808080; /* Grey */
+    --secondary: #808080;
+    /* Grey */
     --secondary-dim: #666666;
     --secondary-glow: rgba(128, 128, 128, 0.2);
 
-    --accent: #ffffff; /* White */
+    --accent: #ffffff;
+    /* White */
     --accent-color: var(--accent);
-    
-    --success: #ffffff; /* White (with icon distinction) */
-    --warning: #dddddd; /* Very Light Grey */
-    --danger: #ef4444; /* Red for alerts */
+
+    --success: #ffffff;
+    /* White (with icon distinction) */
+    --warning: #dddddd;
+    /* Very Light Grey */
+    --danger: #ef4444;
+    /* Red for alerts */
 
     /* VIBRANT ACCENTS */
     --accent-cyan: #06b6d4;
     --accent-cyan-glow: rgba(6, 182, 212, 0.15);
-    
+
     --accent-green: #10b981;
     --accent-green-glow: rgba(16, 185, 129, 0.15);
 
@@ -48,8 +58,8 @@
     --text-dim: #666666;
 
     /* BORDERS & GLASS */
-    --glass-border: rgba(255, 255, 255, 0.15); 
-    --glass-border-hover: rgba(255, 255, 255, 0.3); 
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-border-hover: rgba(255, 255, 255, 0.3);
     --glass-highlight: rgba(255, 255, 255, 0.08);
     --backdrop-blur: 12px;
 
@@ -257,9 +267,12 @@ p {
     gap: 0.5rem;
     flex: 1;
     overflow-y: auto;
-    overflow-x: visible; /* Try to allow horizontal overflow */
-    padding: 0 5px; /* Add small padding to prevent clipping */
-    margin: 0 -5px; /* Negative margin to counteract padding for alignment */
+    overflow-x: visible;
+    /* Try to allow horizontal overflow */
+    padding: 0 5px;
+    /* Add small padding to prevent clipping */
+    margin: 0 -5px;
+    /* Negative margin to counteract padding for alignment */
     /* Scrollbar invisible */
     scrollbar-width: none;
 }
@@ -282,7 +295,7 @@ p {
     font-weight: 500;
     letter-spacing: 0.02em;
     position: relative;
-    
+
 }
 
 .nav-item i {
@@ -295,22 +308,24 @@ p {
 }
 
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-main);
-    border-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
     transform: translateX(4px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .nav-item.active {
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
     color: var(--primary);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05), inset 0 0 10px rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-left: 3px solid var(--primary);
+    /* Stronger indicator */
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 .nav-item.active i {
-    filter: drop-shadow(0 0 8px var(--primary));
+    filter: drop-shadow(0 0 5px var(--primary));
     transform: scale(1.1);
 }
 
@@ -321,6 +336,7 @@ p {
     opacity: 0.5;
 }
 
+/* Sidebar User is interactive -> needs affordance */
 .sidebar-user {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--glass-border);
@@ -334,11 +350,9 @@ p {
     cursor: pointer;
 }
 
+/* .sidebar-user:hover removed - static profile */
 .sidebar-user:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    /* No effect */
 }
 
 .sidebar-user-avatar {
@@ -399,24 +413,23 @@ p {
     z-index: 0;
 }
 
-/* Effet de brillance au survol - DESACTIVE */
+/* Effet de brillance au survol - DESACTIVE pour les cartes statiques */
 .card::after,
 .scenario-card::after,
 .resource-card::after {
     display: none;
 }
 
-.card:hover::after,
-.scenario-card:hover::after,
-.resource-card:hover::after {
-    opacity: 0;
-}
-
-.card:hover,
-.scenario-card:hover,
-.resource-card:hover {
+/* On ne garde l'effet de survol QUE pour les éléments explicitement interactifs */
+a.card:hover,
+button.card:hover,
+.card.interactive:hover,
+.scenario-card.interactive:hover,
+.resource-card.interactive:hover {
     border-color: var(--glass-border-hover);
     background: rgba(20, 20, 26, 0.6);
+    transform: translateY(-2px);
+    cursor: pointer;
 }
 
 /* Contenu au-dessus de l'effet */
@@ -429,6 +442,7 @@ p {
 }
 
 /* Boutons */
+/* Boutons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -436,46 +450,59 @@ p {
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
-    /* Plus net */
     font-family: var(--font-heading);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
     text-decoration: none;
     position: relative;
     overflow: hidden;
 }
 
+.btn:active {
+    transform: scale(0.98);
+}
+
 .btn-primary {
     background: var(--primary);
     color: #000;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
 .btn-primary:hover {
     background: #fff;
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 255, 255, 0.8);
     transform: translateY(-2px);
 }
 
 .btn-secondary {
     background: transparent;
-    border: 1px solid var(--text-muted);
-    color: var(--text-main);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
     border-color: var(--text-main);
+    color: var(--text-main);
     background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--danger);
+}
+
+.btn-danger:hover {
     background: var(--danger);
     color: #fff;
-    box-shadow: 0 0 15px rgba(255, 0, 60, 0.4);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+    border-color: var(--danger);
 }
 
 .floating-actions {
@@ -483,7 +510,8 @@ p {
     bottom: 2rem;
     right: 2rem;
     display: flex;
-    flex-direction: column; /* Stack downwards */
+    flex-direction: column;
+    /* Stack downwards */
     gap: 1rem;
     z-index: 900;
 }
@@ -543,8 +571,9 @@ p {
 
 .form-input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15), inset 0 0 10px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--primary);
 }
 
 .form-label {
@@ -578,11 +607,7 @@ p {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.card:hover .card-icon {
-    background: var(--primary);
-    color: #000;
-    box-shadow: 0 0 15px var(--primary-glow);
-}
+/* .card-icon hover removed - static element */
 
 .card-action {
     margin-top: 1rem;
@@ -717,6 +742,7 @@ p {
     margin-bottom: 1.5rem;
 }
 
+/* .bp-card hover removed - static element unless explicitly made interactive */
 .bp-card {
     background: #000000;
     border: 1px solid var(--glass-border);
@@ -726,11 +752,6 @@ p {
     flex-direction: column;
     gap: 0.75rem;
     transition: all 0.3s ease;
-}
-
-.bp-card:hover {
-    background: #0a0a0a;
-    border-color: var(--primary);
 }
 
 .bp-icon {
@@ -744,10 +765,7 @@ p {
     justify-content: center;
 }
 
-.bp-card:hover .bp-icon {
-    background: var(--primary);
-    color: #000;
-}
+/* .bp-icon hover sync removed */
 
 .bp-info h4 {
     color: var(--text-main);
@@ -783,7 +801,8 @@ p {
     z-index: 1000;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     /* Arrow style to point to the button */
-    display: none; /* Managed by JS, but good default */
+    display: none;
+    /* Managed by JS, but good default */
 }
 
 /* Squelette de Chargement */
@@ -881,12 +900,6 @@ p {
     .nav-item:hover {
         background: rgba(255, 255, 255, 0.05);
         transform: translateY(-2px);
-    }
-
-    .nav-item i {
-        width: 24px;
-        height: 24px;
-        margin: 0;
     }
 
     .nav-item.active {
@@ -1009,21 +1022,25 @@ p {
     color: var(--accent-green);
     border: 1px solid rgba(16, 185, 129, 0.3);
 }
+
 .badge-warning {
     background: var(--accent-orange-glow);
     color: var(--accent-orange);
     border: 1px solid rgba(245, 158, 11, 0.3);
 }
+
 .badge-danger {
     background: var(--accent-red-glow);
     color: var(--accent-red);
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
+
 .badge-info {
     background: var(--accent-cyan-glow);
     color: var(--accent-cyan);
     border: 1px solid rgba(6, 182, 212, 0.3);
 }
+
 .badge-purple {
     background: var(--accent-purple-glow);
     color: var(--accent-purple);
@@ -1194,9 +1211,12 @@ table.ranking-table td:last-child {
     border-radius: 0 12px 12px 0;
 }
 
+/* Table rows are static by default - hover removed */
+/*
 table.ranking-table tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
 }
+*/
 
 table.ranking-table tr:hover td {
     color: #fff;
@@ -1236,12 +1256,7 @@ table.ranking-table tr:hover td {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
-.scenario-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 25px var(--shadow-glow);
-    background: rgba(13, 13, 18, 0.95);
-}
-
+/* .scenario-card:hover removed - static unless .interactive */
 .scenario-card::after {
     display: none;
     /* Supprimer la ligne de dégradé obsolète */
@@ -1269,12 +1284,7 @@ table.ranking-table tr:hover td {
     transition: 0.3s;
 }
 
-.scenario-card:hover .type-badge {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary);
-    color: var(--primary);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
+/* .scenario-card:hover .type-badge removed */
 
 .type-badge i {
     width: 16px;
@@ -1346,12 +1356,7 @@ table.ranking-table tr:hover td {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
-.resource-card:hover {
-    transform: translateY(-5px);
-    background: rgba(20, 20, 25, 0.6);
-    box-shadow: 0 0 25px var(--shadow-glow);
-    border-color: var(--glass-border-hover);
-}
+/* .resource-card:hover removed - static unless .interactive */
 
 .resource-card::before {
     display: none;
@@ -1380,13 +1385,7 @@ table.ranking-table tr:hover td {
     flex-shrink: 0;
 }
 
-.resource-card:hover .icon-wrapper {
-    background: var(--primary);
-    color: #000;
-    box-shadow: 0 0 20px var(--primary-glow);
-    border-color: var(--primary);
-    transform: rotate(-5deg) scale(1.1);
-}
+/* .resource-card:hover .icon-wrapper removed */
 
 .resource-card h3 {
     font-size: 1.1rem;
@@ -1422,11 +1421,7 @@ table.ranking-table tr:hover td {
     transition: 0.3s;
 }
 
-.resource-card:hover .action-hint {
-    opacity: 1;
-    transform: translateX(5px);
-    text-shadow: 0 0 10px var(--primary-glow);
-}
+/* .resource-card:hover .action-hint removed */
 
 /* CYBERSENS - CENTRE DE COMMANDE ADMIN Thème : Extension de Ultra Future v4.0 */
 
@@ -1495,11 +1490,12 @@ body {
     color: var(--text-main);
     vertical-align: middle;
     font-size: 0.95rem;
-    
+
     /* Définition complète des bordures et du fond sur les cellules pour l'effet carte */
     border-top: 1px solid var(--glass-border);
     border-bottom: 1px solid var(--glass-border);
-    background: rgba(12, 12, 16, 0.6); /* Unifié ici */
+    background: rgba(12, 12, 16, 0.6);
+    /* Unifié ici */
     /* backdrop-filter: blur(12px); Supprimé pour éviter les artefacts visuels entre cellules */
 }
 
@@ -1515,6 +1511,7 @@ body {
     border-left: none;
     border-radius: 0;
 }
+
 .admin-table.has-hidden-col tbody:not(.reorder-active) td:nth-child(2) {
     border-left: 1px solid var(--glass-border);
     border-top-left-radius: 12px;
@@ -1527,6 +1524,7 @@ body {
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
 }
+
 .admin-table.has-hidden-col tbody.reorder-active td:nth-child(2) {
     border-left: none;
     border-radius: 0;
@@ -1538,17 +1536,7 @@ body {
     border-bottom-right-radius: 12px;
 }
 
-.admin-table tr:hover td {
-    background: rgba(20, 20, 28, 0.8);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: #fff;
-}
-
-.admin-table tr:hover {
-    transform: translateY(-3px);
-    /* L'ombre doit être appliquée sur les cellules ou simulée car box-shadow sur tr est parfois capricieux */
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-}
+/* .admin-table tr:hover removed - static rows */
 
 /* Badges Admin */
 .badge-role {
@@ -1613,9 +1601,17 @@ body {
     letter-spacing: 0.1em;
 }
 
-.w-100 { width: 100%; }
-.text-center { text-align: center; }
-.text-end { text-align: right; }
+.w-100 {
+    width: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-end {
+    text-align: right;
+}
 
 .admin-modal-footer {
     display: flex;
@@ -1722,11 +1718,13 @@ body {
     gap: 0.5rem;
 }
 
+/* .stat-card-admin:hover removed - these are usually static stats */
 .stat-card-admin:hover {
-    border-color: var(--primary);
-    transform: translateY(-5px);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-    background: rgba(13, 13, 18, 0.8);
+    border-color: var(--glass-border);
+    /* Reset to default */
+    transform: none;
+    box-shadow: none;
+    background: rgba(13, 13, 18, 0.6);
 }
 
 /* Supprimer l'ancien triangle de coin */
@@ -1763,9 +1761,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.stat-card-admin:hover .icon-box {
-    transform: scale(1.1);
-}
+/* .stat-card-admin:hover .icon-box removed */
 
 /* Couleurs pour les stats */
 .bg-primary-subtle {
@@ -1895,11 +1891,22 @@ body {
     overflow: hidden;
 }
 
-.course-card:hover {
+/* Interactive Course Card (only if not locked) */
+.course-card:not(.card-locked) {
+    cursor: pointer;
+}
+
+.course-card:not(.card-locked):hover {
     transform: translateY(-5px);
     border-color: var(--primary);
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
     background: #0a0a0a;
+}
+
+/* Locked Card - Static */
+.course-card.card-locked {
+    cursor: default;
+    opacity: 0.7;
 }
 
 .course-header {
@@ -1920,7 +1927,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.course-card:hover .card-icon {
+.course-card:not(.card-locked):hover .card-icon {
     background: var(--primary);
     color: #000;
     box-shadow: 0 0 20px var(--primary-glow);
@@ -1987,6 +1994,20 @@ body {
     border-radius: 8px;
 }
 
+/* Static Course Action Button (Visual only, no interaction) */
+.course-action-btn {
+    pointer-events: none;
+    /* Let clicks pass through to the card */
+    background: var(--primary);
+    color: #000;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 15px var(--primary-glow);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    /* No hover effects defined here, so it stays static */
+}
+
 /* Refonte Superposition de Verrouillage */
 .lock-overlay {
     position: absolute;
@@ -2014,11 +2035,9 @@ body {
     opacity: 0.7;
 }
 
-.card-locked:hover .lock-icon {
-    color: var(--primary);
-    opacity: 1;
-    transform: scale(1.1);
-    transition: 0.3s;
+/* Static lock icon shouldn't hover unless the card is clickable context */
+.card-locked .lock-icon {
+    /* Kept static */
 }
 
 /* ACTIONS ADMIN ET CORRECTIONS D'ALIGNEMENT */
@@ -2045,23 +2064,24 @@ body {
 }
 
 .btn-icon:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-main);
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .btn-icon.edit:hover {
     color: var(--accent-cyan);
-    background: var(--accent-cyan-glow);
-    border-color: rgba(6, 182, 212, 0.3);
-    box-shadow: 0 0 10px var(--accent-cyan-glow);
+    background: rgba(6, 182, 212, 0.1);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px var(--accent-cyan-glow);
 }
 
 .btn-icon.delete:hover {
     color: var(--danger);
     background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.2);
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+    border-color: var(--danger);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
 
 .btn-icon i {
@@ -2166,7 +2186,9 @@ input[type=number]:focus {
     background: rgba(255, 204, 0, 0.1);
     color: var(--warning);
     border-color: rgba(255, 204, 0, 0.2);
-}/* Styles spécifiques pour l'admin */
+}
+
+/* Styles spécifiques pour l'admin */
 
 /* Layout / Top Bar */
 .top-bar {
@@ -2191,6 +2213,8 @@ input[type=number]:focus {
 
 .breadcrumb-item a:hover {
     color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow);
+    text-decoration: underline;
 }
 
 .breadcrumb-item.active {
@@ -2259,14 +2283,18 @@ input[type=number]:focus {
 
 .action-btn:hover {
     background: var(--primary);
-    color: white;
+    color: black;
+    /* Better contrast on primary */
     border-color: var(--primary);
     transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--primary-glow);
 }
 
 .action-btn.delete:hover {
     background: var(--danger);
+    color: white;
     border-color: var(--danger);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
 
 /* Description handling */
@@ -2278,8 +2306,11 @@ input[type=number]:focus {
 }
 
 @media (max-width: 768px) {
-    .admin-table td:nth-child(2), /* Source */
-    .admin-table td:nth-child(4) { /* Description */
+
+    .admin-table td:nth-child(2),
+    /* Source */
+    .admin-table td:nth-child(4) {
+        /* Description */
         display: none;
     }
 }
@@ -2366,6 +2397,7 @@ input[type=number]:focus {
     border-color: rgba(239, 68, 68, 0.3);
     color: var(--accent-red);
 }
+
 /* ELEMENTS D'INTERFACE ADMIN (Boutons, Forms) */
 
 /* BOUTONS */
@@ -2405,7 +2437,7 @@ input[type=number]:focus {
 .btn-outline:hover {
     border-color: var(--text-main);
     color: var(--text-main);
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 /* FORMULAIRES (Renforcement) */
@@ -2443,7 +2475,9 @@ input[type=number]:focus {
 }
 
 /* Fix text colors */
-input, textarea, select {
+input,
+textarea,
+select {
     color: var(--text-main);
 }
 
@@ -2466,6 +2500,8 @@ input, textarea, select {
 .sidebar-action-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--primary);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-action-btn i {
@@ -2504,7 +2540,8 @@ input, textarea, select {
 .course-content ul,
 .course-content ol {
     margin-bottom: 1em;
-    padding-left: 2em; /* Restore indentation */
+    padding-left: 2em;
+    /* Restore indentation */
     list-style-position: outside;
 }
 
@@ -2518,7 +2555,7 @@ input, textarea, select {
 
 .course-content li {
     margin-bottom: 0.5em;
-    padding-left: 0.5em; 
+    padding-left: 0.5em;
 }
 
 .course-content blockquote {
@@ -2542,7 +2579,7 @@ input, textarea, select {
 .course-content code {
     font-family: var(--font-mono);
     font-size: 0.9em;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     padding: 0.2em 0.4em;
     border-radius: 4px;
 }
@@ -2554,9 +2591,20 @@ input, textarea, select {
 
 .course-content a {
     color: var(--primary);
-    text-decoration: underline;
-    text-underline-offset: 4px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--primary);
+    transition: all 0.2s;
 }
+
+.course-content a:hover {
+    text-shadow: 0 0 8px var(--primary-glow);
+    border-bottom-color: transparent;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0 4px;
+    border-radius: 4px;
+    margin: 0 -4px;
+}
+
 
 .course-content img {
     max-width: 100%;
@@ -2570,4 +2618,3 @@ input, textarea, select {
     color: #fff;
     font-weight: 700;
 }
-

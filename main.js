@@ -558,7 +558,7 @@ function showToast(title, message, type = 'success', duration = 5000) {
     // Créer le toast
     const toast = document.createElement('div');
     const bgStyle = type === 'error' ? `rgba(220, 38, 38, 0.9)` : `var(--bg-panel)`;
-    
+
     toast.className = 'toast-notification';
     toast.style.cssText = `
         background: ${bgStyle};
@@ -757,14 +757,14 @@ async function deleteAllNotifications() {
         const response = await fetch(`${API_URL}/notifications.php`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 user_id: currentUser.id,
-                delete_all: true 
+                delete_all: true
             })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             loadNotifications();
             showToast('Notifications', 'Historique des notifications effacé', 'success', 3000);
@@ -894,22 +894,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const response = await fetch(`${API_URL}/stats.php`);
             const data = await response.json();
-            
+
             if (data.success) {
                 const s = data.stats;
-                
+
                 // Animate value helper
                 const animateValue = (id, target, duration, suffix = '') => {
                     const obj = document.getElementById(id);
                     if (!obj) return;
-                    
+
                     // Si mode mise à jour (rafraichissement silencieux), récupérer valeur actuelle pour départ
                     // Sinon (chargement page), partir de 0
                     let start = 0;
-                    if(isUpdate) {
-                         const currentText = obj.innerText.replace(/[^0-9]/g, ''); // Enlever le texte non numérique
-                         start = parseInt(currentText) || 0;
-                         if(start === target) return; // Pas de changement, pas d'animation
+                    if (isUpdate) {
+                        const currentText = obj.innerText.replace(/[^0-9]/g, ''); // Enlever le texte non numérique
+                        start = parseInt(currentText) || 0;
+                        if (start === target) return; // Pas de changement, pas d'animation
                     }
 
                     let startTimestamp = null;
@@ -925,10 +925,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
 
                 // Update stats with animation
-                if(s.questions) animateValue("stat-questions", s.questions, 1000);
-                if(s.courses) animateValue("stat-courses", s.courses, 1000);
-                if(s.successRate) animateValue("stat-success-rate", s.successRate, 1000, "%");
-                if(s.certificates) animateValue("stat-certificates", s.certificates, 1000);
+                if (s.questions) animateValue("stat-questions", s.questions, 1000);
+                if (s.courses) animateValue("stat-courses", s.courses, 1000);
+                if (s.successRate) animateValue("stat-success-rate", s.successRate, 1000, "%");
+                if (s.certificates) animateValue("stat-certificates", s.certificates, 1000);
 
             }
         } catch (e) {
@@ -940,9 +940,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const newsFeed = document.getElementById('news-feed');
         const tickerContainer = document.getElementById('attacks-ticker');
         const logContainer = document.getElementById('attacks-log');
-        
+
         // On continue même si newsFeed n'existe pas, car on veut peut-être juste le ticker
-        if(!newsFeed && !tickerContainer && !logContainer) return;
+        if (!newsFeed && !tickerContainer && !logContainer) return;
 
         try {
             const response = await fetch(`${API_URL}/news.php`);
@@ -959,22 +959,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (data.success && data.news.length > 0) {
                 let newsHTML = '';
                 let logHTML = '';
-                
+
                 // Fonction helper pour la date
                 const formatDate = (timestamp) => {
                     return new Date(timestamp * 1000).toLocaleDateString('fr-FR', {
-                        day: 'numeric', month: 'long', hour: '2-digit', minute:'2-digit'
+                        day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
                     });
                 };
-                
+
                 const formatLogDate = (timestamp) => {
                     const d = new Date(timestamp * 1000);
-                    return `[${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}]`;
+                    return `[${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}]`;
                 };
 
                 // 1. Ticker (Comme avant, liste complète pour l'effet)
-                if(tickerContainer) {
-                    const fullList = [...data.news, ...data.news]; 
+                if (tickerContainer) {
+                    const fullList = [...data.news, ...data.news];
                     const itemsHTML = fullList.map(item => `
                         <div class="ticker-item">
                             <span style="font-weight:600; margin-right:5px;">${new Date(item.date * 1000).toLocaleDateString('fr-FR')} : </span>
@@ -988,13 +988,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (newsFeed) {
                     // On prend les 3 premiers items seulement pour ne pas alourdir
                     const topNews = data.news.slice(0, 3);
-                    
+
                     topNews.forEach(item => {
                         let icon = 'alert-triangle';
-                        let colorStyle = "color: var(--danger);"; 
-                        if(item.source.includes('Fuite')) { icon = 'database'; colorStyle="color: #ff6b6b;"; }
-                        if(item.source.includes('Rançongiciel')) { icon = 'lock'; colorStyle="color: #fca5a5;"; }
-                        if(item.source.includes('Piratage')) { icon = 'skull'; colorStyle="color: #ef4444;"; }
+                        let colorStyle = "color: var(--danger);";
+                        if (item.source.includes('Fuite')) { icon = 'database'; colorStyle = "color: #ff6b6b;"; }
+                        if (item.source.includes('Rançongiciel')) { icon = 'lock'; colorStyle = "color: #fca5a5;"; }
+                        if (item.source.includes('Piratage')) { icon = 'skull'; colorStyle = "color: #ef4444;"; }
 
                         newsHTML += `
                             <div class="news-card type-external" style="border-color: rgba(220,38,38,0.3);">
@@ -1023,7 +1023,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Pour montrer "tout ce qu'il y a eu"
                     data.news.forEach(item => {
                         let sourceClass = "";
-                        if(item.source.includes('Piratage') || item.source.includes('Rançongiciel')) sourceClass = "danger";
+                        if (item.source.includes('Piratage') || item.source.includes('Rançongiciel')) sourceClass = "danger";
 
                         logHTML += `
                             <div class="log-entry">
@@ -1039,7 +1039,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 lucide.createIcons();
             } else {
-                if(newsFeed) newsFeed.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Aucune actualité récente trouvée.</p>';
+                if (newsFeed) newsFeed.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Aucune actualité récente trouvée.</p>';
             }
         } catch (e) {
             console.error("Erreur news:", e);
@@ -1048,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadTemplate(viewId) {
         // Arrêter l'intervalle de statistiques s'il existe (quand on quitte l'accueil)
-        if(statsInterval) {
+        if (statsInterval) {
             clearInterval(statsInterval);
             statsInterval = null;
         }
@@ -1065,15 +1065,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Initialiser la logique de vue spécifique
             if (viewId === 'profil') initAuth();
             if (viewId === 'leaderboard') loadLeaderboards();
-            
+
             if (viewId === 'home') {
-                 loadHomeStats(); // Premier chargement
-                 loadRealNews(); // Charger les actus externes
-                 // Rafraichir les stats et news toutes les 10 secondes si l'utilisateur reste sur la page
-                 statsInterval = setInterval(() => {
-                     loadHomeStats(true);
-                     loadRealNews();
-                 }, 10000);
+                loadHomeStats(); // Premier chargement
+                loadRealNews(); // Charger les actus externes
+                // Rafraichir les stats et news toutes les 10 secondes si l'utilisateur reste sur la page
+                statsInterval = setInterval(() => {
+                    loadHomeStats(true);
+                    loadRealNews();
+                }, 10000);
             }
 
             // On garde l'effet tilt pour le quiz
@@ -1107,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (item.tagName === 'A' && item.getAttribute('href')) {
                 const href = item.getAttribute('href');
                 // On force la navigation pour être sûr
-                if(href && href !== '#') {
+                if (href && href !== '#') {
                     window.location.href = href;
                     e.preventDefault();
                     e.stopPropagation();
@@ -1489,7 +1489,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         groupTbody.innerHTML = '';
-        if(podiumContainer) podiumContainer.innerHTML = '';
+        if (podiumContainer) podiumContainer.innerHTML = '';
 
         const leaderboard = data.leaderboard || data || [];
 
@@ -1497,28 +1497,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             groupTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666;">Aucun participant</td></tr>';
         } else {
             const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            
+
             // Séparer Podium et Liste
             // On veut afficher dans l'ordre du podium : 2ème, 1er, 3ème
             const podiumUsers = [];
             // Assigner les places (l'API renvoie trié par rang)
-            const first = leaderboard[0]; 
-            const second = leaderboard[1]; 
+            const first = leaderboard[0];
+            const second = leaderboard[1];
             const third = leaderboard[2];
 
             // Construire le tableau podium dans l'ordre visuel (2, 1, 3)
             if (second) podiumUsers.push({ ...second, place: 2 });
-            if (first)  podiumUsers.push({ ...first, place: 1 });
-            if (third)  podiumUsers.push({ ...third, place: 3 });
+            if (first) podiumUsers.push({ ...first, place: 1 });
+            if (third) podiumUsers.push({ ...third, place: 3 });
 
             // Afficher le podium
-            if(podiumContainer) {
+            if (podiumContainer) {
                 podiumUsers.forEach(u => {
                     const avatarContent = u.avatar || u.username.charAt(0).toUpperCase();
                     // Si avatar est une image ou emoji, sinon lettre
-                    
+
                     const isCrown = u.place === 1 ? '<div class="podium-crown"><i data-lucide="crown"></i></div>' : '';
-                    
+
                     podiumContainer.innerHTML += `
                         <div class="podium-item rank-${u.place}">
                             <div class="podium-avatar-wrapper">
@@ -1539,7 +1539,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Afficher le reste (à partir du 4ème)
             const listUsers = leaderboard.slice(3);
-            
+
             // Si on veut aussi afficher ceux du podium dans la liste ? 
             // Généralement non, mais parfois oui pour voir les stats détaillées.
             // Ici, affichons le reste de la liste, ou toute la liste ? 
@@ -1548,7 +1548,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             listUsers.forEach((user, index) => {
                 const globalRank = index + 4; // 1,2,3 sont sur podium
-                
+
                 const tr = document.createElement('tr');
                 if (currentUser && currentUser.id === user.id) {
                     tr.classList.add('current-user-row');
@@ -1556,8 +1556,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Avatar
                 const initial = user.username.charAt(0).toUpperCase();
-                const avatarDisplay = user.avatar 
-                    ? `<span style="font-size:1.2rem;">${user.avatar}</span>` 
+                const avatarDisplay = user.avatar
+                    ? `<span style="font-size:1.2rem;">${user.avatar}</span>`
                     : `<div class="user-avatar-sm">${initial}</div>`;
 
                 tr.innerHTML = `
@@ -1575,10 +1575,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 `;
                 groupTbody.appendChild(tr);
             });
-            
+
             // Petit hack : si liste vide et seulement < 3 personnes, afficher message ?
-            if(listUsers.length === 0 && leaderboard.length > 0) {
-                 groupTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666; padding: 2rem;">Le top 3 domine le classement !</td></tr>';
+            if (listUsers.length === 0 && leaderboard.length > 0) {
+                groupTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#666; padding: 2rem;">Le top 3 domine le classement !</td></tr>';
             }
         }
         lucide.createIcons();
@@ -1809,10 +1809,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Icône personnalisée ou par défaut
                 const iconName = c.icon && c.icon !== '' ? c.icon : getDifficultyIcon(c.difficulty);
 
+                // Status Badge Logic
+                let statusBadge = '';
+                if (isCompleted) {
+                    statusBadge = '<span class="status-badge status-completed" style="margin-right:0.5rem; display:flex; align-items:center; font-size:0.85rem;"><i data-lucide="check-circle" style="width:14px;height:14px;margin-right:4px;"></i>Terminé</span>';
+                } else if (isRead) {
+                    statusBadge = '<span class="status-badge status-progress" style="margin-right:0.5rem; color:var(--warning); display:flex; align-items:center; font-size:0.85rem;"><i data-lucide="loader-2" style="width:14px;height:14px;margin-right:4px;"></i>En cours</span>';
+                }
+
                 return `
                 <div class="card course-card ${isLocked ? 'card-locked' : ''} ${isCompleted ? 'card-completed' : ''} ${isRead ? 'card-read' : ''}" 
                      data-course-id="${c.id}" 
-                     ${styleAttr}>
+                     ${styleAttr}
+                     ${isLocked ? '' : `onclick="viewCourse(${c.id})"`}>
                     ${isLocked ? '<div class="lock-overlay"><i data-lucide="lock" class="lock-icon"></i><span>Terminez le module précédent</span></div>' : ''}
                     
                     <div class="course-header">
@@ -1824,16 +1833,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <h3>${c.title}</h3>
                         <p>${c.description}</p>
                     </div>
-
-                    <div class="course-footer">
-                        ${isCompleted ? '<div class="status-indicator completed"><i data-lucide="check-circle" size="14"></i> Terminé</div>' : ''}
-                        ${isRead && !isCompleted ? '<div class="status-indicator in-progress"><i data-lucide="loader-2" size="14"></i> En cours</div>' : ''}
-                        
-                        ${isLocked
-                        ? '<span class="card-action card-action-locked"><i data-lucide="lock" size="16"></i> Verrouillé</span>'
-                        : `<a href="#" class="btn btn-primary btn-sm full-width" onclick="viewCourse(${c.id}); return false;">${isCompleted ? 'Refaire le module' : isRead ? 'Continuer' : 'Commencer'} <i data-lucide="arrow-right" size="16"></i></a>`
-                    }
-                    </div>
+                    
+                    ${(isCompleted || isRead) ? `
+                    <div class="course-status-footer" style="padding-top: 1rem; margin-top: auto; display: flex; justify-content: flex-end;">
+                        ${statusBadge}
+                    </div>` : ''}
                 </div>
             `;
             }).join('');
@@ -2722,7 +2726,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return new Promise((resolve) => {
             const modal = document.getElementById('confirm-modal');
             if (!modal) {
-                if(confirm(message)) resolve(true);
+                if (confirm(message)) resolve(true);
                 else resolve(false);
                 return;
             }
@@ -2778,15 +2782,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // On enlève la condition localStorage pour forcer l'affichage si l'utilisateur le souhaite à chaque actualisation
     // Ou on peut vérifier une version dans le localStorage pour réafficher si le contenu change
     // Pour l'instant, on laisse la vérification mais on s'assure qu'elle fonctionne
-    
+
     // Si l'utilisateur a demandé à ce que ça s'affiche "au lancement", 
     // peut-être qu'il pense que ça ne marche plus car il a déjà cliqué "J'ai compris".
     // On va commenter la condition pour le debug ou changer la clé pour reset
-    
+
     // CODE CORRIGÉ : On vérifie si l'utilisateur n'a PAS encore acquitté ET on s'assure que le DOM est chargé
     if (!localStorage.getItem('bp_acknowledged_v2')) {
         // Petit délai pour laisser le temps au site de se charger visuellement
-        setTimeout(openBpModal, 1500); 
+        setTimeout(openBpModal, 1500);
     }
 
     if (openBpBtn) openBpBtn.addEventListener('click', openBpModal);

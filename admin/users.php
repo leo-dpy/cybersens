@@ -34,84 +34,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $level = (int)$_POST['level'];
         $newRole = $_POST['role'] ?? null;
         $group_name = trim($_POST['group_name'] ?? 'Aucun');
-        
+
         // Vérifier les permissions
         $canEdit = canModifyUser($uid) || $isSuperAdmin;
         $canChangeRole = $newRole ? canChangeRole($uid, $newRole) : false;
-        
+
         if (!$canEdit) {
             $message = "Vous n'avez pas la permission de modifier cet utilisateur.";
             $messageType = "danger";
-        } else {
+        }
+        else {
             try {
                 // Si changement de rôle et permission
                 if ($canChangeRole && $newRole) {
                     $stmt = $pdo->prepare("UPDATE users SET username = ?, email = ?, xp = ?, level = ?, role = ?, group_name = ? WHERE id = ?");
                     $stmt->execute([$username, $email, $xp, $level, $newRole, $group_name, $uid]);
-                } else {
+                }
+                else {
                     // Mise à jour sans changer le rôle
                     $stmt = $pdo->prepare("UPDATE users SET username = ?, email = ?, xp = ?, level = ?, group_name = ? WHERE id = ?");
                     $stmt->execute([$username, $email, $xp, $level, $group_name, $uid]);
                 }
-                
+
                 // Mettre à jour le mot de passe si fourni
                 if (!empty($_POST['new_password'])) {
                     $hashedPassword = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
                     $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
                     $stmt->execute([$hashedPassword, $uid]);
                 }
-                
+
                 $message = "Utilisateur mis à jour avec succès !";
                 $messageType = "success";
-                
+
                 // Rafraîchir la liste
                 $users = $pdo->query($sql)->fetchAll();
-                
-            } catch (PDOException $e) {
+
+            }
+            catch (PDOException $e) {
                 $message = "Erreur : " . $e->getMessage();
                 $messageType = "danger";
             }
         }
     }
-    
+
     if ($_POST['action'] === 'add_xp') {
         $uid = (int)$_POST['user_id'];
         $addXp = (int)$_POST['add_xp'];
-        
+
         $stmt = $pdo->prepare("UPDATE users SET xp = xp + ? WHERE id = ?");
         $stmt->execute([$addXp, $uid]);
-        
+
         // Recalculer le niveau
         $stmt = $pdo->prepare("SELECT xp FROM users WHERE id = ?");
         $stmt->execute([$uid]);
         $currentXp = $stmt->fetchColumn();
         $newLevel = floor($currentXp / 100) + 1;
-        
+
         $stmt = $pdo->prepare("UPDATE users SET level = ? WHERE id = ?");
         $stmt->execute([$newLevel, $uid]);
-        
+
         $message = "XP ajoutée ! Nouveau total : " . $currentXp . " XP (Niveau " . $newLevel . ")";
         $messageType = "success";
-        
+
         $users = $pdo->query($sql)->fetchAll();
     }
-    
+
     if ($_POST['action'] === 'change_role' && $isSuperAdmin) {
         $uid = (int)$_POST['user_id'];
         $newRole = $_POST['new_role'];
-        
+
         if (canChangeRole($uid, $newRole)) {
             $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
             $stmt->execute([$newRole, $uid]);
             $message = "Rôle mis à jour avec succès !";
             $messageType = "success";
             $users = $pdo->query($sql)->fetchAll();
-        } else {
+        }
+        else {
             $message = "Vous ne pouvez pas changer ce rôle.";
             $messageType = "danger";
         }
     }
-    
+
     // Créer un nouvel utilisateur (admin et superadmin)
     if ($_POST['action'] === 'create_user') {
         $username = trim($_POST['username']);
@@ -119,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $password = $_POST['password'];
         $role = $_POST['role'] ?? 'user';
         $group_name = trim($_POST['group_name'] ?? 'Aucun');
-        
+
         // Seul le superadmin peut créer des admins/créateurs
         if (!$isSuperAdmin && in_array($role, ['admin', 'creator', 'superadmin'])) {
             $role = 'user';
@@ -128,14 +132,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if ($role === 'superadmin') {
             $role = 'admin';
         }
-        
+
         if (empty($username) || empty($email) || empty($password)) {
             $message = "Tous les champs obligatoires doivent être remplis.";
             $messageType = "danger";
-        } elseif (strlen($password) < 6) {
+        }
+        elseif (strlen($password) < 6) {
             $message = "Le mot de passe doit contenir au moins 6 caractères.";
             $messageType = "danger";
-        } else {
+        }
+        else {
             try {
                 // Vérifier si l'email ou username existe déjà
                 $checkStmt = $pdo->prepare("SELECT id FROM users WHERE email = ? OR username = ?");
@@ -143,16 +149,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 if ($checkStmt->fetch()) {
                     $message = "Cet email ou nom d'utilisateur existe déjà.";
                     $messageType = "danger";
-                } else {
+                }
+                else {
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                     $stmt = $pdo->prepare("INSERT INTO users (username, email, password, role, group_name, xp, level) VALUES (?, ?, ?, ?, ?, 0, 1)");
                     $stmt->execute([$username, $email, $hashedPassword, $role, $group_name]);
-                    
+
                     $message = "Utilisateur créé avec succès !";
                     $messageType = "success";
                     $users = $pdo->query($sql)->fetchAll();
                 }
-            } catch (PDOException $e) {
+            }
+            catch (PDOException $e) {
                 $message = "Erreur : " . $e->getMessage();
                 $messageType = "danger";
             }
@@ -168,7 +176,8 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
         $stmt->execute([$uid]);
         header("Location: users.php?msg=deleted");
         exit;
-    } else {
+    }
+    else {
         header("Location: users.php?msg=forbidden");
         exit;
     }
@@ -215,7 +224,7 @@ foreach ($users as $u) {
                     <span>Dashboard</span>
                 </a>
                 
-                <?php if(hasPermission('manage_courses')): ?>
+                <?php if (hasPermission('manage_courses')): ?>
                 <a href="cours.php" class="nav-item">
                     <i data-lucide="book-open"></i>
                     <span>Gestion Cours</span>
@@ -224,21 +233,24 @@ foreach ($users as $u) {
                     <i data-lucide="help-circle"></i>
                     <span>Banque Questions</span>
                 </a>
-                <?php endif; ?>
+                <?php
+endif; ?>
 
-                <?php if(hasPermission('manage_content')): ?>
+                <?php if (hasPermission('manage_content')): ?>
                 <a href="news.php" class="nav-item">
                     <i data-lucide="rss"></i>
                     <span>Actualités</span>
                 </a>
-                <?php endif; ?>
+                <?php
+endif; ?>
                 
-                <?php if(hasPermission('manage_users')): ?>
+                <?php if (hasPermission('manage_users')): ?>
                 <a href="users.php" class="nav-item active">
                     <i data-lucide="users"></i>
                     <span>Utilisateurs</span>
                 </a>
-                <?php endif; ?>
+                <?php
+endif; ?>
 
                 <div class="nav-divider"></div>
 
@@ -271,12 +283,13 @@ foreach ($users as $u) {
                 </button>
             </div>
 
-            <?php if($message): ?>
+            <?php if ($message): ?>
             <div class="alert alert-<?php echo $messageType; ?>">
                 <i data-lucide="<?php echo $messageType === 'success' ? 'check-circle' : 'alert-circle'; ?>"></i>
                 <?php echo $message; ?>
             </div>
-            <?php endif; ?>
+            <?php
+endif; ?>
 
             <!-- Grille de statistiques -->
             <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
@@ -285,7 +298,7 @@ foreach ($users as $u) {
                     <h3><?php echo count($users); ?></h3>
                     <p>TOTAL UTILISATEURS</p>
                 </div>
-                <?php if($isSuperAdmin): ?>
+                <?php if ($isSuperAdmin): ?>
                 <div class="stat-card-admin">
                     <div class="icon-box bg-danger-subtle" style="color: #ef4444;"><i data-lucide="shield-alert"></i></div>
                     <h3><?php echo $roleCounts['superadmin']; ?></h3>
@@ -296,7 +309,8 @@ foreach ($users as $u) {
                     <h3><?php echo $roleCounts['admin']; ?></h3>
                     <p>ADMINISTRATEURS</p>
                 </div>
-                <?php endif; ?>
+                <?php
+endif; ?>
                 <div class="stat-card-admin">
                     <div class="icon-box bg-success-subtle"><i data-lucide="user"></i></div>
                     <h3><?php echo $roleCounts['user']; ?></h3>
@@ -318,12 +332,12 @@ foreach ($users as $u) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($users as $u): 
-                            $userRole = $u['role'] ?? 'user';
-                            $isProtected = $u['is_protected'] ?? false;
-                            $canEdit = canModifyUser($u['id']) || $isSuperAdmin;
-                            $canDelete = canDeleteUser($u['id']);
-                        ?>
+                        <?php foreach ($users as $u):
+    $userRole = $u['role'] ?? 'user';
+    $isProtected = $u['is_protected'] ?? false;
+    $canEdit = canModifyUser($u['id']) || $isSuperAdmin;
+    $canDelete = canDeleteUser($u['id']);
+?>
                         <tr>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -334,9 +348,10 @@ foreach ($users as $u) {
                                         <div style="font-weight: 500; color: var(--text-primary);"><?php echo htmlspecialchars($u['username']); ?></div>
                                         <div style="font-size: 0.8rem; color: var(--text-muted);"><?php echo htmlspecialchars($u['email']); ?></div>
                                     </div>
-                                    <?php if($isProtected): ?>
+                                    <?php if ($isProtected): ?>
                                     <span class="badge badge-danger" style="margin-left: auto;">PROTÉGÉ</span>
-                                    <?php endif; ?>
+                                    <?php
+    endif; ?>
                                 </div>
                             </td>
                             <td>
@@ -369,18 +384,20 @@ foreach ($users as $u) {
                                     <button class="btn-icon" style="color: var(--warning);" onclick="openXpModal(<?php echo $u['id']; ?>, '<?php echo htmlspecialchars($u['username']); ?>')">
                                         <i data-lucide="zap"></i>
                                     </button>
-                                    <?php if($isSuperAdmin && $u['id'] != $_SESSION['user_id'] && !$isProtected): ?>
+                                    <?php if ($isSuperAdmin && $u['id'] != $_SESSION['user_id'] && !$isProtected): ?>
                                     <button class="btn-icon" style="color: var(--accent-secondary);" onclick="openRoleModal(<?php echo $u['id']; ?>, '<?php echo htmlspecialchars($u['username']); ?>', '<?php echo $userRole; ?>')">
                                         <i data-lucide="shield"></i>
                                     </button>
-                                    <?php endif; ?>
+                                    <?php
+    endif; ?>
                                     <a href="users.php?delete=<?php echo $u['id']; ?>" class="btn-icon delete" <?php echo $canDelete ? '' : 'style="pointer-events:none; opacity:0.3;"'; ?> onclick="return confirmAction(event, 'Supprimer cet utilisateur ?')">
                                         <i data-lucide="trash-2"></i>
                                     </a>
                                 </div>
                             </td>
                         </tr>
-                        <?php endforeach; ?>
+                        <?php
+endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -389,8 +406,8 @@ foreach ($users as $u) {
 
     <!-- Modals -->
     <!-- Edit User Modal -->
-    <!-- Modals -->
-    <!-- Edit User Modal -->
+    <!-- Modales -->
+    <!-- Modale Modifier Utilisateur -->
     <div id="editModal" class="admin-modal">
         <div class="admin-modal-content">
             <div class="admin-modal-header">
@@ -433,9 +450,10 @@ foreach ($users as $u) {
                 <div class="form-group">
                     <label class="form-label">Groupe</label>
                     <select name="group_name" id="edit_group" class="form-input" style="background: var(--bg-tertiary);">
-                        <?php foreach($availableGroups as $g): ?>
+                        <?php foreach ($availableGroups as $g): ?>
                         <option value="<?php echo $g; ?>"><?php echo $g; ?></option>
-                        <?php endforeach; ?>
+                        <?php
+endforeach; ?>
                     </select>
                 </div>
 
@@ -452,7 +470,7 @@ foreach ($users as $u) {
         </div>
     </div>
 
-    <!-- XP Modal -->
+    <!-- Modale XP -->
     <div id="xpModal" class="admin-modal">
         <div class="admin-modal-content" style="max-width: 400px;">
             <div class="admin-modal-header">
@@ -483,8 +501,8 @@ foreach ($users as $u) {
         </div>
     </div>
 
-    <!-- Role Modal -->
-    <?php if($isSuperAdmin): ?>
+    <!-- Modale Rôle -->
+    <?php if ($isSuperAdmin): ?>
     <div id="roleModal" class="admin-modal">
         <div class="admin-modal-content">
             <div class="admin-modal-header">
@@ -525,9 +543,10 @@ foreach ($users as $u) {
             </form>
         </div>
     </div>
-    <?php endif; ?>
+    <?php
+endif; ?>
 
-    <!-- Create Modal -->
+    <!-- Modale Création -->
     <div id="createModal" class="admin-modal">
         <div class="admin-modal-content">
             <div class="admin-modal-header">
@@ -554,19 +573,21 @@ foreach ($users as $u) {
                     <label class="form-label">Rôle</label>
                     <select name="role" class="form-input" style="background: var(--bg-tertiary);">
                         <option value="user">Utilisateur</option>
-                        <?php if($isSuperAdmin): ?>
+                        <?php if ($isSuperAdmin): ?>
                         <option value="creator">Créateur</option>
                         <option value="admin">Administrateur</option>
-                        <?php endif; ?>
+                        <?php
+endif; ?>
                     </select>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 2rem;">
                     <label class="form-label">Groupe</label>
                     <select name="group_name" class="form-input" style="background: var(--bg-tertiary);">
-                        <?php foreach($availableGroups as $g): ?>
+                        <?php foreach ($availableGroups as $g): ?>
                         <option value="<?php echo $g; ?>"><?php echo $g; ?></option>
-                        <?php endforeach; ?>
+                        <?php
+endforeach; ?>
                     </select>
                 </div>
 

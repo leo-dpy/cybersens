@@ -3,40 +3,40 @@
 :root {
     /* PALETTE : Noir & Blanc (Monochrome Precision) */
     --bg-deep: #000000;
-    /* Pure Black */
+    /* Noir Pur */
     --bg-page: #050505;
-    /* Black */
+    /* Noir */
 
     --bg-panel: rgba(20, 20, 20, 0.9);
-    /* Dark Grey Glass */
+    /* Verre Gris Sombre */
     --bg-panel-hover: rgba(40, 40, 40, 0.95);
 
     /* ACCENTS : Monochrome */
     --primary: #ffffff;
-    /* Pure White */
+    /* Blanc Pur */
     --primary-color: var(--primary);
     --accent-primary: var(--primary);
     --primary-dim: #cccccc;
-    /* Light Grey */
+    /* Gris Clair */
     --primary-glow: rgba(255, 255, 255, 0.15);
 
     --secondary: #808080;
-    /* Grey */
+    /* Gris */
     --secondary-dim: #666666;
     --secondary-glow: rgba(128, 128, 128, 0.2);
 
     --accent: #ffffff;
-    /* White */
+    /* Blanc */
     --accent-color: var(--accent);
 
     --success: #ffffff;
-    /* White (with icon distinction) */
+    /* Blanc (avec distinction d'icône) */
     --warning: #dddddd;
-    /* Very Light Grey */
+    /* Très Gris Clair */
     --danger: #ef4444;
-    /* Red for alerts */
+    /* Rouge pour les alertes */
 
-    /* VIBRANT ACCENTS */
+    /* ACCENTS VIBRANTS */
     --accent-cyan: #06b6d4;
     --accent-cyan-glow: rgba(6, 182, 212, 0.15);
 
@@ -52,27 +52,27 @@
     --accent-purple: #8b5cf6;
     --accent-purple-glow: rgba(139, 92, 246, 0.15);
 
-    /* TEXT */
+    /* TEXTE */
     --text-main: #ffffff;
     --text-muted: #999999;
     --text-dim: #666666;
 
-    /* BORDERS & GLASS */
+    /* BORDURES & VERRE */
     --glass-border: rgba(255, 255, 255, 0.15);
     --glass-border-hover: rgba(255, 255, 255, 0.3);
     --glass-highlight: rgba(255, 255, 255, 0.08);
     --backdrop-blur: 12px;
 
-    /* SHADOWS */
+    /* OMBRES */
     --shadow-glow: 0 0 30px rgba(255, 255, 255, 0.1);
     --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.9);
 
-    /* TYPOGRAPHY */
+    /* TYPOGRAPHIE */
     --font-heading: 'Exo 2', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
-    /* LAYOUT */
+    /* MISE EN PAGE */
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 16px;
@@ -102,7 +102,7 @@ html {
     /* IE/Edge */
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
+/* Cacher la barre de défilement pour Chrome, Safari et Opera */
 ::-webkit-scrollbar {
     display: none;
 }
@@ -166,6 +166,7 @@ h1 {
     text-transform: uppercase;
     background: linear-gradient(135deg, #fff 40%, #888 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
@@ -209,7 +210,6 @@ p {
 }
 
 /* BARRE LATÉRALE (Panneau Futuriste) */
-/* BARRE LATÉRALE (Panneau Flottant Futuriste) */
 .sidebar {
     position: fixed;
     top: 0;
@@ -268,11 +268,11 @@ p {
     flex: 1;
     overflow-y: auto;
     overflow-x: visible;
-    /* Try to allow horizontal overflow */
+    /* Essayer de permettre le défilement horizontal */
     padding: 0 5px;
-    /* Add small padding to prevent clipping */
+    /* Ajouter un petit padding pour éviter la coupure */
     margin: 0 -5px;
-    /* Negative margin to counteract padding for alignment */
+    /* Marge négative pour compenser le padding pour l'alignement */
     /* Scrollbar invisible */
     scrollbar-width: none;
 }
@@ -320,7 +320,7 @@ p {
     color: var(--primary);
     border: 1px solid var(--glass-border);
     border-left: 3px solid var(--primary);
-    /* Stronger indicator */
+    /* Indicateur plus fort */
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
@@ -336,7 +336,7 @@ p {
     opacity: 0.5;
 }
 
-/* Sidebar User is interactive -> needs affordance */
+/* L'utilisateur de la barre latérale est interactif -> a besoin d'affordance */
 .sidebar-user {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--glass-border);
@@ -350,10 +350,7 @@ p {
     cursor: pointer;
 }
 
-/* .sidebar-user:hover removed - static profile */
-.sidebar-user:hover {
-    /* No effect */
-}
+
 
 .sidebar-user-avatar {
     width: 36px;
@@ -442,7 +439,6 @@ button.card:hover,
 }
 
 /* Boutons */
-/* Boutons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -511,7 +507,7 @@ button.card:hover,
     right: 2rem;
     display: flex;
     flex-direction: column;
-    /* Stack downwards */
+    /* Empiler vers le bas */
     gap: 1rem;
     z-index: 900;
 }
@@ -607,7 +603,7 @@ button.card:hover,
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* .card-icon hover removed - static element */
+/* .card-icon hover supprimé - élément statique */
 
 .card-action {
     margin-top: 1rem;
@@ -730,7 +726,7 @@ button.card:hover,
     color: var(--text-main);
 }
 
-/* MODAL BONNES PRATIQUES (New Design) */
+/* MODAL BONNES PRATIQUES (Nouveau Design) */
 .modal-content-bp {
     padding: 0.5rem;
 }
@@ -742,7 +738,7 @@ button.card:hover,
     margin-bottom: 1.5rem;
 }
 
-/* .bp-card hover removed - static element unless explicitly made interactive */
+/* .bp-card hover supprimé - élément statique sauf si explicitement rendu interactif */
 .bp-card {
     background: #000000;
     border: 1px solid var(--glass-border);
@@ -765,7 +761,7 @@ button.card:hover,
     justify-content: center;
 }
 
-/* .bp-icon hover sync removed */
+/* .bp-icon hover sync supprimé */
 
 .bp-info h4 {
     color: var(--text-main);
@@ -800,9 +796,9 @@ button.card:hover,
     padding: 1rem;
     z-index: 1000;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    /* Arrow style to point to the button */
+    /* Style de flèche pour pointer vers le bouton */
     display: none;
-    /* Managed by JS, but good default */
+    /* Géré par JS, mais bonne valeur par défaut */
 }
 
 /* Squelette de Chargement */
@@ -1102,6 +1098,7 @@ button.card:hover,
     margin-bottom: 0.5rem;
     background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -1211,7 +1208,7 @@ table.ranking-table td:last-child {
     border-radius: 0 12px 12px 0;
 }
 
-/* Table rows are static by default - hover removed */
+/* Les lignes du tableau sont statiques par défaut - survol supprimé */
 /*
 table.ranking-table tr:hover {
     background: rgba(255, 255, 255, 0.02);
@@ -1256,7 +1253,7 @@ table.ranking-table tr:hover td {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
-/* .scenario-card:hover removed - static unless .interactive */
+/* .scenario-card:hover supprimé - statique sauf si .interactive */
 .scenario-card::after {
     display: none;
     /* Supprimer la ligne de dégradé obsolète */
@@ -1284,7 +1281,7 @@ table.ranking-table tr:hover td {
     transition: 0.3s;
 }
 
-/* .scenario-card:hover .type-badge removed */
+/* .scenario-card:hover .type-badge supprimé */
 
 .type-badge i {
     width: 16px;
@@ -1356,7 +1353,7 @@ table.ranking-table tr:hover td {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
-/* .resource-card:hover removed - static unless .interactive */
+/* .resource-card:hover supprimé - statique sauf si .interactive */
 
 .resource-card::before {
     display: none;
@@ -1385,7 +1382,7 @@ table.ranking-table tr:hover td {
     flex-shrink: 0;
 }
 
-/* .resource-card:hover .icon-wrapper removed */
+/* .resource-card:hover .icon-wrapper supprimé */
 
 .resource-card h3 {
     font-size: 1.1rem;
@@ -1421,7 +1418,7 @@ table.ranking-table tr:hover td {
     transition: 0.3s;
 }
 
-/* .resource-card:hover .action-hint removed */
+/* .resource-card:hover .action-hint supprimé */
 
 /* CYBERSENS - CENTRE DE COMMANDE ADMIN Thème : Extension de Ultra Future v4.0 */
 
@@ -1536,7 +1533,7 @@ body {
     border-bottom-right-radius: 12px;
 }
 
-/* .admin-table tr:hover removed - static rows */
+/* .admin-table tr:hover supprimé - lignes statiques */
 
 /* Badges Admin */
 .badge-role {
@@ -1718,10 +1715,10 @@ body {
     gap: 0.5rem;
 }
 
-/* .stat-card-admin:hover removed - these are usually static stats */
+/* .stat-card-admin:hover supprimé - ce sont généralement des stats statiques */
 .stat-card-admin:hover {
     border-color: var(--glass-border);
-    /* Reset to default */
+    /* Réinitialiser par défaut */
     transform: none;
     box-shadow: none;
     background: rgba(13, 13, 18, 0.6);
@@ -1761,7 +1758,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* .stat-card-admin:hover .icon-box removed */
+/* .stat-card-admin:hover .icon-box supprimé */
 
 /* Couleurs pour les stats */
 .bg-primary-subtle {
@@ -1891,7 +1888,7 @@ body {
     overflow: hidden;
 }
 
-/* Interactive Course Card (only if not locked) */
+/* Carte de cours interactive (seulement si non verrouillée) */
 .course-card:not(.card-locked) {
     cursor: pointer;
 }
@@ -1903,7 +1900,7 @@ body {
     background: #0a0a0a;
 }
 
-/* Locked Card - Static */
+/* Carte verrouillée - Statique */
 .course-card.card-locked {
     cursor: default;
     opacity: 0.7;
@@ -1994,10 +1991,10 @@ body {
     border-radius: 8px;
 }
 
-/* Static Course Action Button (Visual only, no interaction) */
+/* Bouton d'action de cours statique (Visuel uniquement, pas d'interaction) */
 .course-action-btn {
     pointer-events: none;
-    /* Let clicks pass through to the card */
+    /* Laisser passer les clics vers la carte */
     background: var(--primary);
     color: #000;
     border: 1px solid var(--primary);
@@ -2005,7 +2002,7 @@ body {
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 0.05em;
-    /* No hover effects defined here, so it stays static */
+    /* Aucun effet de survol défini ici, donc reste statique */
 }
 
 /* Refonte Superposition de Verrouillage */
@@ -2035,10 +2032,7 @@ body {
     opacity: 0.7;
 }
 
-/* Static lock icon shouldn't hover unless the card is clickable context */
-.card-locked .lock-icon {
-    /* Kept static */
-}
+
 
 /* ACTIONS ADMIN ET CORRECTIONS D'ALIGNEMENT */
 .admin-actions {
@@ -2165,6 +2159,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
     /* Firefox */
     text-align: center;
     font-family: var(--font-mono);
@@ -2190,7 +2185,7 @@ input[type=number]:focus {
 
 /* Styles spécifiques pour l'admin */
 
-/* Layout / Top Bar */
+/* Mise en page / Barre supérieure */
 .top-bar {
     display: flex;
     justify-content: space-between;
@@ -2284,7 +2279,7 @@ input[type=number]:focus {
 .action-btn:hover {
     background: var(--primary);
     color: black;
-    /* Better contrast on primary */
+    /* Meilleur contraste sur le primaire */
     border-color: var(--primary);
     transform: translateY(-2px);
     box-shadow: 0 0 15px var(--primary-glow);
@@ -2297,7 +2292,7 @@ input[type=number]:focus {
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
 
-/* Description handling */
+/* Gestion de la description */
 .admin-table td:nth-child(4) {
     max-width: 300px;
     white-space: nowrap;
@@ -2315,7 +2310,7 @@ input[type=number]:focus {
     }
 }
 
-/* Form Styles */
+/* Styles de formulaire */
 .form-container {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -2374,7 +2369,7 @@ input[type=number]:focus {
     border-top: 1px solid var(--glass-border);
 }
 
-/* Alert styles locally if missing */
+/* Styles d'alerte localement si manquants */
 .alert {
     padding: 1rem;
     border-radius: 8px;
@@ -2474,14 +2469,14 @@ input[type=number]:focus {
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
-/* Fix text colors */
+/* Corriger les couleurs du texte */
 input,
 textarea,
 select {
     color: var(--text-main);
 }
 
-/* Sidebar User Actions */
+/* Actions utilisateur de la barre latérale */
 .sidebar-action-btn {
     width: 32px;
     height: 32px;
@@ -2541,7 +2536,7 @@ select {
 .course-content ol {
     margin-bottom: 1em;
     padding-left: 2em;
-    /* Restore indentation */
+    /* Restaurer l'indentation */
     list-style-position: outside;
 }
 

@@ -898,7 +898,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (data.success) {
                 const s = data.stats;
 
-                // Animate value helper
+                // Helper pour l'animation de valeur
                 const animateValue = (id, target, duration, suffix = '') => {
                     const obj = document.getElementById(id);
                     if (!obj) return;
@@ -924,7 +924,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     window.requestAnimationFrame(step);
                 };
 
-                // Update stats with animation
+                // Mettre à jour les stats avec animation
                 if (s.questions) animateValue("stat-questions", s.questions, 1000);
                 if (s.courses) animateValue("stat-courses", s.courses, 1000);
                 if (s.successRate) animateValue("stat-success-rate", s.successRate, 1000, "%");
@@ -1175,7 +1175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.updateSidebarUser = updateSidebarUser;
 
 
-    // UI EFFECTS
+    // EFFETS UI
 
     function initTiltEffect() {
         const cards = document.querySelectorAll('.card');
@@ -1201,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
-    // AUTHENTICATION LOGIC
+    // LOGIQUE D'AUTHENTIFICATION
     function initAuth() {
         const authContainer = document.getElementById('auth-container');
         const userDashboard = document.getElementById('user-dashboard');
@@ -1284,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (typeof window.updateSidebarUser === 'function') {
                 window.updateSidebarUser(null);
             }
-            loadTemplate('profil'); // Reload profile view to reset
+            loadTemplate('profil'); // Recharger la vue profil pour réinitialiser
         });
 
         function loginUser(user) {
@@ -1359,7 +1359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const xpNeeded = xpForNext - xpForCurrent;
             const progress = Math.min((xpInLevel / xpNeeded) * 100, 100);
 
-            // Animate XP counter
+            // Animer le compteur XP
             let currentXp = 0;
             const targetXp = xp;
             const duration = 1000;
@@ -1381,7 +1381,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             xpNextEl.textContent = xpForNext === Infinity ? '∞' : xpForNext;
 
-            // Animate progress bar
+            // Animer la barre de progression
             setTimeout(() => {
                 progressFill.style.width = `${progress}%`;
             }, 100);
@@ -1468,7 +1468,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // LEADERBOARD LOGIC
+    // LOGIQUE DU CLASSEMENT
 
     async function loadLeaderboards() {
         const data = await api.getLeaderboard();
@@ -1771,7 +1771,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         lucide.createIcons();
     }
 
-    // COURSES VIEW (Public)
+    // VUE COURS (Public)
     async function loadCoursesView() {
         // Récupérer l'utilisateur connecté pour le verrouillage
         const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -1794,7 +1794,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (courses.length === 0) return;
 
-        // Replace static content with dynamic courses
+        // Remplacer le contenu statique par les cours dynamiques
         const bentoGrid = contentArea.querySelector('.bento-grid');
         if (bentoGrid) {
             bentoGrid.innerHTML = courses.map(c => {
@@ -1809,7 +1809,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Icône personnalisée ou par défaut
                 const iconName = c.icon && c.icon !== '' ? c.icon : getDifficultyIcon(c.difficulty);
 
-                // Status Badge Logic
+                // Logique du badge de statut
                 let statusBadge = '';
                 if (isCompleted) {
                     statusBadge = '<span class="status-badge status-completed" style="margin-right:0.5rem; display:flex; align-items:center; font-size:0.85rem;"><i data-lucide="check-circle" style="width:14px;height:14px;margin-right:4px;"></i>Terminé</span>';
@@ -1873,7 +1873,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('question-form').reset();
         document.getElementById('question-id').value = '';
         document.getElementById('question-modal').style.display = 'flex';
-        loadAdminQuestions(); // To populate course dropdown
+        loadAdminQuestions(); // Pour remplir le menu déroulant des cours
     };
 
     window.closeQuestionModal = function () {
@@ -2302,7 +2302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         lucide.createIcons();
     }
 
-    // Handle course form submission
+    // Gérer la soumission du formulaire de cours
     document.addEventListener('submit', async (e) => {
         if (e.target.id === 'course-form') {
             e.preventDefault();
@@ -2701,7 +2701,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (modal) modal.style.display = 'none';
     };
 
-    // BEST PRACTICES MODAL LOGIC
+    // LOGIQUE MODALE BONNES PRATIQUES
     const modalBp = document.getElementById('modal-bp');
     const openBpBtn = document.getElementById('open-bp-btn');
     const closeBpBtn = document.getElementById('close-modal-btn');
@@ -2721,7 +2721,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // CONFIRM MODAL LOGIC
+    // LOGIQUE MODALE DE CONFIRMATION
     window.showConfirmModal = function (title, message, submessage = '') {
         return new Promise((resolve) => {
             const modal = document.getElementById('confirm-modal');
@@ -2766,7 +2766,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 resolve(false);
             });
 
-            // Click outside
+            // Clic en dehors
             const clickOutside = (e) => {
                 if (e.target === modal) {
                     closeModal();
@@ -2778,7 +2778,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
-    // Auto-show on first visit (or resets)
+    // Affichage auto à la première visite (ou reset)
     // On enlève la condition localStorage pour forcer l'affichage si l'utilisateur le souhaite à chaque actualisation
     // Ou on peut vérifier une version dans le localStorage pour réafficher si le contenu change
     // Pour l'instant, on laisse la vérification mais on s'assure qu'elle fonctionne
@@ -2806,8 +2806,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // click outside to close
-    // click outside to close
+    // Clic en dehors pour fermer
     window.addEventListener('click', (e) => {
         const modals = [
             document.getElementById('modal-bp'),
@@ -2825,7 +2824,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Close modals on Escape key
+    // Fermer les modales avec la touche Echap
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             const modals = [
@@ -2864,7 +2863,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let contentHtml = '';
 
         if (resource.content) {
-            // Convert markdown-like content to HTML
+            // Convertir le contenu type markdown en HTML
             contentHtml = resource.content
                 .replace(/## (.*)/g, '<h2>$1</h2>')
                 .replace(/### (.*)/g, '<h3>$1</h3>')

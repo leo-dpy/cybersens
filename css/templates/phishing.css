@@ -147,7 +147,7 @@
     border-color: var(--glass-border-hover);
     background: #0a0a0a;
 }
-}
+
 
 .scenario-card .type-badge {
     display: inline-flex;
@@ -201,7 +201,7 @@
     text-shadow: 0 0 15px var(--accent-red-glow);
 }
 
-/* APERCU SCENARIO - REALISTIC MOCKUPS */
+/* APERÇU SCÉNARIO - MAQUETTES RÉALISTES */
 
 /* Layout Global Modale */
 .scenario-layout {
@@ -211,7 +211,7 @@
 }
 
 .scenario-instruction {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-left: 4px solid var(--primary);
     padding: 1rem;
     margin-bottom: 1.5rem;
@@ -221,16 +221,17 @@
 }
 
 /* MOCKUP COMMUN */
-.email-mockup, .browser-mockup {
+.email-mockup,
+.browser-mockup {
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     font-family: 'Segoe UI', system-ui, sans-serif;
     color: #333;
 }
 
-/* EMAIL MOCKUP */
+/* MAQUETTE EMAIL */
 .email-header-top {
     background: #f3f4f6;
     padding: 0.75rem;
@@ -244,9 +245,18 @@
     height: 12px;
     border-radius: 50%;
 }
-.dot-red { background: #ef4444; }
-.dot-yellow { background: #f59e0b; }
-.dot-green { background: #10b981; }
+
+.dot-red {
+    background: #ef4444;
+}
+
+.dot-yellow {
+    background: #f59e0b;
+}
+
+.dot-green {
+    background: #10b981;
+}
 
 .email-meta-area {
     padding: 1.5rem;
@@ -326,7 +336,7 @@
     font-size: 0.9rem;
 }
 
-/* SMS MOCKUP */
+/* MAQUETTE SMS */
 .phone-mockup {
     background: #000;
     border-radius: 30px;
@@ -334,7 +344,7 @@
     max-width: 320px;
     margin: 0 auto;
     border: 4px solid #333;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     position: relative;
 }
@@ -400,7 +410,7 @@
     text-align: right;
 }
 
-/* BROWSER MOCKUP */
+/* MAQUETTE NAVIGATEUR */
 .browser-header {
     background: #f3f4f6;
     padding: 0.75rem;
@@ -431,7 +441,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .padlock-icon {
@@ -464,10 +474,11 @@
     padding: 0.75rem 2rem;
     border-radius: 6px;
     font-weight: 600;
-    cursor: default; /* C'est une image */
+    cursor: default;
+    /* C'est une image */
 }
 
-/* BOUTONS REPONSE */
+/* BOUTONS RÉPONSE */
 .scenario-decision {
     text-align: center;
 }
@@ -491,14 +502,16 @@
 
 .answer-btn {
     display: flex;
-    flex-direction: row; /* Horizontal layout is more compact */
+    flex-direction: row;
+    /* Horizontal layout is more compact */
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    padding: 1rem 1.5rem; /* Reduced padding */
+    padding: 1rem 1.5rem;
+    /* Reduced padding */
     border-radius: 12px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     color: var(--text-main);
     transition: all 0.3s;
     cursor: pointer;
@@ -506,18 +519,20 @@
 }
 
 .btn-icon {
-    width: 32px; /* Smaller icon container */
+    width: 32px;
+    /* Smaller icon container */
     height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem; /* Smaller icon font */
+    font-size: 1rem;
+    /* Smaller icon font */
     transition: 0.3s;
 }
-}
 
-/* Style Phishing Button */
+
+/* Style Bouton Phishing */
 .answer-btn.phishing .btn-icon {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
@@ -534,7 +549,7 @@
     transform: scale(1.1);
 }
 
-/* Style Legit Button */
+/* Style Bouton Légitime */
 .answer-btn.legitimate .btn-icon {
     background: rgba(16, 185, 129, 0.1);
     color: #10b981;

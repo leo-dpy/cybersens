@@ -18,19 +18,21 @@ try {
             'description' => $inc['description'],
             'date' => strtotime($inc['event_date']),
             'source' => $inc['source'],
-            // 'image' => null, // Pas d'image nécessaire pour le style terminal
+
             'is_attack' => true
         ];
     }
 
     echo json_encode(['success' => true, 'news' => $news]);
 
-} catch (PDOException $e) {
+}
+catch (PDOException $e) {
     if ($e->getCode() == '42S02') {
         // Table pas encore créée, on renvoie une liste vide pour ne pas casser le front
         echo json_encode(['success' => true, 'news' => []]);
-    } else {
-         // Si la table n'existe pas encore, renvoyer une erreur explicite ou un tableau vide
+    }
+    else {
+        // Si la table n'existe pas encore, renvoyer une erreur explicite ou un tableau vide
         error_log($e->getMessage());
         echo json_encode(['success' => false, 'message' => 'Erreur de base de données (Avez-vous exécuté migrate_news.php ?) ' . $e->getMessage(), 'news' => []]);
     }

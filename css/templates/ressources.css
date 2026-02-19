@@ -18,11 +18,13 @@
 #resourceModal .modal-content {
     background: #030305 !important;
     border-radius: 16px;
-    padding: 0 !important; /* Move padding to content container for full edge scrollbar */
+    padding: 0 !important;
+    /* Déplacer le padding vers le conteneur de contenu pour la scrollbar latérale complète */
     max-width: 1000px;
     width: 95%;
     max-height: 90vh;
-    overflow: hidden !important; /* Stop modal from scrolling, let inner content scroll */
+    overflow: hidden !important;
+    /* Empêcher le défilement du modal, laisser le contenu interne défiler */
     display: flex !important;
     flex-direction: column !important;
     position: relative;
@@ -65,14 +67,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background: rgba(0, 0, 0, 0.5);
+    /* Fond semi-transparent */
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     font-size: 1.5rem;
     color: #fff;
     cursor: pointer;
-    z-index: 20; /* Ensure it stays above scrolling content */
+    z-index: 20;
+    /* S'assurer qu'il reste au-dessus du contenu défilant */
     pointer-events: auto !important;
     transition: all 0.2s ease;
 }

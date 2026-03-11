@@ -2303,24 +2303,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     window.startRandomQuiz = async function (type) {
-        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-        const userId = currentUser ? currentUser.id : null;
-        const userRole = currentUser ? currentUser.role : null;
+        console.log("startRandomQuiz triggered with type:", type);
+        try {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const userId = currentUser ? currentUser.id : null;
+            const userRole = currentUser ? currentUser.role : null;
 
-        if (!userId) {
-            showToast('Erreur', 'Veuillez vous connecter pour jouer', 'warning');
-            return;
-        }
+            if (!userId) {
+                console.log("No userId, showing toast");
+                showToast('Erreur', 'Veuillez vous connecter pour jouer', 'warning');
+                return;
+            }
 
-        let allQuestions = await api.getQuestions();
-        let questions = [];
+            console.log("Fetching questions...");
+            let allQuestions = await api.getQuestions();
+            console.log("All questions:", allQuestions?.length);
+            let questions = [];
 
         if (type === 'unlocked') {
             const courses = await api.getCourses(userId, userRole);
             const unlockedCourses = courses.filter(c => !c.is_locked || c.is_locked === 0 || c.is_locked === false);
-            const unlockedCourseIds = unlockedCourses.map(c => c.id);
+            const unlockedCourseIds = unlockedCourses.map(c => parseInt(c.id));
             
-            questions = allQuestions.filter(q => unlockedCourseIds.includes(q.course_id));
+            questions = allQuestions.filter(q => unlockedCourseIds.includes(parseInt(q.course_id)));
             if (questions.length === 0) {
                 showToast('Info', 'Aucune question disponible pour vos modules débloqués.', 'info');
                 return;
@@ -2488,6 +2493,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
         renderQuestion();
+        } catch(e) {
+            console.error("Error in startRandomQuiz:", e);
+        }
     };
 
     async function showRandomQuizResults(type, score, total) {

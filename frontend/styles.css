@@ -211,16 +211,14 @@ p {
 }
 
 /* AUTHENTICATION STATE STYLES */
-body.auth-restricted .sidebar {
-    transform: translateX(-150%);
-    opacity: 0;
+body.auth-restricted .nav-menu {
+    opacity: 0.5;
     pointer-events: none;
+    filter: grayscale(100%);
 }
 
-body.auth-restricted .main-content {
-    margin-left: 0;
-    padding-left: 3rem;
-    max-width: 800px; /* Centrer la vue profil */
+body.auth-restricted .sidebar-user {
+    display: none !important;
 }
 
 body.auth-restricted .floating-actions {

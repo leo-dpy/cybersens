@@ -720,7 +720,6 @@ function getTimeAgo(date) {
 function toggleNotificationsPanel() {
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     if (!currentUser) {
-        showToast('Accès restreint', 'Veuillez vous connecter pour voir vos notifications.', 'warning');
         return;
     }
 
@@ -2884,6 +2883,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ackBtn = document.getElementById('ack-btn');
 
     function openBpModal() {
+        // Prevent opening if not authenticated
+        if (!sessionStorage.getItem('currentUser')) return;
+        
         if (modalBp) {
             modalBp.style.display = 'flex';
             setTimeout(() => modalBp.classList.add('active'), 10);

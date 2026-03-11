@@ -1,6 +1,6 @@
 <?php
 require_once 'auth.php';
-checkAdmin();
+checkContentAccess();
 
 $currentUser = getCurrentUser();
 
@@ -88,6 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i data-lucide="rss"></i>
                     <span>Actualités</span>
                 </a>
+
+                <?php if(hasPermission('manage_resources')): ?>
+                <a href="resources.php" class="nav-item">
+                    <i data-lucide="library"></i>
+                    <span>Ressources</span>
+                </a>
+                <?php endif; ?>
                 
                 <?php if(hasPermission('manage_users')): ?>
                 <a href="users.php" class="nav-item">

@@ -139,6 +139,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="news.php" class="nav-item"><i data-lucide="rss"></i><span>Actualités</span></a>
                 <?php
 endif; ?>
+
+                <?php if (hasPermission('manage_resources')): ?>
+                <a href="resources.php" class="nav-item"><i data-lucide="library"></i><span>Ressources</span></a>
+                <?php
+endif; ?>
                 
                 <a href="users.php" class="nav-item"><i data-lucide="users"></i><span>Utilisateurs</span></a>
                 <div class="nav-divider"></div>
@@ -285,7 +290,6 @@ endforeach; ?>
                                 <label class="cyber-toggle-label">
                                     <div class="toggle-info">
                                         <span class="toggle-title">Mode Brouillon</span>
-                                        <span class="toggle-desc">Visibilité du cours</span>
                                     </div>
                                     <div class="cyber-toggle-wrapper">
                                         <input type="checkbox" name="is_hidden" id="isHiddenCheckbox" <?php echo(!empty($course['is_hidden']) && $course['is_hidden'] == 1) ? 'checked' : ''; ?>>

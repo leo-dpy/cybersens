@@ -20,9 +20,9 @@ $roleHierarchy = [
 // Permissions par rôle
 $rolePermissions = [
     ROLE_USER => [],
-    ROLE_CREATOR => ['manage_courses', 'manage_questions', 'view_dashboard'],
-    ROLE_ADMIN => ['manage_users', 'view_dashboard', 'manage_content'],
-    ROLE_SUPERADMIN => ['manage_courses', 'manage_questions', 'manage_users', 'manage_roles', 'view_dashboard', 'delete_admins', 'manage_content']
+    ROLE_CREATOR => ['manage_courses', 'manage_questions', 'view_dashboard', 'manage_content', 'manage_resources'],
+    ROLE_ADMIN => ['manage_users', 'view_dashboard', 'manage_content', 'manage_resources'],
+    ROLE_SUPERADMIN => ['manage_courses', 'manage_questions', 'manage_users', 'manage_roles', 'view_dashboard', 'delete_admins', 'manage_content', 'manage_resources']
 ];
 
 // Récupérer le rôle de l'utilisateur connecté
@@ -207,6 +207,24 @@ function checkUsersAccess() {
 function checkRolesAccess() {
     checkAdmin();
     if (!hasPermission('manage_roles')) {
+        header("Location: index.php?error=no_permission");
+        exit;
+    }
+}
+
+// Vérifier l'accès au contenu (news) - créateur, admin ou superadmin
+function checkContentAccess() {
+    checkAdmin();
+    if (!hasPermission('manage_content')) {
+        header("Location: index.php?error=no_permission");
+        exit;
+    }
+}
+
+// Vérifier l'accès aux ressources - créateur, admin ou superadmin
+function checkResourcesAccess() {
+    checkAdmin();
+    if (!hasPermission('manage_resources')) {
         header("Location: index.php?error=no_permission");
         exit;
     }

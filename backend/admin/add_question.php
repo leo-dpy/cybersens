@@ -73,6 +73,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="news.php" class="nav-item"><i data-lucide="rss"></i><span>Actualités</span></a>
                 <?php endif; ?>
 
+                <?php if(hasPermission('manage_resources')): ?>
+                <a href="resources.php" class="nav-item"><i data-lucide="library"></i><span>Ressources</span></a>
+                <?php endif; ?>
+
                 <a href="users.php" class="nav-item"><i data-lucide="users"></i><span>Utilisateurs</span></a>
                 <div class="nav-divider"></div>
                 <a href="../../index.html" class="nav-item"><i data-lucide="arrow-left"></i><span>Retour au site</span></a>

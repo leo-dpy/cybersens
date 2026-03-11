@@ -1,5 +1,5 @@
 // CLIENT API (Remplace la DB LocalStorage)
-const API_URL = '../backend/api';
+const API_URL = 'backend/api';
 
 // Fonction utilitaire pour convertir le niveau numérique en texte
 function getLevelName(level) {
@@ -1054,7 +1054,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-            const response = await fetch(`templates/${viewId}.html?t=${Date.now()}`);
+            const response = await fetch(`frontend/templates/${viewId}.html?t=${Date.now()}`);
             if (!response.ok) throw new Error('Template not found');
             const html = await response.text();
             contentArea.innerHTML = html;

@@ -74,7 +74,7 @@ try {
 
                 <div class="nav-divider"></div>
 
-                <a href="../../frontend/index.html" class="nav-item">
+                <a href="../../index.html" class="nav-item">
                     <i data-lucide="arrow-left"></i>
                     <span>Retour au site</span>
                 </a>

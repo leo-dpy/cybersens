@@ -175,12 +175,12 @@ function canChangeRole($targetUserId, $newRole) {
 // Vérifier l'accès admin (créateur, admin ou superadmin)
 function checkAdmin() {
     if (!isset($_SESSION['user_id'])) {
-        header("Location: ../../frontend/index.html?evt=session_expired");
+        header("Location: ../../index.html?evt=session_expired");
         exit;
     }
     
     if (!hasMinimumRole(ROLE_CREATOR)) {
-        header("Location: ../../frontend/index.html?evt=forbidden");
+        header("Location: ../../index.html?evt=forbidden");
         exit;
     }
 }

@@ -142,7 +142,7 @@ endif; ?>
                 
                 <a href="users.php" class="nav-item"><i data-lucide="users"></i><span>Utilisateurs</span></a>
                 <div class="nav-divider"></div>
-                <a href="../../frontend/index.html" class="nav-item"><i data-lucide="arrow-left"></i><span>Retour au site</span></a>
+                <a href="../../index.html" class="nav-item"><i data-lucide="arrow-left"></i><span>Retour au site</span></a>
             </div>
             <div class="sidebar-user">
                 <div class="sidebar-user-avatar"><?php echo strtoupper(substr($currentUser['username'], 0, 1)); ?></div>

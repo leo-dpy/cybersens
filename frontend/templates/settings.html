@@ -1,0 +1,192 @@
+<div class="page-header">
+    <h1>Paramètres</h1>
+    <p class="subtitle">Gérez vos informations personnelles et préférences.</p>
+</div>
+
+<div class="settings-container">
+    <div class="settings-grid">
+        <!-- Carte Infos Personnelles -->
+        <div class="settings-card info-card">
+            <h3><i data-lucide="user"></i> Informations Personnelles</h3>
+            
+            <form id="update-profile-form" class="settings-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nom d'utilisateur</label>
+                        <input type="text" id="settings-username" class="auth-input" placeholder="Votre Pseudo" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="settings-email" class="auth-input" placeholder="email@exemple.com" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Mettre à jour le profil</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Carte Sécurité -->
+        <div class="settings-card security-card">
+            <h3><i data-lucide="lock"></i> Sécurité</h3>
+            
+            <form id="update-password-form" class="settings-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nouveau Mot de Passe</label>
+                        <input type="password" id="settings-password" class="auth-input" placeholder="Minimum 12 caractères" minlength="12" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Confirmer le Mot de Passe</label>
+                        <input type="password" id="settings-password-confirm" class="auth-input" placeholder="Confirmez le mot de passe" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Carte Session (plus petite) -->
+        <div class="settings-card session-card">
+            <h3><i data-lucide="log-out"></i> Session</h3>
+            <p style="margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.9rem;">
+                Déconnectez-vous de votre session actuelle sur cet appareil.
+            </p>
+            <button id="logout-btn-settings" type="button" class="btn btn-outline" style="border-color: var(--accent-color); color: var(--accent-color); width: 100%; justify-content: center;" onclick="sessionStorage.removeItem('currentUser'); window.location.reload();">
+                <i data-lucide="log-out"></i> Déconnexion
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .settings-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        align-items: start;
+    }
+
+    /* La carte session prend toute la largeur en bas ou se place à côté si espace */
+    .session-card {
+        grid-column: span 2;
+        /* Optionnel: pour la rendre moins haute */
+        max-width: 600px; 
+    }
+
+    @media (min-width: 1024px) {
+        .settings-grid {
+            grid-template-columns: 2fr 1fr; /* Info+Securité à gauche (plus large), Session à droite ? Non, plutôt grille classique */
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .session-card {
+            grid-column: span 1; /* Prend juste une case */
+        }
+        /* Ou on peut faire Info (large) + Securité (large) et Session (petit) */
+    }
+    
+    /* Layout spécifique demandé : horizontal et pas tout au milieu */
+    
+    .settings-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: var(--shadow-card);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .settings-card h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+        color: var(--text-main);
+        font-size: 1.25rem;
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 1rem;
+    }
+
+    .settings-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        flex: 1;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr 1fr; /* Champs côte à côte sur desktop */
+        }
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .auth-input {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--glass-border);
+        color: var(--text-main);
+        padding: 0.85rem 1rem;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .auth-input:focus {
+        border-color: var(--primary);
+        background: rgba(0, 0, 0, 0.5);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+    
+    .form-actions {
+        margin-top: auto;
+        padding-top: 1rem;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    /* Responsivité mobile : retour en colonne unique */
+    @media (max-width: 768px) {
+        .settings-grid {
+            grid-template-columns: 1fr;
+        }
+        .session-card {
+            grid-column: span 1;
+            max-width: 100%;
+        }
+    }
+</style>

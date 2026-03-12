@@ -62,8 +62,17 @@
                     <i data-lucide="user"></i>
                     <span>Profil</span>
                 </div>
+                <div class="nav-item" data-view="settings">
+                    <i data-lucide="settings"></i>
+                    <span>Paramètres</span>
+                </div>
 
                 <div class="nav-divider"></div>
+
+                <div class="nav-item" id="sidebar-logout-btn" style="color: var(--danger); cursor: pointer;" onclick="sessionStorage.removeItem('currentUser'); window.location.reload();">
+                    <i data-lucide="log-out"></i>
+                    <span>Déconnexion</span>
+                </div>
 
                 <a href="backend/admin/" class="nav-item admin-only"
                     style="display: none; text-decoration: none; color: inherit;">

@@ -26,6 +26,7 @@ $users = $pdo->query($sql)->fetchAll();
 
 // Modifier un utilisateur
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    verifyCsrfToken();
     if ($_POST['action'] === 'edit_user') {
         $uid = (int)$_POST['user_id'];
         $username = trim($_POST['username']);
@@ -58,13 +59,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
                 // Mettre à jour le mot de passe si fourni
                 if (!empty($_POST['new_password'])) {
-                    $hashedPassword = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-                    $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
-                    $stmt->execute([$hashedPassword, $uid]);
+                    $newPassword = trim($_POST['new_password']);
+                    if (strlen($newPassword) < 12) {
+                        $message = "Le mot de passe doit contenir au moins 12 caractères.";
+                        $messageType = "danger";
+                    } else {
+                        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                        if ($hashedPassword === false) {
+                            $message = "Erreur lors du hachage du mot de passe.";
+                            $messageType = "danger";
+                        } else {
+                            $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+                            if ($stmt->execute([$hashedPassword, $uid])) {
+                                // Succès pour le mot de passe
+                                if ($messageType !== "danger") {
+                                    $message = "Utilisateur mis à jour avec succès !";
+                                    $messageType = "success";
+                                }
+                            } else {
+                                $message = "Erreur lors de la mise à jour du mot de passe.";
+                                $messageType = "danger";
+                            }
+                        }
+                    }
                 }
 
-                $message = "Utilisateur mis à jour avec succès !";
-                $messageType = "success";
+                if ($messageType !== 'danger') {
+                    $message = "Utilisateur mis à jour avec succès !";
+                    $messageType = "success";
+                }
 
                 // Rafraîchir la liste
                 $users = $pdo->query($sql)->fetchAll();
@@ -137,8 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $message = "Tous les champs obligatoires doivent être remplis.";
             $messageType = "danger";
         }
-        elseif (strlen($password) < 6) {
-            $message = "Le mot de passe doit contenir au moins 6 caractères.";
+        elseif (strlen($password) < 12) {
+            $message = "Le mot de passe doit contenir au moins 12 caractères.";
             $messageType = "danger";
         }
         else {
@@ -169,8 +192,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 }
 
 // Supprimer un utilisateur
-if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
-    $uid = (int)$_GET['delete'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_user') {
+    verifyCsrfToken();
+    $uid = (int)$_POST['user_id'];
     if (canDeleteUser($uid)) {
         $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
         $stmt->execute([$uid]);
@@ -398,9 +422,14 @@ endif; ?>
                                     </button>
                                     <?php
     endif; ?>
-                                    <a href="users.php?delete=<?php echo $u['id']; ?>" class="btn-icon delete" <?php echo $canDelete ? '' : 'style="pointer-events:none; opacity:0.3;"'; ?> onclick="return confirmAction(event, 'Supprimer cet utilisateur ?')">
-                                        <i data-lucide="trash-2"></i>
-                                    </a>
+                                    <form method="POST" action="users.php" style="display:inline;" onsubmit="return confirm('Supprimer cet utilisateur ?')">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                        <input type="hidden" name="action" value="delete_user">
+                                        <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
+                                        <button type="submit" class="btn-icon delete" <?php echo $canDelete ? '' : 'disabled style="pointer-events:none; opacity:0.3;"'; ?>>
+                                            <i data-lucide="trash-2"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -423,6 +452,7 @@ endforeach; ?>
                 <button class="close-btn" onclick="closeModal('editModal')"><i data-lucide="x"></i></button>
             </div>
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input type="hidden" name="action" value="edit_user">
                 <input type="hidden" name="user_id" id="edit_user_id">
                 
@@ -467,7 +497,7 @@ endforeach; ?>
 
                 <div class="form-group">
                     <label class="form-label">Nouveau mot de passe (optionnel)</label>
-                    <input type="password" name="new_password" class="form-input" placeholder="••••••••">
+                    <input type="password" name="new_password" class="form-input" placeholder="Min. 12 caractères" minlength="12">
                 </div>
 
                 <div class="admin-modal-footer">
@@ -486,6 +516,7 @@ endforeach; ?>
                 <button class="close-btn" onclick="closeModal('xpModal')"><i data-lucide="x"></i></button>
             </div>
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input type="hidden" name="action" value="add_xp">
                 <input type="hidden" name="user_id" id="xp_user_id">
                 
@@ -518,6 +549,7 @@ endforeach; ?>
                 <button class="close-btn" onclick="closeModal('roleModal')"><i data-lucide="x"></i></button>
             </div>
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input type="hidden" name="action" value="change_role">
                 <input type="hidden" name="user_id" id="role_user_id">
                 
@@ -562,6 +594,7 @@ endif; ?>
                 <button class="close-btn" onclick="closeModal('createModal')"><i data-lucide="x"></i></button>
             </div>
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input type="hidden" name="action" value="create_user">
                 
                 <div class="form-group">
@@ -574,7 +607,7 @@ endif; ?>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Mot de passe</label>
-                    <input type="password" name="password" class="form-input" required minlength="6">
+                    <input type="password" name="password" class="form-input" required minlength="12" placeholder="Min. 12 caractères">
                 </div>
                 
                 <div class="form-group">

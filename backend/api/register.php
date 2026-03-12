@@ -16,6 +16,11 @@ if (!$username || !$email || !$password) {
     exit;
 }
 
+if (strlen($password) < 12) {
+    echo json_encode(['success' => false, 'message' => 'Le mot de passe doit faire au moins 12 caractères']);
+    exit;
+}
+
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['success' => false, 'message' => 'Email invalide']);
     exit;

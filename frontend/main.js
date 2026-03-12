@@ -120,6 +120,21 @@ class ApiClient {
         }
     }
 
+    async updateProfile(id, data) {
+        try {
+            const body = { id, ...data };
+            const response = await fetch(`${API_URL}/users.php`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            return await response.json();
+        } catch (e) {
+            console.error("Erreur UpdateProfile:", e);
+            return { success: false, message: "Erreur de connexion" };
+        }
+    }
+
     async updateAvatar(userId, avatar) {
         try {
             const response = await fetch(`${API_URL}/users.php`, {
@@ -1064,6 +1079,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Initialiser la logique de vue spécifique
             if (viewId === 'profil') initAuth();
+            if (viewId === 'settings') loadSettings();
             if (viewId === 'leaderboard') loadLeaderboards();
 
             if (viewId === 'home') {
@@ -1175,6 +1191,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.updateSidebarUser = updateSidebarUser;
 
 
+    // Gérer la déconnexion
+    const logoutHandler = () => {
+        sessionStorage.removeItem('currentUser');
+        // Masquer la nav admin
+        const adminNavItem = document.querySelector('.nav-item.admin-only');
+        if (adminNavItem) adminNavItem.style.display = 'none';
+        // Masquer l'utilisateur de la barre latérale
+        if (typeof window.updateSidebarUser === 'function') {
+            window.updateSidebarUser(null);
+        }
+        document.body.classList.add('auth-restricted');
+        
+        // Forcer le rechargement de la page pour nettoyer l'état
+        window.location.reload();
+    };
+
+    // Attacher l'événement au bouton de la sidebar (qui est toujours présent)
+    document.getElementById('sidebar-logout-btn')?.addEventListener('click', logoutHandler);
+
+    // Exposer logoutHandler globalement pour l'utiliser dans loadSettings
+    window.logoutHandler = logoutHandler;
+
+
     // EFFETS UI
 
     function initTiltEffect() {
@@ -1274,6 +1313,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
+<<<<<<< Updated upstream
         // Gérer la déconnexion
         document.getElementById('logout-btn')?.addEventListener('click', () => {
             sessionStorage.removeItem('currentUser');
@@ -1287,6 +1327,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadTemplate('profil'); // Recharger la vue profil pour réinitialiser
         });
 
+=======
+        // Gérer la déconnexion (supprimé ici car déplacé en global)
+        /*
+        const logoutHandler = () => {
+             ...
+        };
+        document.getElementById('logout-btn')?.addEventListener('click', logoutHandler);
+        document.getElementById('sidebar-logout-btn')?.addEventListener('click', logoutHandler);
+        */
+        
+>>>>>>> Stashed changes
         function loginUser(user) {
             sessionStorage.setItem('currentUser', JSON.stringify(user));
             updateUI(user);
@@ -1466,6 +1517,71 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             lucide.createIcons();
         }
+    }
+
+    // LOGIQUE DE LA PAGE PARAMÈTRES
+    async function loadSettings() {
+        const user = JSON.parse(sessionStorage.getItem('currentUser'));
+        if (!user) return;
+
+        // Pré-remplir les champs
+        const usernameInput = document.getElementById('settings-username');
+        const emailInput = document.getElementById('settings-email');
+
+        if (usernameInput) usernameInput.value = user.username || '';
+        if (emailInput) emailInput.value = user.email || '';
+
+        // Gestion mise à jour profil
+        document.getElementById('update-profile-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newUsername = usernameInput.value;
+            const newEmail = emailInput.value;
+
+            const result = await api.updateProfile(user.id, { username: newUsername, email: newEmail });
+
+            if (result.success) {
+                showToast('Succès', 'Profil mis à jour avec succès');
+                // Mettre à jour la session
+                user.username = newUsername;
+                user.email = newEmail;
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+                updateUI(user);
+            } else {
+                showToast('Erreur', result.message || 'Erreur lors de la mise à jour', 'error');
+            }
+        });
+
+        // Gestion changement mot de passe
+        document.getElementById('update-password-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPass = document.getElementById('settings-password').value;
+            const confirmPass = document.getElementById('settings-password-confirm').value;
+
+            if (newPass !== confirmPass) {
+                showToast('Erreur', 'Les mots de passe ne correspondent pas', 'error');
+                return;
+            }
+
+            const result = await api.updateProfile(user.id, { password: newPass });
+
+            if (result.success) {
+                showToast('Succès', 'Mot de passe modifié avec succès');
+                document.getElementById('update-password-form').reset();
+            } else {
+                showToast('Erreur', result.message || 'Erreur lors du changement de mot de passe', 'error');
+            }
+        });
+
+        // Gestion déconnexion
+        document.getElementById('logout-btn-settings')?.addEventListener('click', (e) => {
+            if (e) e.preventDefault();
+            if (window.logoutHandler) {
+                window.logoutHandler();
+            } else {
+                sessionStorage.removeItem('currentUser');
+                window.location.reload();
+            }
+        });
     }
 
     // LOGIQUE DU CLASSEMENT

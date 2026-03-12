@@ -196,8 +196,9 @@ if ($method === 'GET') {
     // Mettre à jour les infos utilisateur
     $username = trim($data['username'] ?? '');
     $email = trim($data['email'] ?? '');
+    $password = $data['password'] ?? '';
     
-    if ($id && ($username || $email)) {
+    if ($id && ($username || $email || $password)) {
         $updates = [];
         $params = [];
         
@@ -208,6 +209,14 @@ if ($method === 'GET') {
         if ($email) {
             $updates[] = "email = ?";
             $params[] = $email;
+        }
+        if ($password) {
+            if (strlen($password) < 12) {
+                echo json_encode(['success' => false, 'message' => 'Le mot de passe doit faire au moins 12 caractères']);
+                exit;
+            }
+            $updates[] = "password = ?";
+            $params[] = password_hash($password, PASSWORD_DEFAULT);
         }
         
         $params[] = $id;

@@ -2,15 +2,22 @@
 
 .page-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
+}
+
+.about-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 /* NOUVEAU DESIGN DES CARTES STATS (Style "Cyber-Flat") */
 .home-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .home-stats-grid .stat-card {
@@ -18,7 +25,7 @@
     border: 1px solid var(--glass-border);
     /* Bordure subtile */
     border-radius: 16px;
-    padding: 1.5rem;
+    padding: 1rem 1.2rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -40,13 +47,13 @@
 .home-stats-grid .stat-icon {
     width: 65%;
     /* Largeur partielle */
-    height: 36px;
+    height: 30px;
     border-radius: 4px;
     display: flex;
     align-items: center;
-    padding-left: 12px;
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
+    padding-left: 10px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
     /* Reset des styles par défaut */
     justify-content: flex-start;
     box-shadow: none;
@@ -91,16 +98,16 @@
 /* Valeur chiffrée */
 .home-stats-grid .stat-value {
     font-family: 'Exo 2', sans-serif;
-    font-size: 3rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
 }
 
 /* Libellé en bas */
 .home-stats-grid .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: #6b7280;
@@ -137,8 +144,11 @@
 }
 
 .news-container {
-    margin-top: 3rem;
-    padding: 0 1rem;
+    margin-top: 0;
+    padding: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .news-grid {

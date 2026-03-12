@@ -199,14 +199,17 @@ p {
 
 .main-content {
     flex: 1;
-    padding: 3rem;
+    padding: 2rem;
     margin-left: var(--sidebar-width);
     /* Si la barre latérale est fixe */
     position: relative;
     max-width: 1600px;
     margin: 0 auto;
     width: 100%;
-    padding-left: calc(var(--sidebar-width) + 3rem);
+    padding-left: calc(var(--sidebar-width) + 2rem);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* BARRE LATÉRALE (Panneau Futuriste) */

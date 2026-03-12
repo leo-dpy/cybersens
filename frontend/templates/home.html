@@ -1,9 +1,8 @@
 <link rel="stylesheet" href="frontend/css/templates/home.css">
 
-<div class="page-header">
+<div class="page-header" style="margin-bottom: 1.5rem;">
     <h1>Bienvenue sur <span class="text-gradient">CyberSens</span></h1>
-    <p class="subtitle">Développez vos compétences en cybersécurité avec notre plateforme d'apprentissage interactive.
-        Cours, quiz et simulations pour maîtriser les menaces numériques.</p>
+    <p class="subtitle">Développez vos compétences en cybersécurité avec notre plateforme d'apprentissage interactive.</p>
 </div>
 
 <div class="stats-grid home-stats-grid">
@@ -37,7 +36,7 @@
     </div>
 </div>
 
-<div class="news-container">
+<div class="news-container" style="margin-top: 1.5rem; padding: 0;">
     <div class="attacks-ticker-container">
         <div class="ticker-label">ALERTE CYBER FRANCE</div>
         <div class="ticker-content" id="attacks-ticker">
@@ -45,23 +44,86 @@
         </div>
     </div>
 
-    <!-- Section CTA pour remplacer le feed d'actus -->
-    <div class="cta-section" style="margin-top: 4rem; text-align: center; padding: 3rem; background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(30, 30, 30, 0.4) 100%); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-        <div style="width: 60px; height: 60px; background: rgba(37, 99, 235, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; color: #60a5fa;">
-            <i data-lucide="shield-check" style="width: 32px; height: 32px;"></i>
+    <!-- Section À Propos -->
+    <div class="about-section" style="margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(0, 243, 255, 0.05) 0%, rgba(30, 30, 30, 0.4) 100%); border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div style="width: 36px; height: 36px; background: rgba(0, 243, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00f3ff; flex-shrink: 0;">
+                <i data-lucide="info" style="width: 18px; height: 18px;"></i>
+            </div>
+            <h2 style="font-size: 1.2rem; margin: 0;">À propos de <span class="text-gradient">CyberSens</span></h2>
         </div>
-        <h2 style="font-size: 1.8rem; margin-bottom: 1rem;">Prêt à sécuriser votre avenir numérique ?</h2>
-        <p style="color: #94a3b8; max-width: 600px; margin: 0 auto 2rem auto; font-size: 1.1rem;">
-            Face à la recrudescence des menaces, la meilleure défense reste la connaissance. Testez vos réflexes dès maintenant.
+
+        <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.75rem;">
+            <strong style="color: #fff;">CyberSens</strong> est une plateforme web de sensibilisation à la cybersécurité, 
+            conçue dans le cadre d'un projet étudiant. Notre objectif : rendre 
+            l'apprentissage de la sécurité informatique <strong style="color: #00f3ff;">accessible, interactif et engageant</strong>.
         </p>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <button class="btn btn-primary" onclick="loadTemplate('quiz')">
-                <i data-lucide="play-circle"></i>
-                Lancer un Quiz Rapide
-            </button>
-            <button class="btn btn-outline" onclick="loadTemplate('cours')" style="border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                Explorer les Cours
-            </button>
+
+        <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+            <i data-lucide="shield-check" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; color: #10b981;"></i>
+            <strong style="color: #ccc;">Pourquoi CyberSens ?</strong> — En 2024, les cyberattaques en France ont augmenté de 30%. 
+            Phishing, ransomware, ingénierie sociale… les menaces évoluent constamment. 
+            CyberSens vous prépare à les reconnaître et à vous en protéger grâce à une approche ludique et progressive.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #00f3ff; margin-bottom: 0.3rem;"><i data-lucide="book-open" style="width: 18px; height: 18px;"></i></div>
+                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem;">Cours interactifs</div>
+                <div style="color: #666; font-size: 0.8rem;">Modules progressifs par niveau</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #bc13fe; margin-bottom: 0.3rem;"><i data-lucide="brain-circuit" style="width: 18px; height: 18px;"></i></div>
+                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem;">Quiz dynamiques</div>
+                <div style="color: #666; font-size: 0.8rem;">Testez vos connaissances</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #ff0055; margin-bottom: 0.3rem;"><i data-lucide="fish" style="width: 18px; height: 18px;"></i></div>
+                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem;">Simulations phishing</div>
+                <div style="color: #666; font-size: 0.8rem;">Scénarios réalistes</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #ffe600; margin-bottom: 0.3rem;"><i data-lucide="trophy" style="width: 18px; height: 18px;"></i></div>
+                <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem;">Gamification</div>
+                <div style="color: #666; font-size: 0.8rem;">XP, badges, certificats</div>
+            </div>
+        </div>
+
+        <!-- Comment ça marche -->
+        <div style="display: flex; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 180px; display: flex; gap: 0.75rem; align-items: flex-start;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 243, 255, 0.15); color: #00f3ff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0;">1</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem;">Créez votre compte</div>
+                    <div style="color: #666; font-size: 0.8rem; line-height: 1.4;">Inscrivez-vous gratuitement et accédez à l'ensemble du contenu.</div>
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 180px; display: flex; gap: 0.75rem; align-items: flex-start;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(188, 19, 254, 0.15); color: #bc13fe; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0;">2</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem;">Apprenez & testez-vous</div>
+                    <div style="color: #666; font-size: 0.8rem; line-height: 1.4;">Parcourez les cours, répondez aux quiz et affrontez des simulations de phishing.</div>
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 180px; display: flex; gap: 0.75rem; align-items: flex-start;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); color: #10b981; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0;">3</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem;">Progressez & certifiez</div>
+                    <div style="color: #666; font-size: 0.8rem; line-height: 1.4;">Gagnez de l'XP, débloquez des badges et obtenez vos certificats.</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #94a3b8; font-size: 0.9rem;">
+                <i data-lucide="github" style="width: 16px; height: 16px; color: #fff;"></i>
+                <span>Collaborateurs :</span>
+            </div>
+            <a href="https://github.com/pseudo1" target="_blank" style="color: #00f3ff; font-size: 0.85rem; text-decoration: none;">@pseudo1</a>
+            <a href="https://github.com/pseudo2" target="_blank" style="color: #bc13fe; font-size: 0.85rem; text-decoration: none;">@pseudo2</a>
+            <a href="https://github.com/pseudo3" target="_blank" style="color: #10b981; font-size: 0.85rem; text-decoration: none;">@pseudo3</a>
+            <a href="https://github.com/pseudo4" target="_blank" style="color: #f59e0b; font-size: 0.85rem; text-decoration: none;">@pseudo4</a>
+            <a href="https://github.com/pseudo5" target="_blank" style="color: #ff0055; font-size: 0.85rem; text-decoration: none;">@pseudo5</a>
         </div>
     </div>
 </div>

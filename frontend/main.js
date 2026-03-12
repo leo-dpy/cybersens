@@ -1068,6 +1068,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             statsInterval = null;
         }
 
+        // AUTH GATE : Vues accessibles sans connexion
+        const publicViews = ['home', 'profil'];
+        const currentUserForGate = JSON.parse(sessionStorage.getItem('currentUser'));
+        if (!currentUserForGate && !publicViews.includes(viewId)) {
+            showToast('Accès restreint', 'Connectez-vous pour accéder à cette section.', 'warning', 3000);
+            loadTemplate('profil');
+            return;
+        }
+
         try {
             const response = await fetch(`frontend/templates/${viewId}.html?t=${Date.now()}`);
             if (!response.ok) throw new Error('Template not found');
@@ -1141,6 +1150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Vérifier si l'utilisateur est déjà connecté et afficher la nav admin si applicable
     const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
     if (sessionUser) {
+
         // Afficher la nav admin pour les rôles admin
         if (['admin', 'superadmin', 'creator'].includes(sessionUser.role)) {
             const adminNavItem = document.querySelector('.nav-item.admin-only');
@@ -1153,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateSidebarUser(sessionUser);
     }
 
-    // Charger l'accueil par défaut
+    // Charger l'accueil par défaut (toujours accessible)
     loadTemplate('home');
 
 
@@ -1202,7 +1212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.updateSidebarUser(null);
         }
         document.body.classList.add('auth-restricted');
-        
+
         // Forcer le rechargement de la page pour nettoyer l'état
         window.location.reload();
     };
@@ -1313,36 +1323,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-<<<<<<< Updated upstream
-        // Gérer la déconnexion
-        document.getElementById('logout-btn')?.addEventListener('click', () => {
-            sessionStorage.removeItem('currentUser');
-            // Masquer la nav admin
-            const adminNavItem = document.querySelector('.nav-item.admin-only');
-            if (adminNavItem) adminNavItem.style.display = 'none';
-            // Masquer l'utilisateur de la barre latérale
-            if (typeof window.updateSidebarUser === 'function') {
-                window.updateSidebarUser(null);
-            }
-            loadTemplate('profil'); // Recharger la vue profil pour réinitialiser
-        });
-
-=======
-        // Gérer la déconnexion (supprimé ici car déplacé en global)
-        /*
-        const logoutHandler = () => {
-             ...
-        };
-        document.getElementById('logout-btn')?.addEventListener('click', logoutHandler);
-        document.getElementById('sidebar-logout-btn')?.addEventListener('click', logoutHandler);
-        */
-        
->>>>>>> Stashed changes
+        // Déconnexion gérée globalement (voir logoutHandler plus haut)
         function loginUser(user) {
             sessionStorage.setItem('currentUser', JSON.stringify(user));
-            updateUI(user);
-            // Charger les notifications
+
+            // Mettre à jour toute la sidebar immédiatement
+            // 1. Lien admin si rôle admin
+            if (['admin', 'superadmin', 'creator'].includes(user.role)) {
+                const adminNavItem = document.querySelector('.nav-item.admin-only');
+                if (adminNavItem) adminNavItem.style.display = 'flex';
+            }
+
+            // 3. Infos utilisateur dans la sidebar
+            if (typeof window.updateSidebarUser === 'function') {
+                window.updateSidebarUser(user);
+            }
+
+            // 4. Charger les notifications
             loadNotifications();
+
+            // 5. Naviguer vers l'accueil
+            loadTemplate('home');
         }
 
         async function updateUI(user) {
@@ -2435,7 +2436,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const courses = await api.getCourses(userId, userRole);
             const unlockedCourses = courses.filter(c => !c.is_locked || c.is_locked === 0 || c.is_locked === false);
             const unlockedCourseIds = unlockedCourses.map(c => c.id);
-            
+
             questions = allQuestions.filter(q => unlockedCourseIds.includes(q.course_id));
             if (questions.length === 0) {
                 showToast('Info', 'Aucune question disponible pour vos modules débloqués.', 'info');
@@ -2570,7 +2571,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const correct = correctAnswer;
                         const isCorrect = selected === correct;
                         userAnswers[currentQuestion] = selected;
-                        
+
                         document.querySelectorAll('.quiz-option').forEach(b => {
                             b.disabled = true;
                             if (b.dataset.option.toUpperCase() === correct) {
@@ -2614,9 +2615,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         let leveledUp = false;
 
         if (sessionUser) {
-            xpGained = Math.round(score * 10 * (percentage / 100)); 
-            if (percentage >= 70) xpGained += 20; 
-            if (percentage === 100) xpGained += 30; 
+            xpGained = Math.round(score * 10 * (percentage / 100));
+            if (percentage >= 70) xpGained += 20;
+            if (percentage === 100) xpGained += 30;
 
             if (percentage >= 70) {
                 const xpResult = await api.addXp(sessionUser.id, xpGained);
@@ -2632,7 +2633,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }, 500);
                     }
                 }
-                
+
                 const badgeResult = await api.checkBadges(sessionUser.id);
                 if (badgeResult.new_badges && badgeResult.new_badges.length > 0) {
                     let delay = 2000;

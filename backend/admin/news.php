@@ -161,13 +161,15 @@ try {
                                         <td style="font-size: 0.9em; opacity: 0.8;">
                                             <?php echo htmlspecialchars($item['description']); ?>
                                         </td>
-                                        <td class="actions-cell">
-                                            <a href="edit_news.php?id=<?php echo $item['id']; ?>" class="action-btn edit" title="Modifier">
-                                                <i data-lucide="edit-2"></i>
-                                            </a>
-                                            <a href="news.php?delete=<?php echo $item['id']; ?>" class="action-btn delete" title="Supprimer" onclick="return confirmAction(event, 'Voulez-vous vraiment supprimer cet incident ?');">
-                                                <i data-lucide="trash-2"></i>
-                                            </a>
+                                        <td class="text-end actions-col">
+                                            <div class="admin-actions">
+                                                <a href="edit_news.php?id=<?php echo $item['id']; ?>" class="btn-icon edit" title="Modifier">
+                                                    <i data-lucide="pencil"></i>
+                                                </a>
+                                                <a href="news.php?delete=<?php echo $item['id']; ?>" class="btn-icon delete" title="Supprimer" onclick="return confirmAction(event, 'Voulez-vous vraiment supprimer cet incident ?');">
+                                                    <i data-lucide="trash-2"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>

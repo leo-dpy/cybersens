@@ -122,22 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $users = $pdo->query($sql)->fetchAll();
     }
 
-    if ($_POST['action'] === 'change_role' && $isSuperAdmin) {
-        $uid = (int)$_POST['user_id'];
-        $newRole = $_POST['new_role'];
 
-        if (canChangeRole($uid, $newRole)) {
-            $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
-            $stmt->execute([$newRole, $uid]);
-            $message = "Rôle mis à jour avec succès !";
-            $messageType = "success";
-            $users = $pdo->query($sql)->fetchAll();
-        }
-        else {
-            $message = "Vous ne pouvez pas changer ce rôle.";
-            $messageType = "danger";
-        }
-    }
 
     // Créer un nouvel utilisateur (admin et superadmin)
     if ($_POST['action'] === 'create_user') {
@@ -416,12 +401,7 @@ endif; ?>
                                     <button class="btn-icon" style="color: var(--warning);" onclick="openXpModal(<?php echo $u['id']; ?>, '<?php echo htmlspecialchars($u['username']); ?>')">
                                         <i data-lucide="zap"></i>
                                     </button>
-                                    <?php if ($isSuperAdmin && $u['id'] != $_SESSION['user_id'] && !$isProtected): ?>
-                                    <button class="btn-icon" style="color: var(--accent-secondary);" onclick="openRoleModal(<?php echo $u['id']; ?>, '<?php echo htmlspecialchars($u['username']); ?>', '<?php echo $userRole; ?>')">
-                                        <i data-lucide="shield"></i>
-                                    </button>
-                                    <?php
-    endif; ?>
+
                                     <form method="POST" action="users.php" style="display:inline;" onsubmit="return confirm('Supprimer cet utilisateur ?')">
                                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                         <input type="hidden" name="action" value="delete_user">
@@ -540,51 +520,7 @@ endforeach; ?>
         </div>
     </div>
 
-    <!-- Modale Rôle -->
-    <?php if ($isSuperAdmin): ?>
-    <div id="roleModal" class="admin-modal">
-        <div class="admin-modal-content">
-            <div class="admin-modal-header">
-                <h2><i data-lucide="shield"></i> Changer Rôle</h2>
-                <button class="close-btn" onclick="closeModal('roleModal')"><i data-lucide="x"></i></button>
-            </div>
-            <form method="POST">
-                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                <input type="hidden" name="action" value="change_role">
-                <input type="hidden" name="user_id" id="role_user_id">
-                
-                <p style="margin-bottom: 1.5rem;">Utilisateur : <strong id="role_username" class="text-primary">User</strong></p>
-                
-                <div class="role-grid">
-                    <label class="role-card">
-                        <input type="radio" name="new_role" value="user">
-                        <div class="role-card-icon"><i data-lucide="user"></i></div>
-                        <div class="role-card-title">Utilisateur</div>
-                        <div class="role-card-desc">Accès standard aux cours</div>
-                    </label>
-                    <label class="role-card">
-                        <input type="radio" name="new_role" value="creator">
-                        <div class="role-card-icon"><i data-lucide="pen-tool"></i></div>
-                        <div class="role-card-title">Créateur</div>
-                        <div class="role-card-desc">Gestion des contenus</div>
-                    </label>
-                    <label class="role-card">
-                        <input type="radio" name="new_role" value="admin">
-                        <div class="role-card-icon"><i data-lucide="shield-alert"></i></div>
-                        <div class="role-card-title">Admin</div>
-                        <div class="role-card-desc">Contrôle total</div>
-                    </label>
-                </div>
 
-                <div class="admin-modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('roleModal')">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Appliquer</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <?php
-endif; ?>
 
     <!-- Modale Création -->
     <div id="createModal" class="admin-modal">
